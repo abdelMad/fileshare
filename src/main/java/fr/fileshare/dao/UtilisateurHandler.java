@@ -207,4 +207,10 @@ public class UtilisateurHandler implements IUtilisateurHandler {
             return (Utilisateur) request.getSession().getAttribute("utilisateur");
         return null;
     }
+
+    public static void refresh(HttpServletRequest request) {
+        IUtilisateurHandler utilisateurHandler = new UtilisateurHandler();
+        request.getSession().setAttribute("utilisateur",utilisateurHandler.get(getLoggedInUser(request).getId()));
+
+    }
 }

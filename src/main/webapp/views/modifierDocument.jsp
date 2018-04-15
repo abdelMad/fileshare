@@ -68,7 +68,7 @@
                 <div class="widget-header widget-header-small center"></div>
                 <div class="widget-body">
                     <div class="widget-main no-padding">
-                        <div class="wysiwyg-editor" id="editor2"><c:if test="${not empty document.contenu}"><c:out value="${document.contenu}" escapeXml="false"></c:out></c:if></div>
+                        <div class="wysiwyg-editor" id="editor2"><c:if test="${not empty document.dernierContenu}"><c:out value="${document.dernierContenu}" escapeXml="false"></c:out></c:if></div>
                     </div>
                 </div>
             </div>

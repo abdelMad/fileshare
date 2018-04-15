@@ -54,12 +54,15 @@ public class NouveauDocument extends HttpServlet {
                                 utilisateurs_autorises.add(utilisateur);
                             }
                         }
+
                         doc.setUtilisateursAvecDroit(utilisateurs_autorises);
                     }
                 }
                 doc.setDatePublixation(new Date());
-                doc.setAuteur(UtilisateurHandler.getLoggedInUser(request));
+                Utilisateur utilisateurCourant =UtilisateurHandler.getLoggedInUser(request);
+                doc.setAuteur(utilisateurCourant);
                 if(documentHandler.add(doc)){
+                    UtilisateurHandler.refresh(request);
                     Util.addGlobalAlert(Util.SUCCESS,"Document crée avec succès!");
                     response.sendRedirect("/modifier-document?id="+doc.getId());
                 }

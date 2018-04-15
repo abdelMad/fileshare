@@ -19,8 +19,10 @@ public class Document {
     private String intitule;
     private String description;
     private Date datePublixation;
-    @Column(columnDefinition = "TEXT")
-    private String contenu;
+    private Date dateDerniereModif;
+    @ManyToOne
+    @JoinColumn(name = "dernier_editeur")
+    private Utilisateur dernierEditeur;
     private String tag;
     private String mdp;
     private int status;
@@ -33,6 +35,8 @@ public class Document {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name="document_utilisateur", joinColumns=@JoinColumn(name="utilisateur_id"), inverseJoinColumns=@JoinColumn(name="document_id"))
     private Set<Utilisateur> utilisateursAvecDroit;
+    @Column(columnDefinition = "TEXT")
+    private String dernierContenu;
 
     public Document() {
     }
@@ -69,13 +73,6 @@ public class Document {
         this.datePublixation = datePublixation;
     }
 
-    public String getContenu() {
-        return contenu;
-    }
-
-    public void setContenu(String contenu) {
-        this.contenu = contenu;
-    }
 
     public Utilisateur getAuteur() {
         return auteur;
@@ -123,5 +120,29 @@ public class Document {
 
     public void setUtilisateursAvecDroit(Set<Utilisateur> utilisateursAvecDroit) {
         this.utilisateursAvecDroit = utilisateursAvecDroit;
+    }
+
+    public Date getDateDerniereModif() {
+        return dateDerniereModif;
+    }
+
+    public void setDateDerniereModif(Date dateDerniereModif) {
+        this.dateDerniereModif = dateDerniereModif;
+    }
+
+    public Utilisateur getDernierEditeur() {
+        return dernierEditeur;
+    }
+
+    public void setDernierEditeur(Utilisateur dernierEditeur) {
+        this.dernierEditeur = dernierEditeur;
+    }
+
+    public String getDernierContenu() {
+        return dernierContenu;
+    }
+
+    public void setDernierContenu(String dernierContenu) {
+        this.dernierContenu = dernierContenu;
     }
 }

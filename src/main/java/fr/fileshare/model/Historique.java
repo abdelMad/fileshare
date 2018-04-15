@@ -13,6 +13,7 @@ public class Historique {
     @JoinColumn(name = "document")
     private Document document;
     private Date dateModif;
+    @Column(columnDefinition = "TEXT")
     private String contenu;
     @ManyToOne
     @JoinColumn(name = "editeur")

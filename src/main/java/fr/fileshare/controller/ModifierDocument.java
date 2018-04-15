@@ -2,6 +2,7 @@ package fr.fileshare.controller;
 
 import fr.fileshare.dao.*;
 import fr.fileshare.model.Document;
+import fr.fileshare.model.Historique;
 import fr.fileshare.model.Utilisateur;
 
 import javax.servlet.ServletException;
@@ -21,6 +22,7 @@ public class ModifierDocument extends HttpServlet {
 
                 System.out.println("Im here");
                 IDocumentHandler documentHandler = new DocumentHandler();
+                IHistoriqueHandler historiqueHandler = new HistoriqueHandler();
                 int id = -1;
                 try {
                     id = Integer.parseInt(request.getParameter("doc_id"));
@@ -34,6 +36,8 @@ public class ModifierDocument extends HttpServlet {
                 if (document != null && document.getAuteur().getId() == UtilisateurHandler.getLoggedInUser(request).getId()) {
 
                     if (params.containsKey("intitule") && params.containsKey("status")) {
+                        Historique historique = new Historique();
+
                         String intitule = request.getParameter("intitule");
                         String[] utilisateurs;
                         document.setIntitule(intitule);
@@ -56,7 +60,8 @@ public class ModifierDocument extends HttpServlet {
                             document.setTag(request.getParameter("tags"));
                         }
                         if (params.containsKey("contenu")) {
-                            document.setContenu(request.getParameter("contenu"));
+                            historique.setContenu(request.getParameter("contenu"));
+                            document.setDernierContenu(request.getParameter("contenu"));
                         }
                         IUtilisateurHandler utilisateurHandler = new UtilisateurHandler();
                         Set<Utilisateur> utilisateurs_autorises = new HashSet<>();
@@ -74,7 +79,19 @@ public class ModifierDocument extends HttpServlet {
                                 document.setUtilisateursAvecDroit(utilisateurs_autorises);
                             }
                         }
-                        if (documentHandler.update(document)) {
+                        Utilisateur utilisateurCourant = UtilisateurHandler.getLoggedInUser(request);
+                        document.setDateDerniereModif(new Date());
+                        document.setDernierEditeur(utilisateurCourant);
+                        //modification document
+                        boolean checkDoc =documentHandler.update(document);
+
+                        historique.setDocument(document);
+                        historique.setDateModif(new Date());
+                        historique.setEditeur(utilisateurCourant);
+                        //insertion historique
+                        boolean checkHist =historiqueHandler.add(historique);
+                        if (checkHist && checkDoc) {
+                            UtilisateurHandler.refresh(request);
                             Util.addGlobalAlert(Util.SUCCESS, "Document modifié avec succès!");
                             response.sendRedirect("/modifier-document?id=" + document.getId());
                         }else{

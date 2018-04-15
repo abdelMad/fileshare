@@ -61,5 +61,4 @@ public interface IUtilisateurHandler {
      */
     Utilisateur get(String mail);
 
-
 }

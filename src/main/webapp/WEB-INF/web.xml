@@ -62,6 +62,15 @@
     <servlet-name>ModifierDocument</servlet-name>
     <url-pattern>/modifier-document</url-pattern>
   </servlet-mapping>
+  <!-- -->
+  <servlet>
+    <servlet-name>MesDocuments</servlet-name>
+    <servlet-class>fr.fileshare.controller.MesDocuments</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>MesDocuments</servlet-name>
+    <url-pattern>/mes-documents</url-pattern>
+  </servlet-mapping>
 
   <error-page>
     <!-- Missing resource -->
