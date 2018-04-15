@@ -54,7 +54,7 @@ jQuery(function ($) {
             speech_button: false
         });
     }
-    var $creer_document_form=$("#creer_document");
+    var $creer_document_form = $("#creer_document");
     if ($creer_document_form.length) {
         $('#status').change(function () {
             if (this.value === '2') {
@@ -93,7 +93,7 @@ jQuery(function ($) {
                                     $tag_container.append($span_tag);
                                     $tags.append($tag_container);
                                 } else {
-                                    $('.bootbox-form').append($('<p>',{class:'alert alert-danger'}).html('Veuillez entrer des emails valides!\n Example1@domaine.com,Example2@domaine.com,Example3@domaine.fr... ').css('margin-top','10px'))
+                                    $('.bootbox-form').append($('<p>', {class: 'alert alert-danger'}).html('Veuillez entrer des emails valides!\n Example1@domaine.com,Example2@domaine.com,Example3@domaine.fr... ').css('margin-top', '10px'))
                                     return false;
                                 }
                             }
@@ -109,20 +109,54 @@ jQuery(function ($) {
 
         });
 
-        $creer_document_form.find('.reset').on('click',function () {
+        $creer_document_form.find('.reset').on('click', function () {
             $('#utilisateurs_emails').slideUp();
             $('.inline.tags-col').children().remove();
         })
     }
     var $modifier_document = $('#modifier_document');
-    if($modifier_document.length){
-        $modifier_document.on('submit',function (event) {
+    if ($modifier_document.length) {
+        $modifier_document.on('submit', function (event) {
             event.preventDefault();
-            var $contenu =$('<textarea>',{name:'contenu'});
-            $contenu.css('display','none');
+            var $contenu = $('<textarea>', {name: 'contenu'});
+            $contenu.css('display', 'none');
             $contenu.html($('#editor2').html());
             $(this).append($contenu);
             $(this)[0].submit();
         });
     }
-});
+    if ($('#dynamic-table').length) {
+        $('#dynamic-table').dataTable({
+            "bPaginate": true,
+            "bLengthChange": false,
+            "bFilter": false,
+            "bInfo": false,
+        });
+
+//        $('#dynamic-table').DataTable( {
+//            paging: true
+//        } );
+    }
+    var $view_doc = $(".view-doc");
+    if($view_doc.length) {
+        $view_doc.on('click', function () {
+            var $element = $("#" + $(this).data('doc-id'));
+            if ($element.length) {
+                bootbox.dialog({
+                    title: $("#titre"+$(this).data('doc-id')).html(),
+                    message: $element.html(),
+                    buttons:
+                        {
+
+                            "button":
+                                {
+                                    "label": "Fermer",
+                                    "className": "btn-sm"
+                                }
+                        }
+                });
+            }
+        });
+    }
+})
+;

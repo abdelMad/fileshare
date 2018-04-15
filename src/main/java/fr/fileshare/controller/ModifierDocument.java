@@ -20,7 +20,6 @@ public class ModifierDocument extends HttpServlet {
             if (UtilisateurHandler.isLoggedIn(request)) {
                 Map<String, String[]> params = request.getParameterMap();
 
-                System.out.println("Im here");
                 IDocumentHandler documentHandler = new DocumentHandler();
                 IHistoriqueHandler historiqueHandler = new HistoriqueHandler();
                 int id = -1;
@@ -31,43 +30,50 @@ public class ModifierDocument extends HttpServlet {
                     Util.addGlobalAlert(Util.DANGER, "Une erreur est survenu!");
                     response.sendRedirect("/");
                 }
-
+                Utilisateur utilisateurCourant = UtilisateurHandler.getLoggedInUser(request);
                 Document document = documentHandler.get(id);
-                if (document != null && document.getAuteur().getId() == UtilisateurHandler.getLoggedInUser(request).getId()) {
-
-                    if (params.containsKey("intitule") && params.containsKey("status")) {
+                if (document != null && (
+                        document.getAuteur().getId() == utilisateurCourant.getId() ||
+                                document.getStatus() == Document.PUBLIC ||
+                                document.getUtilisateursAvecDroit().contains(utilisateurCourant)
+                )) {
+                    if (params.containsKey("contenu")) {
                         Historique historique = new Historique();
-
-                        String intitule = request.getParameter("intitule");
                         String[] utilisateurs;
-                        document.setIntitule(intitule);
+                        if (params.containsKey("intitule")) {
+
+                            String intitule = request.getParameter("intitule");
+                            document.setIntitule(intitule);
+                        }
                         int status = -1;
-                        try {
-                            status = Integer.parseInt(request.getParameter("status"));
-                            if (status != Document.PARTAGE && status != Document.PRIVE && status != Document.PUBLIC) {
+                        if (params.containsKey("status")) {
+
+                            try {
+                                status = Integer.parseInt(request.getParameter("status"));
+                                if (status != Document.PARTAGE && status != Document.PRIVE && status != Document.PUBLIC) {
+                                    Util.addGlobalAlert(Util.DANGER, "Une erreur s'est produite");
+                                    response.sendRedirect("/");
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
                                 Util.addGlobalAlert(Util.DANGER, "Une erreur s'est produite");
                                 response.sendRedirect("/");
                             }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            Util.addGlobalAlert(Util.DANGER, "Une erreur s'est produite");
-                            response.sendRedirect("/");
                         }
-                        if (params.containsKey("description")) {
+                        if (params.containsKey("description") && document.getAuteur().getId() == utilisateurCourant.getId()) {
                             document.setDescription(request.getParameter("description"));
                         }
-                        if (params.containsKey("tags")) {
+                        if (params.containsKey("tags") && document.getAuteur().getId() == utilisateurCourant.getId()) {
                             document.setTag(request.getParameter("tags"));
                         }
-                        if (params.containsKey("contenu")) {
-                            historique.setContenu(request.getParameter("contenu"));
-                            document.setDernierContenu(request.getParameter("contenu"));
-                        }
+
+                        historique.setContenu(request.getParameter("contenu"));
+                        document.setDernierContenu(request.getParameter("contenu"));
                         IUtilisateurHandler utilisateurHandler = new UtilisateurHandler();
                         Set<Utilisateur> utilisateurs_autorises = new HashSet<>();
-                        if(status != -1) {
+                        if (status != -1) {
                             document.setStatus(status);
-                            if (status == Document.PARTAGE && params.containsKey("utilisateurs[]")) {
+                            if (status == Document.PARTAGE && params.containsKey("utilisateurs[]") && document.getAuteur().getId() == utilisateurCourant.getId()) {
                                 utilisateurs = request.getParameterValues("utilisateurs[]");
                                 for (int i = 0; i < utilisateurs.length; i++) {
                                     Utilisateur utilisateur = utilisateurHandler.get(utilisateurs[i]);
@@ -79,27 +85,30 @@ public class ModifierDocument extends HttpServlet {
                                 document.setUtilisateursAvecDroit(utilisateurs_autorises);
                             }
                         }
-                        Utilisateur utilisateurCourant = UtilisateurHandler.getLoggedInUser(request);
+
                         document.setDateDerniereModif(new Date());
                         document.setDernierEditeur(utilisateurCourant);
                         //modification document
-                        boolean checkDoc =documentHandler.update(document);
+                        boolean checkDoc = documentHandler.update(document);
 
                         historique.setDocument(document);
                         historique.setDateModif(new Date());
                         historique.setEditeur(utilisateurCourant);
                         //insertion historique
-                        boolean checkHist =historiqueHandler.add(historique);
+                        boolean checkHist = historiqueHandler.add(historique);
                         if (checkHist && checkDoc) {
                             UtilisateurHandler.refresh(request);
                             Util.addGlobalAlert(Util.SUCCESS, "Document modifié avec succès!");
                             response.sendRedirect("/modifier-document?id=" + document.getId());
-                        }else{
+                        } else {
                             Util.addGlobalAlert(Util.DANGER, "Une erreur s'est produite! veuillez réessayer!");
                             response.sendRedirect("/");
                         }
-
+                    }else{
+                        Util.addGlobalAlert(Util.DANGER, "Une erreur s'est produite! veuillez réessayer!");
+                        response.sendRedirect("/");
                     }
+
 
                 } else {
                     response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -129,7 +138,13 @@ public class ModifierDocument extends HttpServlet {
                 }
 
                 Document document = documentHandler.get(id);
-                if (document != null && document.getAuteur().getId() == UtilisateurHandler.getLoggedInUser(request).getId()) {
+                Utilisateur utilisateurCourant = UtilisateurHandler.getLoggedInUser(request);
+
+                if ((document != null && (
+                        document.getAuteur().getId() == utilisateurCourant.getId() ||
+                                document.getStatus() == Document.PUBLIC ||
+                                document.getUtilisateursAvecDroit().contains(utilisateurCourant)
+                ))) {
                     request.setAttribute("document", document);
                     request.setAttribute("doc_id", id);
                     request.setAttribute("title", "Modifier document");

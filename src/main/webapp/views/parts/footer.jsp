@@ -41,11 +41,8 @@ window.jQuery || document.write("<script src='assets/js/jquery1x.min.js'>"+"<"+"
 <%= Util.includeCssOrJs(request,"/nouveau-document|/modifier-document","/assets/js/jquery.ui.touch-punch.min.js")%>
 <%= Util.includeCssOrJs(request,"/nouveau-document|/modifier-document","/assets/js/jquery.hotkeys.min.js")%>
 <%= Util.includeCssOrJs(request,"/nouveau-document|/modifier-document","/assets/js/bootstrap-wysiwyg.min.js")%>
-<%= Util.includeCssOrJs(request,"/nouveau-document|/modifier-document|/mes-documents","/assets/js/bootbox.min.js")%>
-<script src="/assets/js/jquery.dataTables.min.js"></script>
-<script src="/assets/js/jquery.dataTables.bootstrap.min.js"></script>
-<script src="/assets/js/dataTables.tableTools.min.js"></script>
-<script src="/assets/js/dataTables.colVis.min.js"></script>
+<%= Util.includeCssOrJs(request,"/documents-partages|/mes-documents","/assets/js/jquery.dataTables.min.js")%>
+<script src="/assets/js/bootbox.min.js"></script>
 <!-- ace scripts -->
 <script src="/assets/js/ace-elements.min.js"></script>
 <script src="/assets/js/ace.min.js"></script>

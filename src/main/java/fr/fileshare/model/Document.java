@@ -33,7 +33,7 @@ public class Document {
     private Set<Historique> historique;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name="document_utilisateur", joinColumns=@JoinColumn(name="utilisateur_id"), inverseJoinColumns=@JoinColumn(name="document_id"))
+    @JoinTable(name="document_utilisateur", joinColumns=@JoinColumn(name="document_id"), inverseJoinColumns=@JoinColumn(name="utilisateur_id"))
     private Set<Utilisateur> utilisateursAvecDroit;
     @Column(columnDefinition = "TEXT")
     private String dernierContenu;

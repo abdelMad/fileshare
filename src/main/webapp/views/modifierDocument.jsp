@@ -2,8 +2,18 @@
 <%@include file="parts/head.jsp" %>
 <div class="row nouveau-document">
     <div class="col-sm-12">
-        <h2 class="header blue">Nouveau Document</h2>
+        <h2 class="header blue">Modifier Document</h2>
         <form class="form-horizontal" id="modifier_document" action="" method="post">
+            <c:if test="${document.auteur.id != utilisateur.id}">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label no-padding-right" for="Intitule"> Titre du document: </label>
+
+                    <div class="col-xs-10 col-sm-5">
+                        <label class="control-label"><b>${document.intitule}</b></label>
+                    </div>
+                </div>
+            </c:if>
+            <c:if test="${document.auteur.id eq utilisateur.id}">
             <div class="form-group">
                 <label class="col-sm-3 control-label no-padding-right" for="Intitule"> Titre du document </label>
 
@@ -28,6 +38,7 @@
                            class="form-control">
                 </div>
             </div>
+
             <div class="form-group">
                 <label class="col-sm-3 control-label no-padding-right" for="status"> Qui peut voir ce fichier? </label>
 
@@ -63,7 +74,7 @@
                     </div>
                 </div>
             </div>
-
+            </c:if>
             <div class="widget-box widget-color-green">
                 <div class="widget-header widget-header-small center"></div>
                 <div class="widget-body">

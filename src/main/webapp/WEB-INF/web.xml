@@ -70,6 +70,17 @@
   <servlet-mapping>
     <servlet-name>MesDocuments</servlet-name>
     <url-pattern>/mes-documents</url-pattern>
+    <url-pattern>/documents-partages</url-pattern>
+  </servlet-mapping>
+
+  <!-- -->
+  <servlet>
+    <servlet-name>TelechargerDocument</servlet-name>
+    <servlet-class>fr.fileshare.controller.TelechargerDocument</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>TelechargerDocument</servlet-name>
+    <url-pattern>/telecharger-document</url-pattern>
   </servlet-mapping>
 
   <error-page>

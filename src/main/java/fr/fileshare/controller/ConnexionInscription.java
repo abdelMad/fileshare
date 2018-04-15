@@ -53,6 +53,7 @@ public class ConnexionInscription extends HttpServlet {
             request.getSession().removeAttribute("utilisateur");
             response.sendRedirect("/");
         } else {
+            request.setAttribute("title","Connexion | Inscription | mot de passe oublié");
             this.getServletContext().getRequestDispatcher("/views/connexionInscription.jsp").forward(request, response);
         }
 

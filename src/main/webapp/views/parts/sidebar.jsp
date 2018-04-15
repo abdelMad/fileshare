@@ -1,3 +1,4 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <div id="sidebar" class="sidebar                  responsive">
     <ul class="nav nav-list">
         <li class="">
@@ -12,6 +13,14 @@
             <a href="/mes-documents">
                 <i class="menu-icon fa fa-file-o"></i>
                 <span class="menu-text"> Mes documents </span>
+            </a>
+
+            <b class="arrow"></b>
+        </li>
+        <li class="">
+            <a href="/documents-partages">
+                <i class="menu-icon fa fa-cloud-download"></i>
+                <span class="menu-text"> Documents partagés</span>
             </a>
 
             <b class="arrow"></b>

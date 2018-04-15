@@ -33,6 +33,7 @@ public class Utilisateur {
 
     @ManyToMany(mappedBy = "utilisateursAvecDroit", fetch = FetchType.EAGER)
     private Set<Document> documentsAutorises;
+
     public Utilisateur() {
     }
 
@@ -154,5 +155,20 @@ public class Utilisateur {
 
     public void setDocumentsAutorises(Set<Document> documentsAutorises) {
         this.documentsAutorises = documentsAutorises;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Utilisateur that = (Utilisateur) o;
+
+        return getId() == that.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return getId();
     }
 }

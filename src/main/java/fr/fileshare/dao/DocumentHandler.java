@@ -1,7 +1,12 @@
 package fr.fileshare.dao;
 
 import fr.fileshare.model.Document;
+import org.hibernate.Query;
 import org.hibernate.Session;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class DocumentHandler implements IDocumentHandler {
     public boolean add(Document document) {
@@ -71,5 +76,28 @@ public class DocumentHandler implements IDocumentHandler {
         } finally {
             session.close();
         }
-        return document;    }
+        return document;
+    }
+
+    public List getDocumentsAVoir(int id_utilisateur,int maxResultat){
+        List documents = new ArrayList();
+        Session session = SessionFactoryHelper.getSessionFactory().openSession();
+        try {
+            session.beginTransaction();
+            Query query = session.createSQLQuery("SELECT * FROM document as doc WHERE doc.status = 0 OR(doc.status=2 AND EXISTS(SELECT * FROM document_utilisateur WHERE document_utilisateur.utilisateur_id=:id_utilisateur AND doc.document_id = document_utilisateur.document_id )  ) OR (doc.auteur=:id_utilisateur)")
+                    .addEntity("document",Document.class);
+            query.setParameter("id_utilisateur",id_utilisateur);
+            query.setFirstResult(0);
+
+            query.setMaxResults(maxResultat);
+            documents =  query.list();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return documents;
+    }
 }
