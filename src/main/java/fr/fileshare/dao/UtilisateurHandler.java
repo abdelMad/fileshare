@@ -1,22 +1,47 @@
 package fr.fileshare.dao;
 
-import fr.fileshare.model.User;
+import fr.fileshare.model.Utilisateur;
 import fr.fileshare.model.VerificationToken;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.exception.ConstraintViolationException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.Map;
 
 
-public class UserHandler implements IUserHandler {
-    public boolean add(User user) {
+public class UtilisateurHandler implements IUtilisateurHandler {
+    public int add(Utilisateur utilisateur) {
+        Session session = SessionFactoryHelper.getSessionFactory().openSession();
+        int check;
+        try {
+            session.beginTransaction();
+            session.save(utilisateur);
+            session.getTransaction().commit();
+            check = 1;
+        } catch (ConstraintViolationException e) {
+            check = -1;
+            session.getTransaction().rollback();
+            e.printStackTrace();
+        } catch (Exception e){
+            check = 0;
+            session.getTransaction().rollback();
+            e.printStackTrace();
+        }
+        finally {
+            session.close();
+        }
+        return check;
+
+    }
+
+    public boolean update(Utilisateur utilisateur) {
         Session session = SessionFactoryHelper.getSessionFactory().openSession();
         boolean check = false;
         try {
             session.beginTransaction();
-            session.save(user);
+            session.update(utilisateur);
             session.getTransaction().commit();
             check = true;
         } catch (Exception e) {
@@ -26,33 +51,15 @@ public class UserHandler implements IUserHandler {
             session.close();
         }
         return check;
-
     }
 
-    public boolean update(User user) {
+    public boolean delete(Utilisateur utilisateur) {
         Session session = SessionFactoryHelper.getSessionFactory().openSession();
         boolean check = false;
         try {
             session.beginTransaction();
-            session.update(user);
-            session.getTransaction().commit();
-            check = true;
-        } catch (Exception e) {
-            session.getTransaction().rollback();
-            e.printStackTrace();
-        } finally {
-            session.close();
-        }
-        return check;
-    }
-
-    public boolean delete(User user) {
-        Session session = SessionFactoryHelper.getSessionFactory().openSession();
-        boolean check = false;
-        try {
-            session.beginTransaction();
-            User userToDelete = session.get(user.getClass(), user.getId());
-            session.delete(userToDelete);
+            Utilisateur utilisateurToDelete = session.get(utilisateur.getClass(), utilisateur.getId());
+            session.delete(utilisateurToDelete);
             session.getTransaction().commit();
             check = true;
         } catch (Exception e) {
@@ -67,23 +74,23 @@ public class UserHandler implements IUserHandler {
     public boolean authenticate(HttpServletRequest request) {
         boolean check = false;
         Map<String, String[]> params = request.getParameterMap();
-        if (params.containsKey("login_email") && params.containsKey("login_pwd")) {
-            String email = request.getParameter("login_email");
-            String pwd = request.getParameter("login_pwd");
-            if (email.length() != 0 && pwd.length() != 0) {
+        if (params.containsKey("cnx_email") && params.containsKey("cnx_mdp")) {
+            String email = request.getParameter("cnx_email");
+            String mdp = request.getParameter("cnx_mdp");
+            if (email.length() != 0 && mdp.length() != 0) {
                 Session session = SessionFactoryHelper.getSessionFactory().openSession();
                 try {
                     session.beginTransaction();
-                    Query query = session.createQuery("from User where email=:email AND password=:pwd");
+                    Query query = session.createQuery("from Utilisateur where email=:email AND mdp=:mdp");
                     query.setString("email", email);
-                    query.setString("pwd", Util.hashString(pwd));
+                    query.setString("mdp", Util.hashString(mdp));
                     Object object = query.uniqueResult();
 
                     session.getTransaction().commit();
 
                     if (object != null) {
-                        User user = (User) object;
-                        request.getSession().setAttribute("user", user);
+                        Utilisateur utilisateur = (Utilisateur) object;
+                        request.getSession().setAttribute("utilisateur", utilisateur);
                         check = true;
                     } else
                         Util.addGlobalAlert(Util.DANGER, "Email ou mot de passe incorrecte");
@@ -103,28 +110,38 @@ public class UserHandler implements IUserHandler {
 
     public boolean register(HttpServletRequest request) {
         Map<String, String[]> params = request.getParameterMap();
-        if (params.containsKey("first_name") && params.containsKey("last_name") && params.containsKey("email") && params.containsKey("pwd") && params.containsKey("confirm_pwd") && params.containsKey("description")) {
-            String fName = request.getParameter("first_name"),
-                    lName = request.getParameter("last_name"),
+        if (params.containsKey("nom") && params.containsKey("prenom") && params.containsKey("email") && params.containsKey("mdp") && params.containsKey("confirm_mdp") ) {
+            String nom = request.getParameter("nom"),
+                    prenom = request.getParameter("prenom"),
                     email = request.getParameter("email"),
-                    pwd = request.getParameter("pwd"),
-                    confirmPwd = request.getParameter("confirm_pwd"),
+                    mdp = request.getParameter("mdp"),
+                    confirmMdp = request.getParameter("confirm_mdp"),
+                    description = "";
+            if(params.containsKey("description"))
                     description = request.getParameter("description");
-            if (fName.trim().length() > 0 && lName.trim().length() > 0 && email.trim().length() > 0 && pwd.trim().length() > 0 && confirmPwd.trim().length() > 0) {
-                if (pwd.equals(confirmPwd)) {
+            if (nom.trim().length() > 0 && prenom.trim().length() > 0 && email.trim().length() > 0 && mdp.trim().length() > 0 && confirmMdp.trim().length() > 0) {
+                if (mdp.equals(confirmMdp)) {
                     if(Util.isValidEmail(email)){
-                        User newUser = new User();
-                        newUser.setEmail(email);
-                        newUser.setFname(fName);
-                        newUser.setLname(lName);
-                        newUser.setEmailChecked(false);
-                        newUser.setRegisterDate(new Date());
-                        newUser.setPassword(Util.hashString(pwd));
-                        if (description.trim().length() > 0) newUser.setDescription(description);
-                        add(newUser);
-                        request.getSession().setAttribute("user", newUser);
-                        IVerificationTokenHandler verificationTokenHandler = new VerificationTokenHandler();
-                        verificationTokenHandler.sendVerificationMail(newUser, VerificationToken.VALIDATION_MAIL_TOKEN);
+                        Utilisateur newUtilisateur = new Utilisateur();
+                        newUtilisateur.setEmail(email);
+                        newUtilisateur.setNom(nom);
+                        newUtilisateur.setPrenom(prenom);
+                        newUtilisateur.setEmailChecked(false);
+                        newUtilisateur.setRegisterDate(new Date());
+                        newUtilisateur.setMdp(Util.hashString(mdp));
+                        if (description.trim().length() > 0) newUtilisateur.setDescription(description);
+                        int check = add(newUtilisateur);
+                        if( check == 1) {
+                            request.getSession().setAttribute("utilisateur", newUtilisateur);
+                            IVerificationTokenHandler verificationTokenHandler = new VerificationTokenHandler();
+                            verificationTokenHandler.sendVerificationMail(newUtilisateur, VerificationToken.VALIDATION_MAIL_TOKEN,true);
+                        }else if (check == -1) {
+                            Util.addGlobalAlert(Util.DANGER,"L' email que vous venez d'entrer est dèja associé a un compte");
+                            return false;
+                        }else{
+                            Util.addGlobalAlert(Util.DANGER,"Une erreur est survenu! Veuillez resseyer plustard");
+                            return false;
+                        }
                         return true;
                     }
                     else{
@@ -140,12 +157,12 @@ public class UserHandler implements IUserHandler {
         return false;
     }
 
-    public User get(int id) {
-        User user = null;
+    public Utilisateur get(int id) {
+        Utilisateur utilisateur = null;
         Session session = SessionFactoryHelper.getSessionFactory().openSession();
         try {
             session.beginTransaction();
-            user = session.get(User.class, id);
+            utilisateur = session.get(Utilisateur.class, id);
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
@@ -153,16 +170,16 @@ public class UserHandler implements IUserHandler {
         } finally {
             session.close();
         }
-        return user;
+        return utilisateur;
     }
 
-    public User get(String mail) {
-        User user = null;
+    public Utilisateur get(String mail) {
+        Utilisateur utilisateur = null;
         Session session = SessionFactoryHelper.getSessionFactory().openSession();
         try {
             session.beginTransaction();
-            Query query = session.createQuery("from User where email='" + mail + "'");
-            user = (User) query.uniqueResult();
+            Query query = session.createQuery("from Utilisateur  where email='" + mail + "'");
+            utilisateur = (Utilisateur) query.uniqueResult();
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
@@ -170,7 +187,7 @@ public class UserHandler implements IUserHandler {
         } finally {
             session.close();
         }
-        return user;
+        return utilisateur;
     }
 
     /**
@@ -178,16 +195,16 @@ public class UserHandler implements IUserHandler {
      * @return true if the user is logged in, if not false.
      */
     public static boolean isLoggedIn(HttpServletRequest request) {
-        return request.getSession().getAttribute("user") != null;
+        return request.getSession().getAttribute("utilisateur") != null;
     }
 
     /**
      * @param request The servlet request
      * @return the logged in user. If no user is logged in return null
      */
-    public static User getLoggedInUser(HttpServletRequest request) {
+    public static Utilisateur getLoggedInUser(HttpServletRequest request) {
         if (isLoggedIn(request))
-            return (User) request.getSession().getAttribute("user");
+            return (Utilisateur) request.getSession().getAttribute("utilisateur");
         return null;
     }
 }

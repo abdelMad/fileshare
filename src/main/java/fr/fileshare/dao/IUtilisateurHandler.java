@@ -1,33 +1,33 @@
 package fr.fileshare.dao;
 
-import fr.fileshare.model.User;
+import fr.fileshare.model.Utilisateur;
 
 import javax.servlet.http.HttpServletRequest;
 
-public interface IUserHandler {
+public interface IUtilisateurHandler {
     /**
-     * Add a given user to the database
+     * Add a given utilisateur to the database
      *
-     * @param user the user to add
-     * @return true if the user is successfully added, if not false
+     * @param utilisateur the utilisateur to add
+     * @return 1: if the utilisateur is successfully added, -1: if the email already exists, error 0
      */
-    boolean add(User user);
+    int add(Utilisateur utilisateur);
 
     /**
-     * update a given user to the database
+     * update a given utilisateur to the database
      *
-     * @param user the user to update
-     * @return true if the user is successfully updated, if not false
+     * @param utilisateur the utilisateur to update
+     * @return true if the utilisateur is successfully updated, if not false
      */
-    boolean update(User user);
+    boolean update(Utilisateur utilisateur);
 
     /**
-     * remove a given user to the database
+     * remove a given utilisateur to the database
      *
-     * @param user the user to remove
-     * @return true if the user is successfully remove, if not false
+     * @param utilisateur the utilisateur to remove
+     * @return true if the utilisateur is successfully remove, if not false
      */
-    boolean delete(User user);
+    boolean delete(Utilisateur utilisateur);
 
     /**
      * authenticate a user via request parameters
@@ -51,7 +51,7 @@ public interface IUserHandler {
      * @param id user id
      * @return if the id match user return the user if not retur null
      */
-    User get(int id);
+    Utilisateur get(int id);
 
     /**
      * get user by mail
@@ -59,7 +59,7 @@ public interface IUserHandler {
      * @param mail user mail
      * @return if the mail match user return the user if not retur null
      */
-    User get(String mail);
+    Utilisateur get(String mail);
 
 
 }

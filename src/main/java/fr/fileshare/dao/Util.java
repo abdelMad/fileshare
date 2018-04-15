@@ -189,9 +189,8 @@ public class Util {
      * @return link tag if url match the requested uri if not an empty string
      */
     public static String includeCssOrJs(HttpServletRequest request, String url, String fileUrl) {
-        String prefixPath = getProperty("prefixPath");
-        String currentUrl = request.getAttribute("javax.servlet.forward.request_uri").toString().replace(prefixPath, "");
-        fileUrl = prefixPath + fileUrl;
+        String currentUrl = request.getAttribute("javax.servlet.forward.request_uri").toString();
+
         String tag = "";
         String type = fileUrl.substring(fileUrl.lastIndexOf(".") + 1);
         if (type.equals("css"))

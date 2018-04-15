@@ -11,11 +11,11 @@ public class Message {
     private int id;
     private String text;
     @ManyToOne
-    @JoinColumn(name = "sender")
-    private User sender;
+    @JoinColumn(name = "emetteur")
+    private Utilisateur emetteur;
     @ManyToOne
-    @JoinColumn(name = "receiver")
-    private User receiver;
+    @JoinColumn(name = "recepteur")
+    private Utilisateur recepteur;
     private Date date;
     private String status;
 
@@ -26,6 +26,10 @@ public class Message {
         return id;
     }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getText() {
         return text;
     }
@@ -34,20 +38,20 @@ public class Message {
         this.text = text;
     }
 
-    public User getSender() {
-        return sender;
+    public Utilisateur getEmetteur() {
+        return emetteur;
     }
 
-    public void setSender(User sender) {
-        this.sender = sender;
+    public void setEmetteur(Utilisateur emetteur) {
+        this.emetteur = emetteur;
     }
 
-    public User getReceiver() {
-        return receiver;
+    public Utilisateur getRecepteur() {
+        return recepteur;
     }
 
-    public void setReceiver(User receiver) {
-        this.receiver = receiver;
+    public void setRecepteur(Utilisateur recepteur) {
+        this.recepteur = recepteur;
     }
 
     public Date getDate() {

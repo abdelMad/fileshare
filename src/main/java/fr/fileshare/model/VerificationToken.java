@@ -4,6 +4,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
+@Table(name = "verificationtoken")
 public class VerificationToken {
     // 2 days until the token expire
     public static final int EXPIRATION = 2;
@@ -13,9 +14,9 @@ public class VerificationToken {
     @GeneratedValue
     private int id;
     private String token;
-    @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
-    @JoinColumn(nullable = false, name = "user_id")
-    private User user;
+    @OneToOne(targetEntity = Utilisateur.class, fetch = FetchType.EAGER)
+    @JoinColumn(nullable = false, name = "utilisateur_id")
+    private Utilisateur utilisateur;
     private int type;
 
     private Date expirationDate;
@@ -39,12 +40,12 @@ public class VerificationToken {
         this.token = token;
     }
 
-    public User getUser() {
-        return user;
+    public Utilisateur getUtilisateur() {
+        return utilisateur;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUtilisateur(Utilisateur utilisateur) {
+        this.utilisateur = utilisateur;
     }
 
     public Date getExpirationDate() {

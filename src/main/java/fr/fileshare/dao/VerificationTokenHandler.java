@@ -1,6 +1,6 @@
 package fr.fileshare.dao;
 
-import fr.fileshare.model.User;
+import fr.fileshare.model.Utilisateur;
 import fr.fileshare.model.VerificationToken;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -67,7 +67,7 @@ public class VerificationTokenHandler implements IVerificationTokenHandler {
         return verificationToken;
     }
 
-    public VerificationToken generateUniqueVerificationToken(User user, int verificationType) {
+    public VerificationToken generateUniqueVerificationToken(Utilisateur utilisateur, int verificationType) {
         UUID uuid = UUID.randomUUID();
         String hashedUUID = Util.hashString(uuid.toString());
         VerificationToken verificationToken = new VerificationToken();
@@ -79,30 +79,29 @@ public class VerificationTokenHandler implements IVerificationTokenHandler {
         c.add(Calendar.DATE, VerificationToken.EXPIRATION);
         currentDate = c.getTime();
         verificationToken.setExpirationDate(currentDate);
-        verificationToken.setUser(user);
+        verificationToken.setUtilisateur(utilisateur);
         return verificationToken;
     }
 
-    public boolean sendVerificationMail(User user, int verificationType) {
+    public boolean sendVerificationMail(Utilisateur utilisateur, int verificationType, boolean showAlert) {
         boolean check = false;
-        VerificationToken verificationToken = generateUniqueVerificationToken(user, verificationType);
+        VerificationToken verificationToken = generateUniqueVerificationToken(utilisateur, verificationType);
         if (verificationToken != null) {
             boolean checkAdd = add(verificationToken);
             if (checkAdd) {
                 String subject = "", messageHeader = "", verificationUrl = "", highlitedText = "", normalText = "", linkText = "";
-                String toEmail = user.getEmail();
-                String prefixPath = Util.getProperty("prefixPath");
+                String toEmail = utilisateur.getEmail();
                 String host = Util.getProperty("host");
                 if (verificationType == VerificationToken.VALIDATION_MAIL_TOKEN) {
                     messageHeader = "Merci pour votre inscription!";
-                    verificationUrl = host + prefixPath + "/verifymail?token=" + verificationToken.getToken();
-                    highlitedText = "On est heureux de vous avoir comme membre de Courses Faciles!";
+                    verificationUrl = host + "/verification-email?token=" + verificationToken.getToken();
+                    highlitedText = "On est heureux de vous avoir comme membre de File Share!";
                     normalText = "Merci de bien vouloir confirmer votre email";
                     linkText = "Confirmer";
                     subject = "Validation mail";
                 } else if (verificationType == VerificationToken.RECOVERY_PWD_TOKEN) {
                     messageHeader = "Recuperation de mot de passe";
-                    verificationUrl = host + prefixPath + "/recoverpassword?token=" + verificationToken.getToken();
+                    verificationUrl = host  + "/recuperation-mot-de-passe?token=" + verificationToken.getToken();
                     highlitedText = "Si vous n'avez pas demander une recuperation de mot de passe ignorer ce message.";
                     normalText = "Pour recuperer votre mot de passe veuillez cliquer sur le bouton ci-dessous.";
                     linkText = "Recuperer mon mot de passe";
@@ -236,7 +235,7 @@ public class VerificationTokenHandler implements IVerificationTokenHandler {
                         "<table class=\"table-row-fixed\" width=\"450\" bgcolor=\"#FFFFFF\" style=\"table-layout: fixed; background-color: #ffffff;\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\"><tbody><tr><td class=\"table-row-fixed-td\" style=\"font-family: Arial, sans-serif; line-height: 19px; color: #444444; font-size: 13px; font-weight: normal; padding-left: 1px; padding-right: 1px;\" valign=\"top\" align=\"left\">\n" +
                         "  <table class=\"table-col\" align=\"left\" width=\"448\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" style=\"table-layout: fixed;\"><tbody><tr><td class=\"table-col-td\" width=\"448\" style=\"font-family: Arial, sans-serif; line-height: 19px; color: #444444; font-size: 13px; font-weight: normal;\" valign=\"top\" align=\"left\">\n" +
                         "    <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" style=\"table-layout: fixed;\"><tbody><tr><td width=\"100%\" align=\"center\" bgcolor=\"#f5f5f5\" style=\"font-family: Arial, sans-serif; line-height: 24px; color: #bbbbbb; font-size: 13px; font-weight: normal; text-align: center; padding: 9px; border-width: 1px 0px 0px; border-style: solid; border-color: #e3e3e3; background-color: #f5f5f5;\" valign=\"top\">\n" +
-                        "      <a href=\"#\" style=\"color: #428bca; text-decoration: none; background-color: transparent;\">Courses Faciles &copy; 2018</a>\n" +
+                        "      <a href=\"#\" style=\"color: #428bca; text-decoration: none; background-color: transparent;\">File Share &copy; 2018</a>\n" +
                         "    </td></tr></tbody></table>\n" +
                         "  </td></tr></tbody></table>\n" +
                         "</td></tr></tbody></table>\n" +
@@ -248,12 +247,12 @@ public class VerificationTokenHandler implements IVerificationTokenHandler {
                         " </html>";
                 check = Util.sendEmail(toEmail, subject, body);
                 if (check) {
-                    if (verificationType == VerificationToken.VALIDATION_MAIL_TOKEN)
-                        Util.addGlobalAlert(Util.INFO, "Un email de validation vient d'être envoyé");
-                    else if (verificationType == VerificationToken.RECOVERY_PWD_TOKEN)
-                        Util.addGlobalAlert(Util.INFO, "Un email de recuperation de mot de passe vient d'être envoyé");
-
-
+                    if(showAlert) {
+                        if (verificationType == VerificationToken.VALIDATION_MAIL_TOKEN)
+                            Util.addGlobalAlert(Util.INFO, "Un email de validation vient d'être envoyé");
+                        else if (verificationType == VerificationToken.RECOVERY_PWD_TOKEN)
+                            Util.addGlobalAlert(Util.INFO, "Un email de recuperation de mot de passe vient d'être envoyé");
+                    }
                 }
 
             }
@@ -261,27 +260,33 @@ public class VerificationTokenHandler implements IVerificationTokenHandler {
         return check;
     }
 
-    public boolean validateMail(HttpServletRequest request) {
-        boolean check = false;
-        Map<String, String[]> params = request.getParameterMap();
-        VerificationToken verificationToken = null;
-        if (params.containsKey("token")) {
-            String token = request.getParameter("token");
-            if (token.length() != 0) {
-                verificationToken = get(token);
-                if (verificationToken != null) {
-                    Date currentDate = new Date();
-                    if (currentDate.compareTo(verificationToken.getExpirationDate()) < 0) {
-                        IUserHandler userHandler = new UserHandler();
-                        User user = verificationToken.getUser();
-                        user.setEmailChecked(true);
-                        userHandler.update(user);
-                        request.getSession().setAttribute("user", user);
-                        check = delete(verificationToken);
+    public int validateMail(HttpServletRequest request) {
+        int check = -1;
+        Utilisateur utilisateur = UtilisateurHandler.getLoggedInUser(request);
+        if(!utilisateur.isEmailChecked()) {
+            Map<String, String[]> params = request.getParameterMap();
+            VerificationToken verificationToken;
+            if (params.containsKey("token")) {
+                String token = request.getParameter("token");
+                if (token.length() != 0) {
+                    verificationToken = get(token);
+                    if (verificationToken != null) {
+                        Date currentDate = new Date();
+                        if (currentDate.compareTo(verificationToken.getExpirationDate()) < 0) {
+                            IUtilisateurHandler userHandler = new UtilisateurHandler();
+                            utilisateur = verificationToken.getUtilisateur();
+                            utilisateur.setEmailChecked(true);
+                            boolean check1 = userHandler.update(utilisateur);
+                            request.getSession().setAttribute("user", utilisateur);
+                            boolean check2 = delete(verificationToken);
+                            if(check1 && check2)
+                            check = 1;
+                        }
                     }
                 }
             }
-        }
+        }else
+            check = 0;
         return check;
     }
 
@@ -291,10 +296,23 @@ public class VerificationTokenHandler implements IVerificationTokenHandler {
         if (verificationToken != null) {
             Date currentDate = new Date();
             if (currentDate.compareTo(verificationToken.getExpirationDate()) < 0) {
-                delete(verificationToken);
                 return true;
             }
         }
         return false;
+    }
+
+    public Utilisateur getUtilisateur(String token){
+        if (token.length() == 0) return null;
+        VerificationToken verificationToken = get(token);
+        if (verificationToken != null) {
+            Date currentDate = new Date();
+            if (currentDate.compareTo(verificationToken.getExpirationDate()) < 0) {
+                Utilisateur utilisateur = verificationToken.getUtilisateur();
+                delete(verificationToken);
+                return utilisateur;
+            }
+        }
+        return null;
     }
 }
