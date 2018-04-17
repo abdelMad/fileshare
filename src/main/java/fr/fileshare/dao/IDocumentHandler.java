@@ -1,6 +1,7 @@
 package fr.fileshare.dao;
 
 import fr.fileshare.model.Document;
+import fr.fileshare.model.Utilisateur;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ public interface IDocumentHandler {
 
     Document get(int id);
 
-    List getDocumentsAVoir(int id_utilisateur, int maxResultat);
+    List getDocumentsAVoir(Utilisateur utilisateur, int maxResultat);
 
 }
 

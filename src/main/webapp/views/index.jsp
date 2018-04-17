@@ -9,6 +9,9 @@
     <div class="row">
         <div class="col-xs-12 col-sm-10 col-sm-offset-1">
             <div class="timeline-container">
+<c:if test="${empty docs}">
+    Aucun document disponible pour l'instant
+</c:if>
                 <c:if test="${not empty docs}">
                     <c:forEach items="${docs}" var="doc">
                         <div class="timeline-items">
@@ -24,7 +27,7 @@
                                 <div class="widget-box transparent">
                                     <div class="widget-header widget-header-small">
                                         <h5 class="widget-title smaller">
-                                            <a href="#" class="blue"><c:out value="${doc.auteur.nom}"></c:out></a>
+                                            <a href="/profil/${doc.auteur.id}" class="blue"><c:out value="${doc.auteur.nom}"></c:out></a>
                                             <span class="grey">a publié un nouveau document: </span>
                                         </h5>
                                         <span id="titre${doc.id}">${doc.intitule}</span>

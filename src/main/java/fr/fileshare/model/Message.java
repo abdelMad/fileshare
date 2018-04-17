@@ -6,6 +6,8 @@ import java.util.Date;
 @Entity
 @Table(name = "message")
 public class Message {
+    public static final String MSG_LU = "vu";
+    public static final String MSG_NON_LU = "-1";
     @Id
     @GeneratedValue
     private int id;

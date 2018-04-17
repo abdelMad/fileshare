@@ -53,7 +53,7 @@
                     </select>
                 </div>
             </div>
-            <div class="form-group" <c:if test="${document.status != 2}"><c:out value="style=\"display: none\""></c:out></c:if> id="utilisateurs_emails">
+            <div class="form-group" <c:if test="${document.status != 2}">style="display: none"</c:if> id="utilisateurs_emails">
                 <label class="col-sm-3 control-label no-padding-right">Les utilisateurs</label>
                 <div class="col-sm-9">
                     <div class="inline tags-col">

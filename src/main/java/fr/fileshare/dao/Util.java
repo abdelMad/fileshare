@@ -1,11 +1,14 @@
 package fr.fileshare.dao;
 
+import fr.fileshare.socket.ChatClient;
+
 import javax.mail.Message;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import java.io.InputStream;
+import java.net.Socket;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -206,6 +209,23 @@ public class Util {
             return tag;
         }
         return "";
+    }
+
+    public static void initClientSocket(HttpServletRequest request){
+        if(UtilisateurHandler.isLoggedIn(request)) {
+            if (request.getSession().getAttribute("socket") == null) {
+                String host = "localhost";
+                int port = 4444;
+                try {
+                    Socket s = new Socket(host, port);
+                    ChatClient chatClient = new ChatClient(UtilisateurHandler.getLoggedInUser(request).getId(), s);
+                    request.getSession().setAttribute("socket", chatClient);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
 }

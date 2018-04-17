@@ -42,10 +42,7 @@
                 <div class="col-sm-9">
                     <div class="inline tags-col">
                         <div class="tags">
-                            <input hidden value="" name="utilisateurs">
-                            <span class="tag">Tag Input Control
-                            <button type="button" class="close">×</button>
-                            </span>
+
                         </div>
 
                     </div>

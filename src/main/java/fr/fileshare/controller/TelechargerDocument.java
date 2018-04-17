@@ -22,7 +22,7 @@ public class TelechargerDocument extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if (request.getParameterMap().containsKey("id")) {
-            if (UtilisateurHandler.isLoggedIn(request)) {
+//            if (UtilisateurHandler.isLoggedIn(request)) {
 
                 IDocumentHandler documentHandler = new DocumentHandler();
                 Document document = null;
@@ -49,12 +49,12 @@ public class TelechargerDocument extends HttpServlet {
                     out.close();
                 }
 
-            } else {
-                this.getServletContext().setAttribute("destinationUrl", request.getRequestURI()+"?id="+request.getParameter("id"));
-                response.sendRedirect("/connexion");
-            }
+//            } else {
+//                this.getServletContext().setAttribute("destinationUrl", request.getRequestURI()+"?id="+request.getParameter("id"));
+//                response.sendRedirect("/connexion");
+//            }
         }else{
-            response.sendRedirect("/connexion");
+            response.sendRedirect("/");
         }
     }
 }

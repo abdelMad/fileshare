@@ -22,6 +22,7 @@
         </div>
 
         <div class="navbar-buttons navbar-header pull-right" role="navigation">
+            <c:if test="${not empty utilisateur}">
             <ul class="nav ace-nav">
                 <c:set var="image" scope="page" value="/assets/images/people.png" />
                 <c:if test="${not empty utilisateur.image}">
@@ -58,6 +59,7 @@
                     </ul>
                 </li>
             </ul>
+            </c:if>
         </div>
     </div><!-- /.navbar-container -->
 </div>

@@ -82,9 +82,28 @@
     <servlet-name>TelechargerDocument</servlet-name>
     <url-pattern>/telecharger-document</url-pattern>
   </servlet-mapping>
-
+  <!--  -->
+  <servlet>
+    <servlet-name>Messages</servlet-name>
+    <servlet-class>fr.fileshare.controller.Messages</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Messages</servlet-name>
+    <url-pattern>/messages</url-pattern>
+    <url-pattern>/afficher-messages</url-pattern>
+    <url-pattern>/envoyer-messages</url-pattern>
+    <url-pattern>/afficher-messages-socket</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>Profil</servlet-name>
+    <servlet-class>fr.fileshare.controller.Profil</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Profil</servlet-name>
+    <url-pattern>/profil/*</url-pattern>
+  </servlet-mapping>
+  
   <error-page>
-    <!-- Missing resource -->
     <error-code>404</error-code>
     <location>/views/erreur404.jsp</location>
   </error-page>

@@ -27,10 +27,10 @@
     <!--[if lte IE 9]>
     <link rel="stylesheet" href="/assets/css/ace-part2.min.css" class="ace-main-stylesheet" />
     <![endif]-->
+    <link rel="stylesheet" href="/assets/css/main.css" />
 
     <!--[if lte IE 9]>
     <link rel="stylesheet" href="/assets/css/ace-ie.min.css" />
-    <link rel="stylesheet" href="/assets/css/main.css" />
     <![endif]-->
 
 
@@ -45,9 +45,9 @@
 <body class="no-skin">
     <%@include file="navbar.jsp"%>
 <div class="main-container" id="main-container">
-
-    <%@include file="sidebar.jsp"%>
-
+    <c:if test="${not empty utilisateur}">
+        <%@include file="sidebar.jsp"%>
+    </c:if>
     <div class="main-content">
         <div class="main-content-inner">
             <div class="page-content">
