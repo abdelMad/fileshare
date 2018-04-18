@@ -256,3 +256,11 @@ b{
 .people-list .search{
     border-bottom: 1px solid#e2e5e8;
 }
+.search-form-home{
+    margin-bottom: 30px;
+}
+
+.search-form-home button{
+    position: relative;
+    bottom: 2px;
+}

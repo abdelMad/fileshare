@@ -5,21 +5,31 @@
         Accueil
     </h2>
 </div>
+<form action="/" method="get" class="form-inline search-form-home">
+    <div class="center">
+        <input type="text" name="intitule" class="input-large" placeholder="Intitule fichier">
+        <input type="text" name="tags" class="input-large" placeholder="Tags">
+
+        <button type="submit" class="btn btn-info btn-sm">
+            <i class="ace-icon fa fa-search bigger-110"></i>Rechercher
+        </button>
+    </div>
+</form>
 <div id="timeline-1">
     <div class="row">
         <div class="col-xs-12 col-sm-10 col-sm-offset-1">
             <div class="timeline-container">
-<c:if test="${empty docs}">
-    Aucun document disponible pour l'instant
-</c:if>
+                <c:if test="${empty docs}">
+                    Aucun document disponible pour l'instant
+                </c:if>
                 <c:if test="${not empty docs}">
                     <c:forEach items="${docs}" var="doc">
                         <div class="timeline-items">
                             <div class="timeline-item clearfix">
                                 <div class="timeline-info">
-                                    <c:set var="image" scope="page" value="/assets/images/people.png" />
+                                    <c:set var="image" scope="page" value="/assets/images/people.png"/>
                                     <c:if test="${not empty doc.auteur.image}">
-                                        <c:set var="image" scope="page" value="${doc.auteur.image}" />
+                                        <c:set var="image" scope="page" value="${doc.auteur.image}"/>
                                     </c:if>
                                     <img alt="image de ${doc.auteur.nom}" src="${image}"/>
                                 </div>
@@ -27,15 +37,17 @@
                                 <div class="widget-box transparent">
                                     <div class="widget-header widget-header-small">
                                         <h5 class="widget-title smaller">
-                                            <a href="/profil/${doc.auteur.id}" class="blue"><c:out value="${doc.auteur.nom}"></c:out></a>
+                                            <a href="/profil/${doc.auteur.id}" class="blue"><c:out
+                                                    value="${doc.auteur.nom}"></c:out></a>
                                             <span class="grey">a publié un nouveau document: </span>
                                         </h5>
                                         <span id="titre${doc.id}">${doc.intitule}</span>
                                         <span class="widget-toolbar no-border">
 																	<i class="ace-icon fa fa-clock-o bigger-110"></i>
-                                            Le <fmt:formatDate pattern = "dd-MM-yyyy"
-                                                            value = "${doc.datePublixation}" /> à <fmt:formatDate pattern = "H:m"
-                                                                                                                  value = "${doc.datePublixation}" />
+                                            Le <fmt:formatDate pattern="dd-MM-yyyy"
+                                                               value="${doc.datePublixation}"/> à <fmt:formatDate
+                                                pattern="H:m"
+                                                value="${doc.datePublixation}"/>
 																</span>
 
 
@@ -51,8 +63,11 @@
                                             <div class="widget-toolbox clearfix">
                                                 <div class="pull-left">
                                                     <i class="ace-icon fa fa-hand-o-right grey bigger-125"></i>
-                                                    <a href="#" class="bigger-110  view-doc" data-doc-id="<c:out value="${doc.id}"></c:out>">Voir le document</a>
-                                                    <div class="wysiwyg-editor hidden" id="<c:out value="${doc.id}"></c:out>"
+                                                    <a href="#" class="bigger-110  view-doc"
+                                                       data-doc-id="<c:out value="${doc.id}"></c:out>">Voir le
+                                                        document</a>
+                                                    <div class="wysiwyg-editor hidden"
+                                                         id="<c:out value="${doc.id}"></c:out>"
                                                          contenteditable="true">
                                                         <c:out value="${doc.dernierContenu}" escapeXml="false"></c:out>
                                                     </div>

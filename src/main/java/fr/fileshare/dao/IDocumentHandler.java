@@ -14,7 +14,7 @@ public interface IDocumentHandler {
 
     Document get(int id);
 
-    List getDocumentsAVoir(Utilisateur utilisateur, int maxResultat);
+    List getDocumentsAVoir(Utilisateur utilisateur,String intitule,String tags, int maxResultat);
 
 }
 
