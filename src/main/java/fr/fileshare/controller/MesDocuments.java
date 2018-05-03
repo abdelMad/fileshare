@@ -1,17 +1,18 @@
 package fr.fileshare.controller;
 
+import fr.fileshare.dao.DocumentHandler;
+import fr.fileshare.dao.IDocumentHandler;
 import fr.fileshare.dao.UtilisateurHandler;
 import fr.fileshare.model.Document;
 import fr.fileshare.model.Utilisateur;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MesDocuments extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -20,20 +21,22 @@ public class MesDocuments extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if (UtilisateurHandler.isLoggedIn(request)) {
+            List<Document> documents;
             Utilisateur utilisateur = UtilisateurHandler.getLoggedInUser(request);
-            if("/documents-partages".equals(request.getRequestURI())){
-                request.setAttribute("title", "Documents partagés");
-                Set<Document> documents = utilisateur.getDocumentsAutorises();
-                request.setAttribute("documents", documents);
+            IDocumentHandler documentHandler = new DocumentHandler();
+            System.out.println("Im here lALALAL");
+            if (request.getRequestURI().equals("/documents-favoris")) {
+                documents = documentHandler.getDocumentsFavoris(utilisateur, 0, 10);
+                request.setAttribute("title", "Mes Favoris");
 
             }else {
-                Set<Document> documents = utilisateur.getDocuments();
+                documents = documentHandler.getDocumentsAVoir(utilisateur, 0, 10);
                 request.setAttribute("title", "Mes documents");
-                request.setAttribute("documents", documents);
             }
-            this.getServletContext().getRequestDispatcher("/views/mesDocuments.jsp").forward(request, response);
 
-        }else{
+            request.setAttribute("documents", documents);
+            this.getServletContext().getRequestDispatcher("/views/mesDocuments.jsp").forward(request, response);
+        } else {
             this.getServletContext().setAttribute("destinationUrl", request.getRequestURI());
             response.sendRedirect("/connexion");
         }

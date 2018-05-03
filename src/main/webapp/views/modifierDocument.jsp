@@ -2,8 +2,9 @@
 <%@include file="parts/head.jsp" %>
 <div class="row nouveau-document">
     <div class="col-sm-12">
-        <h2 class="header blue">Modifier Document</h2>
-        <form class="form-horizontal" id="modifier_document" action="" method="post">
+        <h2 class="header blue">Modifier Document <i class="star-off-png favoris" id="ajouter-favoris"
+                                                     title="Ajouter au favoris"></i></h2>
+        <form class="form-horizontal doc-form" id="modifier_document" action="" method="post">
             <c:if test="${document.auteur.id != utilisateur.id}">
                 <div class="form-group">
                     <label class="col-sm-3 control-label no-padding-right" for="Intitule"> Titre du document: </label>
@@ -74,24 +75,27 @@
                     </div>
                 </div>
             </div>
+                <div class="clearfix form-actions">
+                    <div class="col-md-offset-3 col-md-9">
+                        <input type="hidden" name="doc_id" value="${doc_id}">
+                        <button class="btn btn-success" type="submit">
+                            <i class="ace-icon fa fa-floppy-o bigger-125"></i>
+                            Modifier
+                        </button>
+                    </div>
+                </div>
             </c:if>
             <div class="widget-box widget-color-green">
                 <div class="widget-header widget-header-small center"></div>
                 <div class="widget-body">
                     <div class="widget-main no-padding">
-                        <div class="wysiwyg-editor" id="editor2"><c:if test="${not empty document.dernierContenu}"><c:out value="${document.dernierContenu}" escapeXml="false"></c:out></c:if></div>
+                        <div class="wysiwyg-editor" data-utilisateur="${utilisateur.id}" data-document="${document.id}"
+                             id="document-text"><c:if test="${not empty document.dernierContenu}"><c:out
+                                value="${document.dernierContenu}" escapeXml="false"></c:out></c:if></div>
                     </div>
                 </div>
             </div>
-            <div class="clearfix form-actions">
-                <div class="col-md-offset-3 col-md-9">
-                    <input type="hidden" name="doc_id" value="${doc_id}">
-                    <button class="btn btn-success" type="submit">
-                        <i class="ace-icon fa fa-floppy-o bigger-125"></i>
-                        Modifier
-                    </button>
-                </div>
-            </div>
+
         </form>
     </div>
 

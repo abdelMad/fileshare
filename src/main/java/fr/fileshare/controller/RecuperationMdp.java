@@ -3,6 +3,7 @@ package fr.fileshare.controller;
 import fr.fileshare.dao.*;
 import fr.fileshare.model.Utilisateur;
 import fr.fileshare.model.VerificationToken;
+import fr.fileshare.utilities.Util;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;

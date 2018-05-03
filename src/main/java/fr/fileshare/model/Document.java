@@ -37,6 +37,9 @@ public class Document {
     private Set<Utilisateur> utilisateursAvecDroit;
     @Column(columnDefinition = "TEXT")
     private String dernierContenu;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "favoris", joinColumns = @JoinColumn(name = "document_id"), inverseJoinColumns = @JoinColumn(name = "utilisateur_id"))
+    private Set<Utilisateur> utilisateursFavoris;
 
     public Document() {
     }
@@ -144,5 +147,13 @@ public class Document {
 
     public void setDernierContenu(String dernierContenu) {
         this.dernierContenu = dernierContenu;
+    }
+
+    public Set<Utilisateur> getUtilisateursFavoris() {
+        return utilisateursFavoris;
+    }
+
+    public void setUtilisateursFavoris(Set<Utilisateur> utilisateursFavoris) {
+        this.utilisateursFavoris = utilisateursFavoris;
     }
 }

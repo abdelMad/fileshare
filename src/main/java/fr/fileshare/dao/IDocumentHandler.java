@@ -14,7 +14,9 @@ public interface IDocumentHandler {
 
     Document get(int id);
 
-    List getDocumentsAVoir(Utilisateur utilisateur, int maxResultat);
+    List<Document> getDocumentsAVoir(Utilisateur utilisateurCourant, int debut, int fin);
+
+    List<Document> getDocumentsFavoris(Utilisateur utilisateurCourant, int debut, int fin);
 
 }
 

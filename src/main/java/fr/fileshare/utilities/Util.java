@@ -1,5 +1,6 @@
-package fr.fileshare.dao;
+package fr.fileshare.utilities;
 
+import fr.fileshare.dao.UtilisateurHandler;
 import fr.fileshare.socket.ChatClient;
 
 import javax.mail.Message;
@@ -203,29 +204,13 @@ public class Util {
 
         if (url.equals("*"))
             return tag;
+        url.replace("*", "[\\w\\d]*");
         Pattern pattern = Pattern.compile(url, Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(currentUrl);
         if (matcher.matches()) {
             return tag;
         }
         return "";
-    }
-
-    public static void initClientSocket(HttpServletRequest request){
-        if(UtilisateurHandler.isLoggedIn(request)) {
-            if (request.getSession().getAttribute("socket") == null) {
-                String host = "localhost";
-                int port = 4444;
-                try {
-                    Socket s = new Socket(host, port);
-                    ChatClient chatClient = new ChatClient(UtilisateurHandler.getLoggedInUser(request).getId(), s);
-                    request.getSession().setAttribute("socket", chatClient);
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
     }
 
 }

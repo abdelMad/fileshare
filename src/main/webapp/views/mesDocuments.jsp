@@ -3,7 +3,7 @@
 
 <div class="page-header">
     <h2 class="blue">
-        Mes documents
+        ${title}
     </h2>
 </div>
 <div>
@@ -57,8 +57,16 @@
                     <c:if test="${doc.status eq 1}"><span class="label label-sm label-default">Privé</span></c:if>
                     <c:if test="${doc.status eq 2}">Partagé avec:
                         <c:forEach items="${doc.utilisateursAvecDroit}" var="ut">
-                            <span class="label label-sm label-default"><a class="white"
-                                                                          href="/profil/${ut.id}">${ut.nom}</a></span>
+
+                            <c:if test="${ut.id eq utilisateur.id}">
+                    <span class="label label-sm label-primary"><a class="white"
+                                                                  href="/profil">${ut.id eq utilisateur.id? "moi":ut.nom}</a></span>
+                            </c:if>
+                            <c:if test="${ut.id ne utilisateur.id}">
+                    <span class="label label-sm label-primary"><a class="white"
+                                                                  href="/profil/${ut.id}">${ut.id eq utilisateur.id? "moi":ut.nom}</a></span>
+                            </c:if>
+
                         </c:forEach>
                     </c:if>
 

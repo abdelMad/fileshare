@@ -80,25 +80,28 @@ public class DocumentHandler implements IDocumentHandler {
         return document;
     }
 
-    public List getDocumentsAVoir(Utilisateur utilisateur, int maxResultat){
-        List documents = new ArrayList();
+    public List<Document> getDocumentsAVoir(Utilisateur utilisateurCourant, int debut, int fin) {
+        List<Document> documents = new ArrayList<>();
         Session session = SessionFactoryHelper.getSessionFactory().openSession();
         try {
             session.beginTransaction();
             Query query;
-            if(utilisateur != null) {
-                int id_utilisateur = utilisateur.getId();
-                 query = session.createSQLQuery("SELECT * FROM document as doc WHERE doc.status = 0 OR(doc.status=2 AND EXISTS(SELECT * FROM document_utilisateur WHERE document_utilisateur.utilisateur_id=:id_utilisateur AND doc.document_id = document_utilisateur.document_id )  ) OR (doc.auteur=:id_utilisateur)")
+            if (utilisateurCourant != null) {
+                int id_utilisateur = utilisateurCourant.getId();
+                query = session.createSQLQuery("SELECT * from(SELECT * FROM fileshare.document WHERE status =0 OR auteur = :id_utilisateur\n" +
+                        "UNION\n" +
+                        "select document.* from fileshare.document join document_utilisateur on document_utilisateur.document_id=document_utilisateur.document_id where  document_utilisateur.utilisateur_id=:id_utilisateur\n" +
+                        ") fichiers_autorise\n" +
+                        "order by document_id Desc")
                         .addEntity("document", Document.class);
                 query.setParameter("id_utilisateur", id_utilisateur);
             }else{
                  query = session.createQuery(" FROM Document  WHERE status = 0");
             }
 
-            query.setFirstResult(0);
-
-            query.setMaxResults(maxResultat);
-            documents =  query.list();
+            query.setFirstResult(debut);
+            query.setMaxResults(fin);
+            documents = (List<Document>) query.list();
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
@@ -108,4 +111,30 @@ public class DocumentHandler implements IDocumentHandler {
         }
         return documents;
     }
+
+    public List<Document> getDocumentsFavoris(Utilisateur utilisateurCourant, int debut, int fin) {
+        List<Document> documents = new ArrayList<>();
+        Session session = SessionFactoryHelper.getSessionFactory().openSession();
+        try {
+            session.beginTransaction();
+            Query query;
+            int id_utilisateur = utilisateurCourant.getId();
+            query = session.createSQLQuery("SELECT distinct document.* FROM fileshare.document JOIN fileshare.favoris ON favoris.document_id = document.document_id WHERE\n" +
+                    "favoris.utilisateur_id = :id_utilisateur ORDER BY document.document_id")
+                    .addEntity("document", Document.class);
+            query.setParameter("id_utilisateur", id_utilisateur);
+
+            query.setFirstResult(debut);
+            query.setMaxResults(fin);
+            documents = (List<Document>) query.list();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        return documents;
+    }
+
 }

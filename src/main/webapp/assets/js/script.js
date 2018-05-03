@@ -1,8 +1,39 @@
 jQuery(function ($) {
-
-    var $editeur_text = $('#editor2');
+    var $editeur_text = $('#document-text');
     var checkEventOnTags = false;
     var openedConversation = -1;
+
+    /**
+     * validation functions
+     */
+    function errorPlacement(error, element) {
+        // Add the `help-block` class to the error element
+        error.addClass("help-block");
+
+        if (element.prop("type") === "checkbox") {
+            error.insertAfter(element.parent("label"));
+        } else {
+            error.insertAfter(element);
+        }
+    }
+
+    function highlight(element, errorClass, validClass) {
+        $(element).parents(".form-group").addClass("has-error").removeClass("has-success");
+    }
+
+    jQuery.validator.addMethod("tags", function (value, element) {
+        var checked = true;
+        if (value.length) {
+            var tags = new RegExp('^#[\\w\\d]+$|^#[\\w\\d]+( #[\\w\\d]+)*$');
+            checked = tags.test(value);
+        }
+        return checked;
+    }, jQuery.validator.format("Veuillez entrer un tag valide (#example1 #exampl2 ...)"));
+
+    function unhighlight(element, errorClass, validClass) {
+        $(element).parents(".form-group").addClass("has-success").removeClass("has-error");
+    }
+
     function showErrorAlert(reason, detail) {
         var msg = '';
         if (reason === 'unsupported-file-type') {
@@ -15,6 +46,9 @@ jQuery(function ($) {
             '<strong>File upload error</strong> ' + msg + ' </div>').prependTo('#alerts');
     }
 
+    /**
+     * Creation et modification document
+     */
     if ($editeur_text.length) {
         $editeur_text.ace_wysiwyg({
             toolbar_place: function (toolbar) {
@@ -57,17 +91,67 @@ jQuery(function ($) {
     }
     var $creer_document_form = $("#creer_document");
     var $modifier_document = $('#modifier_document');
+    if ($creer_document_form.length || $modifier_document.length) {
+        $('.doc-form').validate({
+            rules: {
+                intitule: {
+                    required: true
+                },
+                tags: {
+                    tags: true
+                }
+            },
+            messages: {
+                intitule: "Veuillez saisir l'intitulé du document",
+            },
+            errorElement: "em",
+            errorPlacement: errorPlacement,
+            highlight: highlight,
+            unhighlight: unhighlight
+        });
+        $('#status').change(function () {
+            if (this.value === '2') {
+                var $tags = $('.tags');
+                $tags.html("");
+
+                getEmailsAddAndEditDocs();
+                if (!checkEventOnTags) {
+                    $tags.on('click', function () {
+                        getEmailsAddAndEditDocs();
+                    });
+                    checkEventOnTags = true;
+                }
+            } else {
+                $('#utilisateurs_emails').slideUp();
+                $('.inline.tags-col').children().remove();
+            }
+
+        });
+        $creer_document_form.find('.reset').on('click', function () {
+            $('#utilisateurs_emails').slideUp();
+            $('.inline.tags-col').children().remove();
+        });
+
+        var $tags = $('#tags');
+        if ($tags.length && $tags.val().length) {
+
+        }
+    }
+
     if ($modifier_document.length) {
+
         $modifier_document.on('submit', function (event) {
             event.preventDefault();
             var $contenu = $('<textarea>', {name: 'contenu'});
             $contenu.css('display', 'none');
-            $contenu.html($('#editor2').html());
+            $contenu.html($('#document-text').html());
             $(this).append($contenu);
-            $(this)[0].submit();
+            if ($modifier_document.valid())
+                $(this)[0].submit();
         });
     }
-    function getEmailsAddAndEditDocs(){
+
+    function getEmailsAddAndEditDocs() {
         bootbox.prompt({
             title: 'Veuillez entrer les adresses emails des utilisateurs',
             placeholder: 'utilisateur1@email.com utilisateur2@email.com ...',
@@ -100,8 +184,11 @@ jQuery(function ($) {
                             $tag_container.append($span_tag);
                             $tags.append($tag_container);
                         } else {
-                            if(!$('#erreur_mail').length)
-                            $('.bootbox-form').append($('<p>', {class: 'alert alert-danger',id:'erreur_mail'}).html('Veuillez entrer des emails valides!\n Example1@domaine.com Example2@domaine.com Example3@domaine.fr ... ').css('margin-top', '10px'))
+                            if (!$('#erreur_mail').length)
+                                $('.bootbox-form').append($('<p>', {
+                                    class: 'alert alert-danger',
+                                    id: 'erreur_mail'
+                                }).html('Veuillez entrer des emails valides!\n Example1@domaine.com Example2@domaine.com Example3@domaine.fr ... ').css('margin-top', '10px'))
                             return false;
                         }
                     }
@@ -113,31 +200,33 @@ jQuery(function ($) {
         });
     }
 
-    if ($creer_document_form.length || $modifier_document.length) {
-        $('#status').change(function () {
-            if (this.value === '2') {
-                var $tags  = $('.tags');
-                $tags.html("");
+    $('.favoris').hover(function () {
+        $(this).attr('class', 'star-on-png favoris')
+    }, function () {
+        $(this).attr('class', 'star-off-png favoris')
+    });
+    $('#ajouter-favoris').click(function () {
+        if ($(this).data('status') === undefined || $(this).data('status') == 'true')
+            $(this).data('status', 'false');
+        else if ($(this).data('status') === undefined || $(this).data('status') == 'false')
+            $(this).data('status', 'true');
 
-                getEmailsAddAndEditDocs();
-                if(!checkEventOnTags){
-                    $tags.on('click',function () {
-                        getEmailsAddAndEditDocs();
-                    });
-                    checkEventOnTags = true;
-                }
-            }else{
-                $('#utilisateurs_emails').slideUp();
-                $('.inline.tags-col').children().remove();
-            }
-
-        });
-        $creer_document_form.find('.reset').on('click', function () {
-            $('#utilisateurs_emails').slideUp();
-            $('.inline.tags-col').children().remove();
-        })
-    }
-
+        console.log($(this).data('status'))
+        // $.ajax({
+        //     method: 'POST',
+        //     url: '/ajouter-au-favoris',
+        //     data: {docId: docId,status: status},
+        //     dataType: 'json',
+        //     success: function (data) {
+        //         if(data.length && data[0]!=='error'){
+        //             $('#ajouter-favoris').attr('class','star-off-png favoris');
+        //         }
+        //     }
+        // });
+    });
+    /**
+     * end Creation et modification document
+     */
     if ($('#dynamic-table').length) {
         $('#dynamic-table').dataTable({
             "bPaginate": true,
@@ -151,12 +240,12 @@ jQuery(function ($) {
 //        } );
     }
     var $view_doc = $(".view-doc");
-    if($view_doc.length) {
+    if ($view_doc.length) {
         $view_doc.on('click', function () {
             var $element = $("#" + $(this).data('doc-id'));
             if ($element.length) {
                 bootbox.dialog({
-                    title: $("#titre"+$(this).data('doc-id')).html(),
+                    title: $("#titre" + $(this).data('doc-id')).html(),
                     message: $element.html(),
                     buttons:
                         {
@@ -172,190 +261,48 @@ jQuery(function ($) {
         });
     }
 
-    function construirChatHistory(data){
+    /**
+     *
+     *  partie chat
+     */
 
-        //entete
-        var $entete = $('.chat-header');
-        $entete.html("");
-        var $recepteurImage = $('<img>',{class: 'contact-img',src:data[1], alt: 'avatar'});
-        var $chatAbout = $('<div>',{class: 'chat-about'});
-        var $chatWith = $('<div>',{class: 'chat-with'});
-        $chatWith.html(data[0]);
-        $chatAbout.append($chatWith);
-        $entete.append($recepteurImage);
-        $entete.append($chatAbout);
 
-        var $chatHistory = $('.chat-history');
-        $chatHistory.html("");
-        var $chatContainer = $('<ul>');
-        for(var i=2;i<data.length;i++) {
-            //emetteur
-            if(data[i].emetteur == 'moi') {
-                var $emetteurMarkup;
-                $emetteurMarkup = $('<li>', {class: 'clearfix'});
-                var $emMsgData = $('<div>', {class: 'message-data align-right'});
-                var $emMsgDataTime = $('<span>', {class: 'message-data-time'});
-                $emMsgDataTime.html(data[i].date);
-                var $emMsgDataName = $('<span>', {class: 'message-data-name'});
-                $emMsgDataName.html(' Moi');
-                var $iconeMe = $('<i>', {class: "fa fa-circle me"});
-                $emMsgData.append($emMsgDataTime);
-                $emMsgData.append($emMsgDataName);
-                $emMsgData.append($iconeMe);
-                $emetteurMarkup.append($emMsgData);
-                var $emMessage = $('<div>', {class: 'message other-message float-right'});
-                $emMessage.html(data[i].txt);
-                $emetteurMarkup.append($emMessage);
-                $chatContainer.append($emetteurMarkup);
-            }else {
-                //recepteur
+    $('.minim-chat-window').click(function () {
+        $('.panel-body.msg_container_base').slideToggle(100);
+    });
+    $('.close-chat-window').click(function () {
+        $(this).parent().parent().parent().parent().parent().remove();
+    });
 
-                var $recepteurMarkup;
-                $recepteurMarkup = $('<li>');
-                var $recMsgData = $('<div>', {class: 'message-data'});
-                var $recMsgDataName = $('<span>', {class: 'message-data-name'});
-                var $recIcone = $('<i>', {class: "fa fa-circle online"});
-                $recMsgData.append($recIcone);
-                $recMsgDataName.html(data[i].emetteur);
-                var $recMsgDataTime = $('<span>', {class: 'message-data-time'});
-                $recMsgDataTime.html(data[i].date);
-                $recMsgData.append($recMsgDataName);
-                $recMsgData.append($recMsgDataTime);
-                var $recmessage = $('<div>', {class: 'message my-message'});
-                $recmessage.html(data[i].txt);
-                $recepteurMarkup.append($recMsgData);
-                $recepteurMarkup.append($recmessage);
-                $chatContainer.append($recepteurMarkup);
-            }
-            $chatHistory.append($chatContainer);
-            $chatHistory.scrollTop($chatHistory.prop("scrollHeight"));
-        }
-    }
+    /**
+     *
+     *  end partie chat
+     */
+    /**
+     * Partie modification document partagé
+     */
+    if ($editeur_text.length) {
+        var idDoc = $editeur_text.data('document');
+        var docClient = new WebSocket("ws://" + location.host + "/document-modif/" + idDoc);
+        console.log(idDoc);
+        docClient.onmessage = function (evt) {
 
-    function contruireContactRow(data){
-        var $peopleList = $('.people-list .list');
-        var $contactRow = $('<li>', {class: 'clearfix contact-row'});
-        $contactRow.data('contact-id',data.id);
-        $contactRow.on('click',function () {
-            var contactId = $(this).data('contact-id');
-            console.log(contactId);
-            $.ajax({
-                method:'GET',
-                url: '/afficher-messages',
-                data: {contactId: contactId},
-                dataType: 'json',
-                success: function (data) {
-                    console.log(data);
-                    $('.chat-message').data('contact-id',contactId);
-                    openedConversation = contactId;
-                    construirChatHistory(data);
+            var doc = JSON.parse(evt.data);
+            console.log(doc);
+            $editeur_text.html(doc.txt);
 
-                }
-            });
+
+        };
+        $editeur_text.wysiwyg('document').keyup(function (e) {
+            var doc = {
+                idDoc: idDoc.toString(),
+                idU: $editeur_text.data('utilisateur').toString(),
+                txt: $editeur_text.html()
+            };
+            var jsonDoc = JSON.stringify(doc);
+            console.log(jsonDoc);
+            docClient.send(jsonDoc);
         });
-        var $contactImg = $('<img>', {
-            class: 'contact-img',
-            src: data.image,
-            alt: 'image de' + data.nomComplet
-        });
-        var $about = $('<div>', {class: 'about'});
-        var $contactName = $('<div>', {class: 'name'});
-        $contactName.append(data.nomComplet);
-        var $status = $('<div>', {class: 'status green'});
-        // var $statusIcone = $('<i>', {class: 'fa fa-circle online'});
-        // $status.append($statusIcone);
-        if (data.aEnvoyeMsg == 'true')
-            $status.html('Nouveau Message');
-        $about.append($contactName);
-        $about.append($status);
-        $contactRow.append($contactImg);
-        $contactRow.append($about);
-        $peopleList.append($contactRow)
-    }
-    var $contactRow = $('.contact-row');
-    if($contactRow.length){
-        $contactRow.on('click',function () {
-            var contactId = $(this).data('contact-id');
-            console.log(contactId);
-            $.ajax({
-                method:'GET',
-                url: '/afficher-messages',
-                data: {contactId: contactId},
-                dataType: 'json',
-                success: function (data) {
-                    console.log(data);
-                    $('.chat-message').data('contact-id',contactId);
-                    openedConversation = contactId;
-                    construirChatHistory(data);
-
-                }
-            });
-        });
-        $('#envoyer-message').on('click',function () {
-            var $message = $('#message-a-envoyer');
-            console.log('hi');
-            $.ajax({
-                method:'POST',
-                url: '/envoyer-messages',
-                data: {contactId: $('.chat-message').data('contact-id'),messageTxt: $message.val()},
-                dataType: 'json',
-                success: function (data) {
-                    console.log(data);
-                    if(data[0]!='erreur') {
-                        construirChatHistory(data);
-                        $message.val("");
-                    }
-
-
-                }
-            });
-        });
-        $('#message-a-envoyer').on('focus',function () {
-            var rowId = $('.chat-message').data('contact-id');
-            $('.contact-row').each(function(){
-                if($(this).data('contact-id')==rowId){
-                    $(this).find('.status').remove();
-                }
-            });
-        });
-        $('#rechercher-contact').on('input',function(){
-            var inputValue=$(this).val().toLowerCase();
-            $('.contact-row').each(function(){
-                if($(this).find('.name').html().trim().toLowerCase().match('^'+inputValue)){
-                    $(this).css('display','block');
-                }else{
-                    $(this).css('display','none');
-                }
-            });
-        });
-        setInterval(function () {
-            $.ajax({
-                method:'GET',
-                url: '/afficher-messages-socket',
-                data:{chatActuelle:$('.chat-message').data('contact-id')},
-                // dataType: 'json',
-                success: function (data,success) {
-                    if(success=='success' && data.length && data[0]!='vide') {
-                        console.log(data);
-                        console.log(data instanceof Array);
-                        $('#notif')[0].play();
-                        var $peopleList = $('.people-list .list');
-                        $peopleList.html("");
-                        if(data[0] instanceof Array) {
-                            for (var i = 0; i < data[0].length; i++) {
-                                contruireContactRow(data[0][i]);
-                            }
-                        }else{
-                            contruireContactRow(data);
-                        }
-                        if(data[1].length != 0){
-                            construirChatHistory(data[1]);
-                        }
-                    }
-                }
-            });
-        },3000);
-            $('.chat-history').scrollTop($('.chat-history').prop("scrollHeight"));
 
     }
 

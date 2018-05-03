@@ -1,6 +1,5 @@
 package fr.fileshare.socket;
 
-import fr.fileshare.model.Message;
 
 import java.net.*;
 import java.io.*;

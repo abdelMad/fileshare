@@ -61,6 +61,7 @@
   <servlet-mapping>
     <servlet-name>ModifierDocument</servlet-name>
     <url-pattern>/modifier-document</url-pattern>
+    <url-pattern>/ajouter-au-favoris</url-pattern>
   </servlet-mapping>
   <!-- -->
   <servlet>
@@ -70,9 +71,8 @@
   <servlet-mapping>
     <servlet-name>MesDocuments</servlet-name>
     <url-pattern>/mes-documents</url-pattern>
-    <url-pattern>/documents-partages</url-pattern>
+    <url-pattern>/documents-favoris</url-pattern>
   </servlet-mapping>
-
   <!-- -->
   <servlet>
     <servlet-name>TelechargerDocument</servlet-name>
@@ -83,17 +83,7 @@
     <url-pattern>/telecharger-document</url-pattern>
   </servlet-mapping>
   <!--  -->
-  <servlet>
-    <servlet-name>Messages</servlet-name>
-    <servlet-class>fr.fileshare.controller.Messages</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>Messages</servlet-name>
-    <url-pattern>/messages</url-pattern>
-    <url-pattern>/afficher-messages</url-pattern>
-    <url-pattern>/envoyer-messages</url-pattern>
-    <url-pattern>/afficher-messages-socket</url-pattern>
-  </servlet-mapping>
+  <!---->
   <servlet>
     <servlet-name>Profil</servlet-name>
     <servlet-class>fr.fileshare.controller.Profil</servlet-class>
@@ -102,7 +92,26 @@
     <servlet-name>Profil</servlet-name>
     <url-pattern>/profil/*</url-pattern>
   </servlet-mapping>
-  
+  <!---->
+  <servlet>
+    <servlet-name>Historique</servlet-name>
+    <servlet-class>fr.fileshare.controller.Historique</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Historique</servlet-name>
+    <url-pattern>/historique</url-pattern>
+  </servlet-mapping>
+  <!---->
+  <servlet>
+    <servlet-name>Chat</servlet-name>
+    <servlet-class>fr.fileshare.controller.Chat</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>Chat</servlet-name>
+    <url-pattern>/conversation</url-pattern>
+    <url-pattern>/contacts</url-pattern>
+    <url-pattern>/contact</url-pattern>
+  </servlet-mapping>
   <error-page>
     <error-code>404</error-code>
     <location>/views/erreur404.jsp</location>

@@ -87,11 +87,12 @@
                 </div>
                 <!-- end chat-history -->
             </c:if>
-            <div class="chat-message clearfix" data-contact-id="${recepteur.id}">
-                <label for="message-a-envoyer" class="sr-only">Message à envoyer</label>
-                <textarea name="message-a-envoyer" id="message-a-envoyer" placeholder="Tapez votre Message"
+            <div class="chat-message clearfix" data-receiver-name="${recepteur.nom} ${recepteur.prenom}"
+                 data-receiver="${recepteur.id}" data-sender="${utilisateur.id}">
+                <label for="message" class="sr-only">Message à envoyer</label>
+                <textarea name="message-a-envoyer" id="message" placeholder="Tapez votre Message"
                           rows="3"></textarea>
-                <button id="envoyer-message" class="btn btn-info">Envoyer</button>
+                <button id="send-message" class="btn btn-info">Envoyer</button>
 
             </div> <!-- end chat-message -->
 

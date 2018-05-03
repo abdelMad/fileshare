@@ -2,7 +2,7 @@ package fr.fileshare.controller;
 
 import fr.fileshare.dao.IUtilisateurHandler;
 import fr.fileshare.dao.UtilisateurHandler;
-import fr.fileshare.dao.Util;
+import fr.fileshare.utilities.Util;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

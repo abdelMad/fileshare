@@ -1,7 +1,7 @@
 <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix = "fmt" uri = "http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
-<%@ page import="fr.fileshare.dao.Util" %>
+<%@ page import="fr.fileshare.utilities.Util" %>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -44,16 +44,17 @@
 
 <body class="no-skin">
     <%@include file="navbar.jsp"%>
-<div class="main-container" id="main-container">
+    <div class="main-container" id="main-container"
+         <c:if test="${not empty utilisateur}">data-utilisateur="${utilisateur.id}"</c:if>>
     <c:if test="${not empty utilisateur}">
         <%@include file="sidebar.jsp"%>
     </c:if>
-    <div class="main-content">
+        <div class="main-content">
         <div class="main-content-inner">
             <div class="page-content">
 
                 <div class="row">
-                    <div class="col-xs-12">
+                    <div class="col-md-<c:if test="${not empty utilisateur}">9</c:if><c:if test="${empty utilisateur}">12</c:if>">
                         <div class="global-alert">
                             <%= Util.showGlobalAlerts() %>
                         </div>

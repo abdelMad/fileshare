@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<% request.setAttribute("title", "404");%>
 <%@include file="parts/head.jsp"%>
 <div class="error-container">
     <div class="well">

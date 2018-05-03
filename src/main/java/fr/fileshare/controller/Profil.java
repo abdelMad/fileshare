@@ -17,11 +17,13 @@ public class Profil extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String pathInfo = request.getPathInfo() != null ? request.getPathInfo() : "";
+        System.out.println(pathInfo);
         String[] pathParts = pathInfo.split("/");
-        if (pathParts.length > 1) {
+        if (pathParts.length == 2) {
             String param = pathParts[1];
             int id = -1;
             IUtilisateurHandler utilisateurHandler = new UtilisateurHandler();
+            System.out.println(param);
             try {
                 id = Integer.parseInt(param);
             } catch (Exception e) {
@@ -37,7 +39,7 @@ public class Profil extends HttpServlet {
                 request.setAttribute("profilUtilisateur", profilUtilisateur);
                 this.getServletContext().getRequestDispatcher("/views/profilPublic.jsp").forward(request, response);
             }
-        } else {
+        } else if (pathParts.length < 2) {
             if (UtilisateurHandler.isLoggedIn(request)) {
                 request.setAttribute("title", "Profil");
                 this.getServletContext().getRequestDispatcher("/views/profil.jsp").forward(request, response);

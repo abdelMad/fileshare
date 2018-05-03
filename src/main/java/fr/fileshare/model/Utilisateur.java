@@ -34,6 +34,9 @@ public class Utilisateur {
     @ManyToMany(mappedBy = "utilisateursAvecDroit", fetch = FetchType.EAGER)
     private Set<Document> documentsAutorises;
 
+    @ManyToMany(mappedBy = "utilisateursFavoris", fetch = FetchType.EAGER)
+    private Set<Document> favoris;
+
     public Utilisateur() {
     }
 
@@ -155,6 +158,14 @@ public class Utilisateur {
 
     public void setDocumentsAutorises(Set<Document> documentsAutorises) {
         this.documentsAutorises = documentsAutorises;
+    }
+
+    public Set<Document> getFavoris() {
+        return favoris;
+    }
+
+    public void setFavoris(Set<Document> favoris) {
+        this.favoris = favoris;
     }
 
     @Override

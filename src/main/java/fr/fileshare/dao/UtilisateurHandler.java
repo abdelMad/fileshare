@@ -2,6 +2,7 @@ package fr.fileshare.dao;
 
 import fr.fileshare.model.Utilisateur;
 import fr.fileshare.model.VerificationToken;
+import fr.fileshare.utilities.Util;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.exception.ConstraintViolationException;
