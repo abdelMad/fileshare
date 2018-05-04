@@ -2,6 +2,7 @@ package fr.fileshare.model;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -29,7 +30,7 @@ public class Document {
     @ManyToOne
     @JoinColumn(name = "auteur")
     private Utilisateur auteur;
-    @OneToMany(mappedBy = "document", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "document")
     private Set<Historique> historique;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -40,6 +41,9 @@ public class Document {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "favoris", joinColumns = @JoinColumn(name = "document_id"), inverseJoinColumns = @JoinColumn(name = "utilisateur_id"))
     private Set<Utilisateur> utilisateursFavoris;
+
+    @Column(unique = true)
+    private String version;
 
     public Document() {
     }
@@ -155,5 +159,27 @@ public class Document {
 
     public void setUtilisateursFavoris(Set<Utilisateur> utilisateursFavoris) {
         this.utilisateursFavoris = utilisateursFavoris;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Document document = (Document) o;
+        return id == document.id;
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id);
     }
 }

@@ -15,9 +15,10 @@
     <!-- bootstrap & fontawesome -->
     <link rel="stylesheet" href="/assets/css/bootstrap.min.css" />
     <link rel="stylesheet" href="/assets/font-awesome/4.2.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="/assets/css/jquery.gritter.min.css"/>
 
     <!-- page specific plugin styles -->
-    <%= Util.includeCssOrJs(request,"/mes-documents","/assets/css/ui.jqgrid.min.css")%>
+    <%= Util.includeCssOrJs(request, "/mes-documents|/documents-favoris", "/assets/css/ui.jqgrid.min.css")%>
     <!-- text fonts -->
     <link rel="stylesheet" href="/assets/fonts/fonts.googleapis.com.css" />
 

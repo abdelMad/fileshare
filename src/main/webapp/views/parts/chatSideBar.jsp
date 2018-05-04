@@ -1,4 +1,4 @@
-<div class="col-sm-3">
+<div class="col-sm-3 chat-sidebar">
     <div class="people-list" id="people-list">
         <div class="search">
             <input type="text" placeholder="search" id="rechercher-contact">

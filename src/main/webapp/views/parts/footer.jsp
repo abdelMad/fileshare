@@ -16,7 +16,7 @@
 <div class="footer">
 	<div class="footer-inner">
 		<c:set var = "now" value = "<%= new java.util.Date()%>" />
-		<div class="footer-content">
+		<div class="footer-content <c:if test="${not empty utilisateur}">col-md-8</c:if>">
 						<span class="bigger-120">
 							<span class="blue bolder">File</span>
 							Share &copy; <fmt:formatDate pattern = "yyyy"
@@ -80,8 +80,16 @@ window.jQuery || document.write("<script src='assets/js/jquery1x.min.js'>"+"<"+"
 <%= Util.includeCssOrJs(request,"/nouveau-document|/modifier-document","/assets/js/jquery.ui.touch-punch.min.js")%>
 <%= Util.includeCssOrJs(request,"/nouveau-document|/modifier-document","/assets/js/jquery.hotkeys.min.js")%>
 <%= Util.includeCssOrJs(request,"/nouveau-document|/modifier-document|/messages","/assets/js/bootstrap-wysiwyg.min.js")%>
-<%= Util.includeCssOrJs(request, "/documents-favoris|/mes-documents", "/assets/js/jquery.dataTables.min.js")%>
+<%= Util.includeCssOrJs(request, "/documents-favoris|/mes-documents|/historique", "/assets/js/jquery.dataTables.min.js")%>
+<%= Util.includeCssOrJs(request, "/documents-favoris|/mes-documents|/historique", "/assets/js/jquery.dataTables.bootstrap.min.js")%>
+<%= Util.includeCssOrJs(request, "/documents-favoris|/mes-documents|/historique", "/assets/js/dataTables.tableTools.min.js")%>
+<%= Util.includeCssOrJs(request, "/documents-favoris|/mes-documents|/historique", "/assets/js/dataTables.colVis.min.js")%>
+
+
 <script src="/assets/js/bootstrap-tag.min.js"></script>
+<script src="/assets/js/jquery.gritter.min.js"></script>
+<script src="/assets/js/spin.min.js"></script>
+
 <script src="/assets/js/bootbox.min.js"></script>
 <script src="/assets/js/jquery.validate.min.js"></script>
 <!-- ace scripts -->

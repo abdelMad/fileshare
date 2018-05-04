@@ -61,7 +61,7 @@
   <servlet-mapping>
     <servlet-name>ModifierDocument</servlet-name>
     <url-pattern>/modifier-document</url-pattern>
-    <url-pattern>/ajouter-au-favoris</url-pattern>
+      <url-pattern>/modifier-favoris</url-pattern>
   </servlet-mapping>
   <!-- -->
   <servlet>
@@ -99,7 +99,7 @@
   </servlet>
   <servlet-mapping>
     <servlet-name>Historique</servlet-name>
-    <url-pattern>/historique</url-pattern>
+      <url-pattern>/historique/*</url-pattern>
   </servlet-mapping>
   <!---->
   <servlet>

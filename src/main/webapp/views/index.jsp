@@ -27,15 +27,22 @@
                                 <div class="widget-box transparent">
                                     <div class="widget-header widget-header-small">
                                         <h5 class="widget-title smaller">
-                                            <a href="/profil/${doc.auteur.id}" class="blue"><c:out value="${doc.auteur.nom}"></c:out></a>
+                                            <c:if test="${doc.auteur.id eq utilisateur.id}">
+                                                <a href="/profil" class="red">Vous</a>
+                                            </c:if>
+                                            <c:if test="${doc.auteur.id ne utilisateur.id}">
+                                                <a href="/profil/${doc.auteur.id}" class="blue"><c:out
+                                                        value="${doc.auteur.nom}"></c:out></a>
+                                            </c:if>
                                             <span class="grey">a publié un nouveau document: </span>
                                         </h5>
                                         <span id="titre${doc.id}">${doc.intitule}</span>
                                         <span class="widget-toolbar no-border">
 																	<i class="ace-icon fa fa-clock-o bigger-110"></i>
                                             Le <fmt:formatDate pattern = "dd-MM-yyyy"
-                                                            value = "${doc.datePublixation}" /> à <fmt:formatDate pattern = "H:m"
-                                                                                                                  value = "${doc.datePublixation}" />
+                                                               value="${doc.datePublixation}"/> à <fmt:formatDate
+                                                pattern="HH:mm"
+                                                value = "${doc.datePublixation}" />
 																</span>
 
 
@@ -47,7 +54,14 @@
 
 
                                             <div class="space-6"></div>
-                                            <span class="red"><c:out value="${doc.tag}"></c:out></span>
+                                            <c:if test="${not empty doc.tag}">
+                                                <c:set var="tags" value="${fn:split(doc.tag, ' ')}"/>
+                                                <c:forEach items="${tags}" var="tg">
+                                                    <a href="/?tags=${tg}"><span
+                                                            class="label label-sm label-error"><c:out
+                                                            value="${tg}"></c:out></span></a>
+                                                </c:forEach>
+                                            </c:if>
                                             <div class="widget-toolbox clearfix">
                                                 <div class="pull-left">
                                                     <i class="ace-icon fa fa-hand-o-right grey bigger-125"></i>

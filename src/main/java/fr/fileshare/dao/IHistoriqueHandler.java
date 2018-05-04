@@ -1,6 +1,9 @@
 package fr.fileshare.dao;
 
+import fr.fileshare.model.Document;
 import fr.fileshare.model.Historique;
+
+import java.util.List;
 
 public interface IHistoriqueHandler {
     boolean add(Historique historique);
@@ -12,5 +15,9 @@ public interface IHistoriqueHandler {
     Historique get(int id);
 
     Historique getDernierHistoique(int documentId);
+
+    List<Document> getDocsModifies(int idU, int start, int end);
+
+    List<Historique> getHistorique(int idU, int doc, int start, int end);
 
 }

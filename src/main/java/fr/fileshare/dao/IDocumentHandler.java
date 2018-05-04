@@ -18,5 +18,12 @@ public interface IDocumentHandler {
 
     List<Document> getDocumentsFavoris(Utilisateur utilisateurCourant, int debut, int fin);
 
+    List<Document> getMesDocuments(int id_utilisateur);
+
+    boolean estFavoris(int idDoc, int idU);
+
+    boolean supprimerFavoris(int idU, int idDoc);
+
+    boolean ajouterFavoris(int idU, int idDoc);
 }
 

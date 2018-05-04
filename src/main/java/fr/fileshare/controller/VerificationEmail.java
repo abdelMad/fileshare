@@ -40,7 +40,7 @@ public class VerificationEmail extends HttpServlet {
             response.sendRedirect("/");
         } else {
             Util.addGlobalAlert(Util.WARNING,"Vous devez vous connecter pour pouvoir continuer");
-            servletContext.setAttribute("destinationUrl", request.getRequestURL().append('?').append(request.getQueryString()));
+            request.getSession().setAttribute("destinationUrl", request.getRequestURL().append('?').append(request.getQueryString()));
             servletContext.getRequestDispatcher("/connexion").forward(request, response);
         }
 

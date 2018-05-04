@@ -44,7 +44,7 @@ public class Profil extends HttpServlet {
                 request.setAttribute("title", "Profil");
                 this.getServletContext().getRequestDispatcher("/views/profil.jsp").forward(request, response);
             } else {
-                this.getServletContext().setAttribute("destinationUrl", request.getRequestURI());
+                request.getSession().setAttribute("destinationUrl", request.getRequestURI());
                 response.sendRedirect("/connexion");
             }
         }

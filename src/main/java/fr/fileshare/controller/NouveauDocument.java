@@ -89,7 +89,7 @@ public class NouveauDocument extends HttpServlet {
                 this.getServletContext().getRequestDispatcher("/views/nouveauDocument.jsp").forward(request, response);
             }
         } else {
-            this.getServletContext().setAttribute("destinationUrl", request.getRequestURI());
+            request.getSession().setAttribute("destinationUrl", request.getRequestURI());
             response.sendRedirect("/connexion");
         }
     }
@@ -99,7 +99,7 @@ public class NouveauDocument extends HttpServlet {
             request.setAttribute("title", "Nouveau Document");
             this.getServletContext().getRequestDispatcher("/views/nouveauDocument.jsp").forward(request, response);
         } else {
-            this.getServletContext().setAttribute("destinationUrl", request.getRequestURI());
+            request.getSession().setAttribute("destinationUrl", request.getRequestURI());
             response.sendRedirect("/connexion");
         }
     }

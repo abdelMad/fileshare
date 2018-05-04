@@ -12,10 +12,7 @@ import java.io.InputStream;
 import java.net.Socket;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.Properties;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -211,6 +208,11 @@ public class Util {
             return tag;
         }
         return "";
+    }
+
+    public static String generateUniqueToken() {
+        UUID uuid = UUID.randomUUID();
+        return hashString(uuid.toString());
     }
 
 }

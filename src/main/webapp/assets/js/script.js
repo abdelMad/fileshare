@@ -3,6 +3,33 @@ jQuery(function ($) {
     var checkEventOnTags = false;
     var openedConversation = -1;
 
+    function loading() {
+        var opts = {
+            lines: 9, // The number of lines to draw
+            length: 38, // The length of each line
+            width: 17, // The line thickness
+            radius: 45, // The radius of the inner circle
+            scale: 1, // Scales overall size of the spinner
+            corners: 1, // Corner roundness (0..1)
+            color: '#ffffff', // CSS color or array of colors
+            fadeColor: 'transparent', // CSS color or array of colors
+            opacity: 0.25, // Opacity of the lines
+            rotate: 0, // The rotation offset
+            direction: 1, // 1: clockwise, -1: counterclockwise
+            speed: 1, // Rounds per second
+            trail: 60, // Afterglow percentage
+            fps: 20, // Frames per second when using setTimeout() as a fallback in IE 9
+            zIndex: 2e9, // The z-index (defaults to 2000000000)
+            className: 'spinner', // The CSS class to assign to the spinner
+            top: '50%', // Top position relative to parent
+            left: '50%', // Left position relative to parent
+            shadow: 'none', // Box-shadow for the lines
+            position: 'absolute' // Element positioning
+        };
+
+        return new Spinner(opts).spin(document.body);
+    }
+
     /**
      * validation functions
      */
@@ -200,30 +227,57 @@ jQuery(function ($) {
         });
     }
 
-    $('.favoris').hover(function () {
-        $(this).attr('class', 'star-on-png favoris')
-    }, function () {
-        $(this).attr('class', 'star-off-png favoris')
-    });
-    $('#ajouter-favoris').click(function () {
-        if ($(this).data('status') === undefined || $(this).data('status') == 'true')
-            $(this).data('status', 'false');
-        else if ($(this).data('status') === undefined || $(this).data('status') == 'false')
-            $(this).data('status', 'true');
+    var $favoris = $('#modif-favoris');
+    if ($favoris.length) {
+        var firstState = $favoris.attr('class');
+        $favoris.hover(function () {
+            if ($favoris.attr('class') == 'star-on-png favoris') {
+                $(this).attr('class', 'star-off-png favoris')
+            } else {
+                $(this).attr('class', 'star-on-png favoris')
+            }
+        }, function () {
+            $(this).attr('class', firstState);
+        });
+        $favoris.click(function () {
+            var status = $(this).data('est-favoris');
+            var idDoc = $('#document-text').data('document');
 
-        console.log($(this).data('status'))
-        // $.ajax({
-        //     method: 'POST',
-        //     url: '/ajouter-au-favoris',
-        //     data: {docId: docId,status: status},
-        //     dataType: 'json',
-        //     success: function (data) {
-        //         if(data.length && data[0]!=='error'){
-        //             $('#ajouter-favoris').attr('class','star-off-png favoris');
-        //         }
-        //     }
-        // });
-    });
+            var spinner = loading();
+            $.ajax({
+                method: 'POST',
+                url: '/modifier-favoris',
+                data: {idDoc: idDoc},
+                dataType: 'json',
+                success: function (data) {
+                    spinner.stop();
+                    console.log(data[0]);
+
+                    if (data.length && data[0] != 'false') {
+                        if (data[0] == 'on') {
+                            firstState = 'star-on-png favoris';
+                            console.log('im here in on clause')
+                            $.gritter.add({
+                                title: 'Notification',
+                                text: 'Le document est ajouté au favoris',
+                                class_name: 'gritter-success'
+                            });
+                        }
+                        else {
+                            console.log('im here in off clause')
+                            $.gritter.add({
+                                title: 'Notification',
+                                text: 'Le document est bien retiré des favoris',
+                                class_name: 'gritter-success'
+                            });
+                            firstState = 'star-off-png favoris';
+                        }
+
+                    }
+                }
+            });
+        });
+    }
     /**
      * end Creation et modification document
      */
@@ -231,8 +285,20 @@ jQuery(function ($) {
         $('#dynamic-table').dataTable({
             "bPaginate": true,
             "bLengthChange": false,
-            "bFilter": false,
+            "bFilter": true,
             "bInfo": false,
+            "columnDefs": [
+                {"targets": [1, 2, 3, 4, 5, 6], "searchable": false}
+            ],
+            "language": {
+                "search": "Filtrer: ",
+                "paginate": {
+                    "previous": "précédant",
+                    "next": "suivant",
+                },
+                "emptyTable": "Vous n' avez aucun document",
+                "zeroRecords": "Aucun document qui porte cet intitulé"
+            }
         });
 
 //        $('#dynamic-table').DataTable( {
@@ -267,13 +333,6 @@ jQuery(function ($) {
      */
 
 
-    $('.minim-chat-window').click(function () {
-        $('.panel-body.msg_container_base').slideToggle(100);
-    });
-    $('.close-chat-window').click(function () {
-        $(this).parent().parent().parent().parent().parent().remove();
-    });
-
     /**
      *
      *  end partie chat
@@ -283,13 +342,38 @@ jQuery(function ($) {
      */
     if ($editeur_text.length) {
         var idDoc = $editeur_text.data('document');
-        var docClient = new WebSocket("ws://" + location.host + "/document-modif/" + idDoc);
+        var docClient = new WebSocket("ws://" + location.host + "/document-modif/" + idDoc + "/" + $('#main-container').data('utilisateur'));
         console.log(idDoc);
         docClient.onmessage = function (evt) {
 
             var doc = JSON.parse(evt.data);
-            console.log(doc);
-            $editeur_text.html(doc.txt);
+            if (Array.isArray(doc) && doc[0] == 'users') {
+                var nbEditeurs = doc.length - 1;
+                var title = (nbEditeurs <= 1 ? ' éditeur' : ' éditeurs');
+                $('.editors .title').html('<p class="lead">Actuellement ' + nbEditeurs + title + ' en ligne</p>');
+
+                var $listUsers = $('.list-users');
+                $listUsers.html('');
+                for (var i = 1; i < doc.length; i++) {
+                    var docObject = JSON.parse(doc[i]);
+                    var $span = $('<span class="label label-sm label-success">');
+                    if ($('#main-container').data('utilisateur').toString() == docObject.senderId.toString()) {
+                        var $a = $('<a>', {href: '/profil'});
+                        $span.html("moi");
+
+                    } else {
+                        var $a = $('<a>', {href: '/profil/' + docObject.senderId});
+                        $span.html(docObject.sender);
+                    }
+
+                    $a.append($span);
+                    $listUsers.append($a);
+                }
+
+
+            }
+            else
+                $editeur_text.html(doc.txt);
 
 
         };
@@ -305,7 +389,43 @@ jQuery(function ($) {
         });
 
     }
+    /**
+     * gestion historique
+     */
+    var $rollBack = $('.rollback');
+    if ($rollBack.length) {
+        $rollBack.on('click', function (e) {
+            e.preventDefault();
+            var idH = $(this).data('history');
+            bootbox.confirm("Etes vous sûr de vouloir revenir à cette version?", function (result) {
+                if (result) {
+                    $.ajax({
+                        url: location.href,
+                        method: 'post',
+                        data: {idH: idH},
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data.length && data[0] == 'true') {
+                                $.gritter.add({
+                                    title: '',
+                                    text: 'le retour en arriere est effectué avec succès!',
+                                    class_name: 'gritter-success'
+                                });
+                                location.reload();
+                            } else if (data[0] == 'false') {
+                                $.gritter.add({
+                                    title: 'This is a warning notification',
+                                    text: 'Une erreur est survenue veuillez réessayer',
+                                    class_name: 'gritter-error'
+                                });
+                            }
+                        }
+                    });
+                }
+            });
 
+        })
+    }
 
 })
 ;

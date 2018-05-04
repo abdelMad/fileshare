@@ -23,9 +23,9 @@ public class ConnexionInscription extends HttpServlet {
                 if (type.equals("connexion")) {
                     boolean checkLogin = userHandler.authenticate(request);
                     if (checkLogin) {
-                        if (Util.elementExistInEnum(this.getServletContext().getAttributeNames(), "destinationUrl")) {
-                            String destinationUrl = this.getServletContext().getAttribute("destinationUrl").toString();
-                            this.getServletContext().removeAttribute("destinationUrl");
+                        if (Util.elementExistInEnum(request.getSession().getAttributeNames(), "destinationUrl")) {
+                            String destinationUrl = request.getSession().getAttribute("destinationUrl").toString();
+                            request.getSession().removeAttribute("destinationUrl");
                             if (destinationUrl.length() != 0) {
                                 response.sendRedirect(destinationUrl);
                             } else
