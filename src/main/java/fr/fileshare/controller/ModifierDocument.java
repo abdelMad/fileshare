@@ -16,7 +16,52 @@ import java.util.regex.Pattern;
 
 public class ModifierDocument extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        if (request.getRequestURI().equals("/modifier-favoris")) {
+        if (request.getRequestURI().equals("/supprimer-favoris")) {
+            if (request.getParameterMap().containsKey("idDoc")) {
+                if (UtilisateurHandler.isLoggedIn(request)) {
+                    request.setCharacterEncoding("utf8");
+                    response.setContentType("application/json");
+                    try {
+                        int idDoc = Integer.parseInt(request.getParameter("idDoc"));
+                        IDocumentHandler documentHandler = new DocumentHandler();
+                        if (documentHandler.supprimerFavoris(UtilisateurHandler.getLoggedInUser(request).getId(), idDoc)) {
+                            response.getWriter().println("[\"true\"]");
+                            Util.addGlobalAlert(Util.SUCCESS, "Le Document est retiré des favoris avec succès!");
+                        } else
+                            response.getWriter().println("[\"false\"]");
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        response.getWriter().println("[\"false\"]");
+
+                    }
+                }
+            }
+        } else if (request.getRequestURI().equals("/supprimer-document")) {
+            if (request.getParameterMap().containsKey("idDoc")) {
+                if (UtilisateurHandler.isLoggedIn(request)) {
+                    request.setCharacterEncoding("utf8");
+                    response.setContentType("application/json");
+                    try {
+                        int idDoc = Integer.parseInt(request.getParameter("idDoc"));
+                        IDocumentHandler documentHandler = new DocumentHandler();
+                        Document document = documentHandler.get(idDoc);
+                        if (document.getAuteur().getId() == UtilisateurHandler.getLoggedInUser(request).getId()) {
+                            if (documentHandler.delete(idDoc)) {
+                                response.getWriter().println("[\"true\"]");
+                                Util.addGlobalAlert(Util.SUCCESS, "Le Document est supprimé avec succès!");
+                            } else
+                                response.getWriter().println("[\"false\"]");
+                        } else
+                            response.getWriter().println("[\"false\"]");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        response.getWriter().println("[\"false\"]");
+
+                    }
+                }
+            }
+        } else if (request.getRequestURI().equals("/modifier-favoris")) {
             if (request.getParameterMap().containsKey("idDoc")) {
                 if (UtilisateurHandler.isLoggedIn(request)) {
                     try {
@@ -47,7 +92,7 @@ public class ModifierDocument extends HttpServlet {
                     }
                 }
             }
-        } else {
+        } else if (request.getRequestURI().equals("/modifier-document")) {
             if (request.getParameterMap().containsKey("doc_id")) {
                 if (UtilisateurHandler.isLoggedIn(request)) {
                     Map<String, String[]> params = request.getParameterMap();
@@ -132,6 +177,14 @@ public class ModifierDocument extends HttpServlet {
                                 document.setUtilisateursAvecDroit(utilisateurs_autorises);
                             }
                         }
+                        String lectureS = "off";
+                        if (params.containsKey("lectureS")) {
+                            lectureS = request.getParameter("lectureS");
+                        }
+                        System.out.println(request.getParameter("lectureS"));
+                        System.out.println(lectureS);
+                        System.out.println(lectureS.equals("on"));
+                        document.setReadOnly(lectureS.equals("on"));
                         //modification document
                         boolean checkDoc = documentHandler.update(document);
 

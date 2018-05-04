@@ -3,6 +3,22 @@ jQuery(function ($) {
     var checkEventOnTags = false;
     var openedConversation = -1;
 
+    function conirm(text, callback) {
+        bootbox.confirm({
+            message: text,
+            buttons: {
+                confirm: {
+                    label: 'Oui',
+                    className: 'btn-success'
+                },
+                cancel: {
+                    label: 'Non',
+                    className: 'btn-danger'
+                }
+            },
+            callback: callback
+        });
+    }
     function loading() {
         var opts = {
             lines: 9, // The number of lines to draw
@@ -12,7 +28,7 @@ jQuery(function ($) {
             scale: 1, // Scales overall size of the spinner
             corners: 1, // Corner roundness (0..1)
             color: '#ffffff', // CSS color or array of colors
-            fadeColor: 'transparent', // CSS color or array of colors
+            fadeColor: '#ffffff', // CSS color or array of colors
             opacity: 0.25, // Opacity of the lines
             rotate: 0, // The rotation offset
             direction: 1, // 1: clockwise, -1: counterclockwise
@@ -26,8 +42,23 @@ jQuery(function ($) {
             shadow: 'none', // Box-shadow for the lines
             position: 'absolute' // Element positioning
         };
+        var $div = $('<div id="cover-loading">');
+        $div.css({
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: $('body').height() + 'px',
+            backgroundColor: '#ffffff94'
+        });
 
+        $('body').append($div);
         return new Spinner(opts).spin(document.body);
+    }
+
+    function stopLoading(spinner) {
+        $('#cover-loading').remove();
+        spinner.stop();
     }
 
     /**
@@ -250,7 +281,7 @@ jQuery(function ($) {
                 data: {idDoc: idDoc},
                 dataType: 'json',
                 success: function (data) {
-                    spinner.stop();
+                    stopLoading(spinner);
                     console.log(data[0]);
 
                     if (data.length && data[0] != 'false') {
@@ -425,6 +456,84 @@ jQuery(function ($) {
             });
 
         })
+    }
+
+    var $telecharger = $('.telecharger');
+    if ($telecharger.length) {
+        $telecharger.on('click', function (e) {
+            e.preventDefault();
+            var idDoc = $(this).data('doc');
+            var spinner = loading();
+            $.ajax({
+                url: '/telecharger-document',
+                dataType: 'json',
+                method: 'get',
+                data: {id: idDoc},
+                success: function (data) {
+                    console.log(data);
+                    stopLoading(spinner);
+
+                    if (data.length && data[0] != "error") {
+                        location.href = data[0];
+                        $.ajax({
+                            url: '/telecharger-document',
+                            dataType: 'json',
+                            method: 'post',
+                            data: {id: idDoc},
+                            success: function (data) {
+
+                            }
+                        })
+                    }
+                }
+            });
+        });
+    }
+    var $supprimerDoc = $('.supprimer-doc');
+    if ($supprimerDoc.length) {
+        $supprimerDoc.on('click', function () {
+            var idDoc = $(this).data('doc');
+            conirm("Etes vous sur de voloir supprimer ce document?", function (result) {
+                if (result) {
+                    var spinner = loading();
+                    $.ajax({
+                        url: '/supprimer-document',
+                        dataType: 'json',
+                        method: 'post',
+                        data: {idDoc: idDoc},
+                        success: function (data) {
+                            console.log(data);
+                            stopLoading(spinner);
+                            if (data.length && data[0] != 'false')
+                                location.reload();
+                        }
+                    });
+                }
+            });
+
+        });
+    }
+    var $supprimerFav = $('.supprimer-favoris');
+    if ($supprimerFav.length) {
+        $supprimerFav.on('click', function () {
+            var idDoc = $(this).data('doc');
+            conirm("Etes vous sur de retirer ce document des favoris?", function (result) {
+                if (result) {
+                    $.ajax({
+                        url: '/supprimer-favoris',
+                        dataType: 'json',
+                        method: 'post',
+                        data: {idDoc: idDoc},
+                        success: function (data) {
+                            console.log(data);
+                            if (data.length && data[0] != 'false')
+                                location.reload();
+                        }
+                    });
+                }
+            });
+
+        });
     }
 
 })

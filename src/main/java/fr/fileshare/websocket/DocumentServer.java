@@ -93,7 +93,7 @@ public class DocumentServer {
                 Utilisateur utilisateurCourant = uSession.get(session.getId());
 
 
-                //Historique
+                //document
                 Document docPOJO = docsSession.get(session.getId());
                 docPOJO.setDernierEditeur(utilisateurCourant);
                 docPOJO.setDateDerniereModif(new Date());
@@ -115,6 +115,7 @@ public class DocumentServer {
         //add historique
         Historique historique = new Historique();
         Document docPOJO = docsSession.get(session.getId());
+        docPOJO = documentHandler.get(docPOJO.getId());
         String version = Util.generateUniqueToken();
         historique.setVersion(version);
         historique.setContenu(docPOJO.getDernierContenu());
@@ -125,7 +126,6 @@ public class DocumentServer {
         docsSession.remove(session.getId());
 
         //set document version
-
         docPOJO.setVersion(version);
         documentHandler.update(docPOJO);
 

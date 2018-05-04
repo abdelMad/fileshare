@@ -1,7 +1,6 @@
 package fr.fileshare.utilities;
 
 import fr.fileshare.dao.UtilisateurHandler;
-import fr.fileshare.socket.ChatClient;
 
 import javax.mail.Message;
 import javax.mail.Transport;

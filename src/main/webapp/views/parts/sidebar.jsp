@@ -9,6 +9,14 @@
 
             <b class="arrow"></b>
         </li>
+        <li class="<c:if test="${title eq 'Nouveau Document'}">active</c:if>">
+            <a href="/nouveau-document">
+                <i class="menu-icon fa fa-pencil-square-o"></i>
+                <span class="menu-text"> Nouveau document </span>
+            </a>
+
+            <b class="arrow"></b>
+        </li>
         <li class="<c:if test="${title eq 'Mes documents' or title eq 'Mes Favoris'or title eq 'Historique'}">open</c:if>">
             <a href="#" class="dropdown-toggle">
                 <i class="menu-icon fa fa-file-o"></i>
@@ -46,14 +54,6 @@
                 </li>
 
             </ul>
-        </li>
-        <li class="<c:if test="${title eq 'Nouveau Document'}">active</c:if>">
-            <a href="/nouveau-document">
-                <i class="menu-icon fa fa-pencil-square-o"></i>
-                <span class="menu-text"> Nouveau document </span>
-            </a>
-
-            <b class="arrow"></b>
         </li>
         <li class="">
             <a href="/deconnexion">

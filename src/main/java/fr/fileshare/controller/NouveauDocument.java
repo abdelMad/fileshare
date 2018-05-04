@@ -34,7 +34,7 @@ public class NouveauDocument extends HttpServlet {
                     }
                     Pattern pattern = Pattern.compile("^#[\\w\\d]+$|^#[\\w\\d]+( #[\\w\\d]+)*$", Pattern.CASE_INSENSITIVE);
 
-                    if (tags.length() != 0 && pattern.matcher(tags).matches()) {
+                    if (tags.length() == 0 || pattern.matcher(tags).matches()) {
                         doc.setTag(tags);
 
                         try {
@@ -68,6 +68,11 @@ public class NouveauDocument extends HttpServlet {
                                 doc.setUtilisateursAvecDroit(utilisateurs_autorises);
                             }
                         }
+                        String lectureS = "off";
+                        if (params.containsKey("lectureS")) {
+                            lectureS = request.getParameter("lectureS");
+                        }
+                        doc.setReadOnly(lectureS.equals("on"));
                         doc.setDatePublixation(new Date());
                         doc.setDateDerniereModif(new Date());
                         Utilisateur utilisateurCourant = UtilisateurHandler.getLoggedInUser(request);
@@ -78,6 +83,7 @@ public class NouveauDocument extends HttpServlet {
                             Util.addGlobalAlert(Util.SUCCESS, "Document crée avec succès!");
                             response.sendRedirect("/modifier-document?id=" + doc.getId());
                         }
+
 
                     } else {
                         Util.addGlobalAlert(Util.WARNING, "Veuillez entrer un tag valide (#example1 #exampl2 ...)");

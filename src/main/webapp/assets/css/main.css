@@ -440,3 +440,7 @@ h3.panel-title span {
     padding-left: 0;
     padding-top: 10px;
 }
+
+.supprimer-doc, .supprimer-favoris {
+    cursor: pointer;
+}

@@ -91,17 +91,23 @@
                             <c:out value="${doc.dernierContenu}" escapeXml="false"></c:out>
                         </div>
 
-                        <a class="green" href="/telecharger-document?id=<c:out value="${doc.id}"></c:out>">
-                            <i class="ace-icon fa fa-cloud-download bigger-130"></i>
+                        <a class="green telecharger" href="#" data-doc="${doc.id}">
+                            <i class="ace-icon fa fa-download bigger-130"></i>
                         </a>
 
                         <a class="blue" href="/modifier-document?id=<c:out value="${doc.id}"></c:out>">
                             <i class="ace-icon fa fa-pencil bigger-130"></i>
                         </a>
-
-                        <a class="red" href="/supprimer-document?id=<c:out value="${doc.id}"></c:out>">
-                            <i class="ace-icon fa fa-trash-o bigger-130"></i>
-                        </a>
+                        <c:if test="${utilisateur.id eq doc.auteur.id}">
+                            <a class="red supprimer-doc" data-doc="${doc.id}">
+                                <i class="ace-icon fa fa-trash-o bigger-130"></i>
+                            </a>
+                        </c:if>
+                        <c:if test="${title eq 'Mes Favoris'}">
+                            <a class="red supprimer-favoris" data-doc="${doc.id}">
+                                <i class="ace-icon fa fa-trash-o bigger-130"></i>
+                            </a>
+                        </c:if>
                     </div>
                 </td>
                 </tr>

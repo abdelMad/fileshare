@@ -12,6 +12,9 @@
                    title="Retirer des favoris"></i>
             </c:if>
         </h2>
+        <div class="well">
+            <p>Le contenu du document s'enregistre automatiquement! amusez vous bien</p>
+        </div>
         <form class="form-horizontal doc-form" id="modifier_document" action="" method="post">
             <c:if test="${document.auteur.id != utilisateur.id}">
                 <div class="form-group">
@@ -46,6 +49,15 @@
                         <input type="text" name="tags" value="${document.tag}" id="tags"
                                placeholder="#java #jsp #jstl ..."
                                class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <div class="checkbox">
+                            <label>
+                                <input name="lectureS" type="checkbox"> Mode lecture seule
+                            </label>
+                        </div>
                     </div>
                 </div>
 
@@ -89,6 +101,17 @@
 
                             </div>
 
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-10">
+                        <div class="checkbox">
+                            <label>
+                                <input name="lectureS" type="checkbox" class="ace"
+                                       <c:if test="${document.readOnly eq true}">checked</c:if> >
+                                <span class="lbl"> Mode lecture seule</span>
+                            </label>
                         </div>
                     </div>
                 </div>

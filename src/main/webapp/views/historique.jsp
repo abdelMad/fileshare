@@ -90,7 +90,9 @@
                                  contenteditable="true">
                                 <c:out value="${doc.dernierContenu}" escapeXml="false"></c:out>
                             </div>
-
+                            <a class="blue" href="/modifier-document?id=<c:out value="${doc.id}"></c:out>">
+                                <i class="ace-icon fa fa-pencil bigger-130"></i>
+                            </a>
                             <a class="green" href="/historique/<c:out value="${doc.id}"></c:out>">
                                 <i class="ace-icon fa fa-check bigger-130"></i>
                             </a>

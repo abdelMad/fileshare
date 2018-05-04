@@ -46,12 +46,12 @@ public class DocumentHandler implements IDocumentHandler {
         return check;
     }
 
-    public boolean delete(Document document) {
+    public boolean delete(int idDoc) {
         Session session = SessionFactoryHelper.getSessionFactory().openSession();
         boolean check = false;
         try {
             session.beginTransaction();
-            Document documentASupprimer = session.get(document.getClass(), document.getId());
+            Document documentASupprimer = session.get(Document.class, idDoc);
             session.delete(documentASupprimer);
             session.getTransaction().commit();
             check = true;

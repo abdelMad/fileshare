@@ -73,13 +73,14 @@
                                                 </div>
 
                                                 <div class="pull-right action-buttons">
-                                                    <a href="/telecharger-document?id=${doc.id}">
-                                                        <i class="ace-icon fa fa-cloud-download green bigger-130"></i>
+                                                    <a class="telecharger" data-doc="${doc.id}">
+                                                        <i class="ace-icon fa fa-download green bigger-130"></i>
                                                     </a>
-
+                                                    <c:if test="${(not empty utilisateur and utilisateur.id eq doc.auteur.id) or (doc.readOnly eq false)}">
                                                     <a href="/modifier-document?id=${doc.id}">
                                                         <i class="ace-icon fa fa-pencil blue bigger-125"></i>
                                                     </a>
+                                                    </c:if>
                                                 </div>
                                             </div>
                                         </div>

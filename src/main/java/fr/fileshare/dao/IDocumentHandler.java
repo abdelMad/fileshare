@@ -10,7 +10,7 @@ public interface IDocumentHandler {
 
     boolean update(Document document);
 
-    boolean delete(Document document);
+    boolean delete(int idDoc);
 
     Document get(int id);
 

@@ -25,12 +25,12 @@ public class Document {
     @JoinColumn(name = "dernier_editeur")
     private Utilisateur dernierEditeur;
     private String tag;
-    private String mdp;
+    private boolean readOnly;
     private int status;
     @ManyToOne
     @JoinColumn(name = "auteur")
     private Utilisateur auteur;
-    @OneToMany(mappedBy = "document")
+    @OneToMany(mappedBy = "document", cascade = CascadeType.REMOVE)
     private Set<Historique> historique;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -113,14 +113,6 @@ public class Document {
         this.status = status;
     }
 
-    public String getMdp() {
-        return mdp;
-    }
-
-    public void setMdp(String mdp) {
-        this.mdp = mdp;
-    }
-
     public Set<Utilisateur> getUtilisateursAvecDroit() {
         return utilisateursAvecDroit;
     }
@@ -167,6 +159,14 @@ public class Document {
 
     public void setVersion(String version) {
         this.version = version;
+    }
+
+    public boolean isReadOnly() {
+        return readOnly;
+    }
+
+    public void setReadOnly(boolean readOnly) {
+        this.readOnly = readOnly;
     }
 
     @Override

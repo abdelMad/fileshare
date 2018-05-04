@@ -48,6 +48,16 @@
                     </div>
                 </div>
             </div>
+            <div class="form-group">
+                <div class="col-sm-offset-3 col-sm-10">
+                    <div class="checkbox">
+                        <label>
+                            <input name="lectureS" type="checkbox" class="ace">
+                            <span class="lbl"> Mode lecture seule</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
             <div class="clearfix form-actions">
                 <div class="col-md-offset-3 col-md-9">
                     <button class="btn btn-success" type="submit">
