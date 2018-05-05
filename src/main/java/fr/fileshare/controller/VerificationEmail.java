@@ -24,6 +24,7 @@ public class VerificationEmail extends HttpServlet {
         Map<String, String[]> params = request.getParameterMap();
         IVerificationTokenHandler verificationTokenHandler = new VerificationTokenHandler();
         if (UtilisateurHandler.isLoggedIn(request)) {
+            request.setAttribute("utilisateur", UtilisateurHandler.getLoggedInUser(request));
             Utilisateur utilisateurCourant = UtilisateurHandler.getLoggedInUser(request);
             int validationStatus =  verificationTokenHandler.validateMail(request);
             switch (validationStatus){

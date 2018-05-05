@@ -1,7 +1,7 @@
 package fr.fileshare.controller;
 
 import fr.fileshare.dao.*;
-import fr.fileshare.utilities.Util;
+import fr.fileshare.model.Document;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -29,13 +29,12 @@ public class Init extends HttpServlet {
         SessionFactoryHelper.init();
         IDocumentHandler documentHandler = new DocumentHandler();
         request.setAttribute("title", "Accueil");
-        List docs = documentHandler.getDocumentsAVoir(UtilisateurHandler.getLoggedInUser(request), 0, 10);
         if(params.containsKey("intitule"))
             intitule = request.getParameter("intitule");
         if(params.containsKey("tags"))
             tags = request.getParameter("tags");
 
-         docs = documentHandler.getDocumentsAVoir(UtilisateurHandler.getLoggedInUser(request), intitule,tags,10);
+        List<Document> docs = documentHandler.getDocumentsAVoir(UtilisateurHandler.getLoggedInUser(request), 0, 10, intitule, tags);
         request.setAttribute("docs", docs);
         if (UtilisateurHandler.isLoggedIn(request))
             request.setAttribute("utilisateur", UtilisateurHandler.getLoggedInUser(request));

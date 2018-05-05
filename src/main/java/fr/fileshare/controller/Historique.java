@@ -20,6 +20,7 @@ public class Historique extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if (UtilisateurHandler.isLoggedIn(request)) {
+            request.setAttribute("utilisateur", UtilisateurHandler.getLoggedInUser(request));
             if (request.getParameterMap().containsKey("idH")) {
                 try {
                     Utilisateur utilisateur = UtilisateurHandler.getLoggedInUser(request);
@@ -49,6 +50,7 @@ public class Historique extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if (UtilisateurHandler.isLoggedIn(request)) {
+            request.setAttribute("utilisateur", UtilisateurHandler.getLoggedInUser(request));
             String pathInfo = request.getPathInfo() != null ? request.getPathInfo() : "";
             String[] pathParts = pathInfo.split("/");
             if (pathParts.length == 1) {

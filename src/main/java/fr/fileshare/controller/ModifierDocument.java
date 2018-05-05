@@ -2,7 +2,6 @@ package fr.fileshare.controller;
 
 import fr.fileshare.dao.*;
 import fr.fileshare.model.Document;
-import fr.fileshare.model.Historique;
 import fr.fileshare.model.Utilisateur;
 import fr.fileshare.utilities.Util;
 
@@ -214,6 +213,7 @@ public class ModifierDocument extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if (request.getParameterMap().containsKey("id")) {
             if (UtilisateurHandler.isLoggedIn(request)) {
+                request.setAttribute("utilisateur", UtilisateurHandler.getLoggedInUser(request));
                 IDocumentHandler documentHandler = new DocumentHandler();
                 int id = -1;
                 try {

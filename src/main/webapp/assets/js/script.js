@@ -1,20 +1,22 @@
+var last_gritter;
+
+function showNotif(title, text, type, clearGritter) {
+    if (clearGritter) {
+        if (last_gritter) $.gritter.remove(last_gritter);
+    }
+    last_gritter = $.gritter.add({
+        title: title,
+        text: text,
+        class_name: 'gritter-' + type + ' gritter-right'
+    });
+}
+
 jQuery(function ($) {
     var $editeur_text = $('#document-text');
     var checkEventOnTags = false;
     var openedConversation = -1;
-    var last_gritter;
-    var checkValue = false;
 
-    function showNotif(title, text, type, clearGritter) {
-        if (clearGritter) {
-            if (last_gritter) $.gritter.remove(last_gritter);
-        }
-        last_gritter = $.gritter.add({
-            title: title,
-            text: text,
-            class_name: 'gritter-' + type + ' gritter-right'
-        });
-    }
+    var checkValue = false;
 
 
     function conirm(text, callback) {
@@ -33,6 +35,7 @@ jQuery(function ($) {
             callback: callback
         });
     }
+
     function loading() {
         var opts = {
             lines: 9, // The number of lines to draw
@@ -549,277 +552,6 @@ jQuery(function ($) {
 
         });
     }
-
-    //editables on first profile page
-    $.fn.editable.defaults.mode = 'inline';
-    $.fn.editableform.loading = "<div class='editableform-loading'><i class='ace-icon fa fa-spinner fa-spin fa-2x light-blue'></i></div>";
-    $.fn.editableform.buttons = '<button type="submit" class="btn btn-info editable-submit"><i class="ace-icon fa fa-check"></i></button>' +
-        '<button type="button" class="btn editable-cancel"><i class="ace-icon fa fa-times"></i></button>';
-    $.fn.editable.defaults.ajaxOptions = {type: 'POST'};
-
-    //editables
-    var check = false;
-
-    function submitValue(name, newValue) {
-        check = false;
-        $.ajax({
-            method: 'POST',
-            url: '/modifier-profil',
-            data: {key: name, value: newValue},
-            // contentType: false,
-            // cache: false,
-            // processData:false,
-            success: function (data) {
-                console.log(data);
-
-                if (data.trim() == 'true') {
-                    check = true;
-                }
-            }
-        });
-    }
-
-    //text editable
-    $('#nom')
-        .editable({
-            type: 'text',
-            name: 'nom',
-            emptytext: '',
-            success: function (data, newValue) {
-                submitValue('nom', newValue);
-                setTimeout(function () {
-                    console.log(check);
-                    if (check) {
-                        showNotif('Modification reussie', 'La modification de votre est effectué avec succès!', 'success', true);
-                        $('.navbar-container .utilisateur-info').html('<small>Bienvenu, </small>' + newValue);
-                    }
-                }, 400);
-
-            },
-            validate: function (value) {
-                if ($.trim(value) == '') {
-                    return 'This field is required';
-                }
-            }
-        });
-
-    $('#prenom')
-        .editable({
-            type: 'text',
-            name: 'prenom',
-            emptytext: '',
-            success: function (data, newValue) {
-                submitValue('prenom', newValue);
-                setTimeout(function () {
-                    console.log(check);
-                    if (check) {
-                        showNotif('Modification reussie', 'La modification de votre prenom est effectué avec succès!', 'success', true);
-                    }
-                }, 400);
-            },
-            validate: function (value) {
-                if ($.trim(value) == '') {
-                    return 'This field is required';
-                }
-            }
-        });
-    var $emailInput = $('#email');
-    var $emailProfil = $emailInput.html();
-    var $emailParent = $emailInput.parent();
-
-    console.log($emailProfil);
-
-    function bindEmail(emailInput) {
-        emailInput
-            .editable({
-                type: 'text',
-                name: 'email',
-                emptytext: '',
-                success: function (data, newValue) {
-                    bootbox.prompt({
-                        title: "Veuillez entrer votre mot de passe",
-                        inputType: "password",
-                        callback: function (result) {
-                            if (result === null) {
-
-                            } else
-                                submitValue('verify', result);
-                            console.log(newValue);
-                            setTimeout(function () {
-                                console.log('Im here');
-                                if (check) {
-                                    submitValue('email', newValue);
-                                    setTimeout(function () {
-                                        console.log(check);
-                                        if (check) {
-                                            showNotif('Modification reussie', 'La modification de votre l\'email est effectué avec succès!', 'success', true);
-                                            showNotif('Email Validation', 'Un email de validation vient d\'être envoyé', 'info', false);
-                                            $emailParent.html('');
-                                            var $thisEmail = emailInput;
-                                            $thisEmail.html(newValue);
-                                            $emailParent.append($thisEmail);
-                                            bindEmail($thisEmail);
-                                        } else {
-                                            showNotif('Modification echouée', 'L\'email que vous venez d\'entrer existe dèja', 'error', true);
-
-                                        }
-                                    }, 1400);
-                                } else {
-                                    showNotif('Mot de passe incorrect', 'Le mot de passe que vous venez d\'entrer est invalide', 'error', true);
-                                    $emailParent.html('');
-                                    var $thisEmail = emailInput;
-                                    $emailParent.append($thisEmail);
-                                    bindEmail($thisEmail);
-
-                                }
-                            }, 400);
-
-                        }
-                    });
-                    return false;
-                }
-                , validate: function (value) {
-                    if ($.trim(value) == '') {
-                        return 'This field is required';
-                    }
-                }
-            });
-    }
-
-    bindEmail($emailInput);
-
-    $('#about').editable({
-        mode: 'inline',
-        type: 'wysiwyg',
-        name: 'description',
-        emptytext: '',
-        wysiwyg: {
-            //css : {'max-width':'300px'}
-        },
-        success: function (response, newValue) {
-            console.log(newValue.length);
-            submitValue('description', newValue);
-            setTimeout(function () {
-                console.log(check);
-                if (check) {
-                    showNotif('Modification reussie', 'La modification de votre description est effectué avec succès!', 'success', true);
-                }
-            }, 400);
-
-        }
-    });
-    cpt = 0;
-
-    // *** editable avatar *** //
-    try {//ie8 throws some harmless exceptions, so let's catch'em
-
-        //first let's add a fake appendChild method for Image element for browsers that have a problem with this
-        //because editable plugin calls appendChild, and it causes errors on IE at unpredicted points
-        try {
-            document.createElement('IMG').appendChild(document.createElement('B'));
-        } catch (e) {
-            Image.prototype.appendChild = function (el) {
-            }
-        }
-
-        var srcImage = "";
-        $('#imageProfile').editable({
-            type: 'image',
-            name: 'imageProfile',
-            id: 'imageProfile',
-            value: null,
-            image: {
-                //specify ace file input plugin's options here
-                btn_choose: 'Changer Image',
-                droppable: true,
-                maxSize: 2100000,//~100Kb
-
-                //and a few extra ones here
-                name: 'imageProfile',//put the field name here as well, will be used inside the custom plugin
-                on_error: function (error_type) {//on_error function will be called when the selected file has a problem
-                    console.log(error_type);
-                    if (last_gritter) $.gritter.remove(last_gritter);
-                    if (error_type == 1) {//file format error
-                        last_gritter = $.gritter.add({
-                            title: 'File is not an image!',
-                            text: 'Please choose a jpg|gif|png image!',
-                            class_name: 'gritter-error gritter-center'
-                        });
-                    } else if (error_type == 2) {//file size rror
-                        last_gritter = $.gritter.add({
-                            title: 'File too big!',
-                            text: 'Image size should not exceed 100Kb!',
-                            class_name: 'gritter-error gritter-center'
-                        });
-                    }
-                    else {//other error
-                    }
-                },
-                on_success: function () {
-                    $.gritter.removeAll();
-                    // console.log(newValue);
-
-                }
-            }
-            ,
-            url: function (params) {
-                console.log(params);
-                // ***UPDATE AVATAR HERE*** //
-                //for a working upload example you can replace the contents of this function with
-                //examples/profile-avatar-update.js
-                var deferred = new $.Deferred
-
-                var value = $('#imageProfile').next().find('input[type=hidden]:eq(0)').val();
-                if (!value || value.length == 0) {
-                    deferred.resolve();
-                    return deferred.promise();
-                }
-                $.ajax({
-                    url: '/modifier-image-profil',
-                    data: new FormData(document.getElementsByClassName('editableform')[0]),
-                    contentType: false,
-                    processData: false,
-                    cache: false,
-                    enctype: 'multipart/form-data',
-                    type: "POST",
-                    success: function (data) {
-                        if (data.trim().length && data.trim() != 'false') {
-                            // check = true ;
-                            srcImage = data;
-                            console.log(check);
-                        }
-                    }
-                });
-
-                //dummy upload
-                setTimeout(function () {
-                    //for browsers that have a thumbnail of selected
-                    console.log(srcImage);
-                    if (srcImage.length) {
-                        $('#imageProfile').attr('src', srcImage);
-                        $('.nav-utilisateur-photo').attr('src', srcImage);
-                        // submitValue()
-                        deferred.resolve({'status': 'OK'});
-
-                        showNotif('Modification reussie', 'La modification de votre Image de profil est effectué avec succès!', 'success', true);
-                    } else {
-                        showNotif('Modification echouée', 'La modification est echouée! Veuillez reéssayer', 'error', true);
-
-                    }
-
-                }, 400)
-
-                return deferred.promise();
-                // ***END OF UPDATE AVATAR HERE*** //
-            },
-
-            success: function (response, newValue) {
-
-            }
-        })
-    } catch (e) {
-    }
-
 
 })
 ;

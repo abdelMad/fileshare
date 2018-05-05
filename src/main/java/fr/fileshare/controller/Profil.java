@@ -3,29 +3,23 @@ package fr.fileshare.controller;
 import fr.fileshare.dao.*;
 import fr.fileshare.model.Utilisateur;
 import fr.fileshare.model.VerificationToken;
+import fr.fileshare.utilities.Util;
 
-import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.attribute.PosixFilePermission;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 @MultipartConfig
 public class Profil extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if (UtilisateurHandler.isLoggedIn(request)) {
+            request.setAttribute("utilisateur", UtilisateurHandler.getLoggedInUser(request));
             Utilisateur utilisateurCourant = UtilisateurHandler.getLoggedInUser(request);
             if (request.getRequestURI().equals("/modifier-image-profil")) {
                 Part imageProfile = request.getPart("imageProfile");
@@ -34,7 +28,7 @@ public class Profil extends HttpServlet {
 
                     try {
                         boolean check = true;
-                        if (!utilisateurCourant.getImage().isEmpty()) {
+                        if (utilisateurCourant.getImage() != null && !utilisateurCourant.getImage().isEmpty()) {
                             System.out.println(getServletConfig().getServletContext().getRealPath("") + utilisateurCourant.getImage());
                             File file = new File(getServletConfig().getServletContext().getRealPath("") + utilisateurCourant.getImage());
                             System.out.println("fileExists:=" + file.exists());

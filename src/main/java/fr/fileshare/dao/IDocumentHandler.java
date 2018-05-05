@@ -14,7 +14,7 @@ public interface IDocumentHandler {
 
     Document get(int id);
 
-    List<Document> getDocumentsAVoir(Utilisateur utilisateurCourant, int debut, int fin);
+    List<Document> getDocumentsAVoir(Utilisateur utilisateurCourant, int debut, int fin, String intitule, String tags);
 
     List<Document> getDocumentsFavoris(Utilisateur utilisateurCourant, int debut, int fin);
 

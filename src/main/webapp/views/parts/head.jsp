@@ -19,6 +19,8 @@
 
     <!-- page specific plugin styles -->
     <%= Util.includeCssOrJs(request, "/mes-documents|/documents-favoris", "/assets/css/ui.jqgrid.min.css")%>
+    <link rel="stylesheet" href="/assets/css/bootstrap-editable.min.css"/>
+
     <!-- text fonts -->
     <link rel="stylesheet" href="/assets/fonts/fonts.googleapis.com.css" />
 

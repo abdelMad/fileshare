@@ -81,7 +81,7 @@ public class DocumentHandler implements IDocumentHandler {
         return document;
     }
 
-    public List<Document> getDocumentsAVoir(Utilisateur utilisateurCourant, int debut, int fin) {
+    public List<Document> getDocumentsAVoir(Utilisateur utilisateurCourant, int debut, int fin, String intitule, String tags) {
         List<Document> documents = new ArrayList<>();
         Session session = SessionFactoryHelper.getSessionFactory().openSession();
         try {
@@ -93,6 +93,7 @@ public class DocumentHandler implements IDocumentHandler {
                         "UNION\n" +
                         "select document.* from fileshare.document join document_utilisateur on document_utilisateur.document_id=document_utilisateur.document_id where document.status=:status  AND document_utilisateur.utilisateur_id=:id_utilisateur\n" +
                         ") fichiers_autorise\n" +
+                        "WHERE fichiers_autorise.intitule LIKE '%" + intitule + "%' AND fichiers_autorise.tag LIKE '%" + tags + "%' " +
                         "order by document_id Desc")
                         .addEntity("document", Document.class);
                 query.setParameter("id_utilisateur", id_utilisateur);

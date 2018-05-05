@@ -15,6 +15,7 @@ public class ConnexionInscription extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if (!UtilisateurHandler.isLoggedIn(request)) {
+            request.setAttribute("utilisateur", UtilisateurHandler.getLoggedInUser(request));
             Map<String, String[]> params = request.getParameterMap();
             // type = login or register
             if (params.containsKey("type")) {

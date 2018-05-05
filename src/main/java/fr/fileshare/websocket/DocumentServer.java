@@ -20,7 +20,7 @@ import java.util.logging.Logger;
 @ServerEndpoint(value = "/document-modif/{doc}/{idU}")
 public class DocumentServer {
     private static final Logger LOGGER =
-            Logger.getLogger(ChatServer.class.getName());
+            Logger.getLogger(DocumentServer.class.getName());
     private static HashMap<String, Document> docsSession = new HashMap<>();
     private static HashMap<String, Utilisateur> uSession = new HashMap<>();
 

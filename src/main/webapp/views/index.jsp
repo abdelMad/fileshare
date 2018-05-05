@@ -7,8 +7,8 @@
 </div>
 <form action="/" method="get" class="form-inline search-form-home">
     <div class="center">
-        <input type="text" name="intitule" class="input-large" placeholder="Intitule fichier">
-        <input type="text" name="tags" class="input-large" placeholder="Tags">
+        <input type="text" name="intitule" value="${param.intitule}" class="input-large" placeholder="Intitule fichier">
+        <input type="text" name="tags" value="${param.tags}" class="input-large" placeholder="Tags">
 
         <button type="submit" class="btn btn-info btn-sm">
             <i class="ace-icon fa fa-search bigger-110"></i>Rechercher
@@ -49,10 +49,10 @@
                                         <span id="titre${doc.id}">${doc.intitule}</span>
                                         <span class="widget-toolbar no-border">
 																	<i class="ace-icon fa fa-clock-o bigger-110"></i>
-                                            Le <fmt:formatDate pattern = "dd-MM-yyyy"
+                                            Le <fmt:formatDate pattern="dd-MM-yyyy"
                                                                value="${doc.datePublixation}"/> à <fmt:formatDate
                                                 pattern="HH:mm"
-                                                value = "${doc.datePublixation}" />
+                                                value="${doc.datePublixation}"/>
 																</span>
 
 
@@ -75,8 +75,11 @@
                                             <div class="widget-toolbox clearfix">
                                                 <div class="pull-left">
                                                     <i class="ace-icon fa fa-hand-o-right grey bigger-125"></i>
-                                                    <a href="#" class="bigger-110  view-doc" data-doc-id="<c:out value="${doc.id}"></c:out>">Voir le document</a>
-                                                    <div class="wysiwyg-editor hidden" id="<c:out value="${doc.id}"></c:out>"
+                                                    <a href="#" class="bigger-110  view-doc"
+                                                       data-doc-id="<c:out value="${doc.id}"></c:out>">Voir le
+                                                        document</a>
+                                                    <div class="wysiwyg-editor hidden"
+                                                         id="<c:out value="${doc.id}"></c:out>"
                                                          contenteditable="true">
                                                         <c:out value="${doc.dernierContenu}" escapeXml="false"></c:out>
                                                     </div>

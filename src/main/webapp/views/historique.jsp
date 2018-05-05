@@ -154,7 +154,7 @@
                                         </div>
                                     </div>
                                 </div>
-                        </div>
+                            </div>
                         </c:forEach>
 
                     </div><!-- /.timeline-items -->

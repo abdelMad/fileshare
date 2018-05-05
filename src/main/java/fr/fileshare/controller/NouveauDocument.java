@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 public class NouveauDocument extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if (UtilisateurHandler.isLoggedIn(request)) {
+            request.setAttribute("utilisateur", UtilisateurHandler.getLoggedInUser(request));
             Map<String, String[]> params = request.getParameterMap();
             if (params.containsKey("intitule") && params.containsKey("status")) {
                 String intitule = request.getParameter("intitule");
