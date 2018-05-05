@@ -3,7 +3,7 @@
 <div class="row nouveau-document">
     <div class="col-sm-12">
         <h2 class="header blue">Nouveau Document</h2>
-        <form class="form-horizontal" id="creer_document" action="" method="post">
+        <form class="form-horizontal doc-form" id="creer_document" action="" method="post">
             <div class="form-group">
                 <label class="col-sm-3 control-label no-padding-right" for="Intitule"> Titre du document </label>
 
@@ -45,6 +45,16 @@
 
                         </div>
 
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-3 col-sm-10">
+                    <div class="checkbox">
+                        <label>
+                            <input name="lectureS" type="checkbox" class="ace">
+                            <span class="lbl"> Mode lecture seule</span>
+                        </label>
                     </div>
                 </div>
             </div>

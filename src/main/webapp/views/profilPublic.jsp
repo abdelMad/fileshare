@@ -21,7 +21,8 @@
 
                             <div class="space space-4"></div>
 
-                            <a href="/messages?utilisateur=${profilUtilisateur.id}" id="send_message" class="btn btn-sm btn-block btn-primary">
+                            <a href="/contact?u=${profilUtilisateur.id}" data-u-id="${profilUtilisateur.id}"
+                               id="send_message" class="btn btn-sm btn-block btn-primary">
                                 <i class="ace-icon fa fa-envelope-o bigger-110"></i>
                                 <span class="bigger-110">Envoyer un message</span>
                             </a>

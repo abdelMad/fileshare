@@ -3,6 +3,7 @@ package fr.fileshare.controller;
 import fr.fileshare.dao.*;
 import fr.fileshare.model.Utilisateur;
 import fr.fileshare.model.VerificationToken;
+import fr.fileshare.utilities.Util;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -43,7 +44,7 @@ public class VerificationEmail extends HttpServlet {
             response.sendRedirect("/");
         } else {
             Util.addGlobalAlert(Util.WARNING,"Vous devez vous connecter pour pouvoir continuer");
-            servletContext.setAttribute("destinationUrl", request.getRequestURL().append('?').append(request.getQueryString()));
+            request.getSession().setAttribute("destinationUrl", request.getRequestURL().append('?').append(request.getQueryString()));
             servletContext.getRequestDispatcher("/connexion").forward(request, response);
         }
 

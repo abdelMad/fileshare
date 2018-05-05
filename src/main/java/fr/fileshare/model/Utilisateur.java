@@ -24,15 +24,18 @@ public class Utilisateur {
     @OneToMany(mappedBy = "auteur", fetch = FetchType.EAGER)
     private Set<Document> documents;
 
-    @OneToMany(mappedBy = "editeur", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "editeur")
     private Set<Historique> historiques;
-    @OneToMany(mappedBy = "emetteur", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "emetteur")
     private Set<Message> messagesSent;
-    @OneToMany(mappedBy = "recepteur", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "recepteur")
     private Set<Message> messagesReceived;
 
-    @ManyToMany(mappedBy = "utilisateursAvecDroit", fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "utilisateursAvecDroit")
     private Set<Document> documentsAutorises;
+
+    @ManyToMany(mappedBy = "utilisateursFavoris")
+    private Set<Document> favoris;
 
     public Utilisateur() {
     }
@@ -155,6 +158,14 @@ public class Utilisateur {
 
     public void setDocumentsAutorises(Set<Document> documentsAutorises) {
         this.documentsAutorises = documentsAutorises;
+    }
+
+    public Set<Document> getFavoris() {
+        return favoris;
+    }
+
+    public void setFavoris(Set<Document> favoris) {
+        this.favoris = favoris;
     }
 
     @Override

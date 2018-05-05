@@ -1,6 +1,5 @@
 jQuery(function ($) {
-
-    var $editeur_text = $('#editor2');
+    var $editeur_text = $('#document-text');
     var checkEventOnTags = false;
     var openedConversation = -1;
     var last_gritter;
@@ -17,6 +16,96 @@ jQuery(function ($) {
         });
     }
 
+
+    function conirm(text, callback) {
+        bootbox.confirm({
+            message: text,
+            buttons: {
+                confirm: {
+                    label: 'Oui',
+                    className: 'btn-success'
+                },
+                cancel: {
+                    label: 'Non',
+                    className: 'btn-danger'
+                }
+            },
+            callback: callback
+        });
+    }
+    function loading() {
+        var opts = {
+            lines: 9, // The number of lines to draw
+            length: 38, // The length of each line
+            width: 17, // The line thickness
+            radius: 45, // The radius of the inner circle
+            scale: 1, // Scales overall size of the spinner
+            corners: 1, // Corner roundness (0..1)
+            color: '#ffffff', // CSS color or array of colors
+            fadeColor: '#ffffff', // CSS color or array of colors
+            opacity: 0.25, // Opacity of the lines
+            rotate: 0, // The rotation offset
+            direction: 1, // 1: clockwise, -1: counterclockwise
+            speed: 1, // Rounds per second
+            trail: 60, // Afterglow percentage
+            fps: 20, // Frames per second when using setTimeout() as a fallback in IE 9
+            zIndex: 2e9, // The z-index (defaults to 2000000000)
+            className: 'spinner', // The CSS class to assign to the spinner
+            top: '50%', // Top position relative to parent
+            left: '50%', // Left position relative to parent
+            shadow: 'none', // Box-shadow for the lines
+            position: 'absolute' // Element positioning
+        };
+        var $div = $('<div id="cover-loading">');
+        $div.css({
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: $('body').height() + 'px',
+            backgroundColor: '#ffffff94'
+        });
+
+        $('body').append($div);
+        return new Spinner(opts).spin(document.body);
+    }
+
+    function stopLoading(spinner) {
+        $('#cover-loading').remove();
+        spinner.stop();
+    }
+
+    /**
+     * validation functions
+     */
+    function errorPlacement(error, element) {
+        // Add the `help-block` class to the error element
+        error.addClass("help-block");
+
+        if (element.prop("type") === "checkbox") {
+            error.insertAfter(element.parent("label"));
+        } else {
+            error.insertAfter(element);
+        }
+    }
+
+    function highlight(element, errorClass, validClass) {
+        $(element).parents(".form-group").addClass("has-error").removeClass("has-success");
+    }
+
+    jQuery.validator.addMethod("tags", function (value, element) {
+        var checked = true;
+        if (value.length) {
+            var tags = new RegExp('^#[\\w\\d]+$|^#[\\w\\d]+( #[\\w\\d]+)*$');
+            checked = tags.test(value);
+        }
+        return checked;
+    }, jQuery.validator.format("Veuillez entrer un tag valide (#example1 #exampl2 ...)"));
+
+    function unhighlight(element, errorClass, validClass) {
+        $(element).parents(".form-group").addClass("has-success").removeClass("has-error");
+    }
+
     function showErrorAlert(reason, detail) {
         var msg = '';
         if (reason === 'unsupported-file-type') {
@@ -29,6 +118,9 @@ jQuery(function ($) {
             '<strong>File upload error</strong> ' + msg + ' </div>').prependTo('#alerts');
     }
 
+    /**
+     * Creation et modification document
+     */
     if ($editeur_text.length) {
         $editeur_text.ace_wysiwyg({
             toolbar_place: function (toolbar) {
@@ -71,14 +163,63 @@ jQuery(function ($) {
     }
     var $creer_document_form = $("#creer_document");
     var $modifier_document = $('#modifier_document');
+    if ($creer_document_form.length || $modifier_document.length) {
+        $('.doc-form').validate({
+            rules: {
+                intitule: {
+                    required: true
+                },
+                tags: {
+                    tags: true
+                }
+            },
+            messages: {
+                intitule: "Veuillez saisir l'intitulé du document",
+            },
+            errorElement: "em",
+            errorPlacement: errorPlacement,
+            highlight: highlight,
+            unhighlight: unhighlight
+        });
+        $('#status').change(function () {
+            if (this.value === '2') {
+                var $tags = $('.tags');
+                $tags.html("");
+
+                getEmailsAddAndEditDocs();
+                if (!checkEventOnTags) {
+                    $tags.on('click', function () {
+                        getEmailsAddAndEditDocs();
+                    });
+                    checkEventOnTags = true;
+                }
+            } else {
+                $('#utilisateurs_emails').slideUp();
+                $('.inline.tags-col').children().remove();
+            }
+
+        });
+        $creer_document_form.find('.reset').on('click', function () {
+            $('#utilisateurs_emails').slideUp();
+            $('.inline.tags-col').children().remove();
+        });
+
+        var $tags = $('#tags');
+        if ($tags.length && $tags.val().length) {
+
+        }
+    }
+
     if ($modifier_document.length) {
+
         $modifier_document.on('submit', function (event) {
             event.preventDefault();
             var $contenu = $('<textarea>', {name: 'contenu'});
             $contenu.css('display', 'none');
-            $contenu.html($('#editor2').html());
+            $contenu.html($('#document-text').html());
             $(this).append($contenu);
-            $(this)[0].submit();
+            if ($modifier_document.valid())
+                $(this)[0].submit();
         });
     }
 
@@ -131,37 +272,78 @@ jQuery(function ($) {
         });
     }
 
-    if ($creer_document_form.length || $modifier_document.length) {
-        $('#status').change(function () {
-            if (this.value === '2') {
-                var $tags = $('.tags');
-                $tags.html("");
-
-                getEmailsAddAndEditDocs();
-                if (!checkEventOnTags) {
-                    $tags.on('click', function () {
-                        getEmailsAddAndEditDocs();
-                    });
-                    checkEventOnTags = true;
-                }
+    var $favoris = $('#modif-favoris');
+    if ($favoris.length) {
+        var firstState = $favoris.attr('class');
+        $favoris.hover(function () {
+            if ($favoris.attr('class') == 'star-on-png favoris') {
+                $(this).attr('class', 'star-off-png favoris')
             } else {
-                $('#utilisateurs_emails').slideUp();
-                $('.inline.tags-col').children().remove();
+                $(this).attr('class', 'star-on-png favoris')
             }
-
+        }, function () {
+            $(this).attr('class', firstState);
         });
-        $creer_document_form.find('.reset').on('click', function () {
-            $('#utilisateurs_emails').slideUp();
-            $('.inline.tags-col').children().remove();
-        })
-    }
+        $favoris.click(function () {
+            var status = $(this).data('est-favoris');
+            var idDoc = $('#document-text').data('document');
 
+            var spinner = loading();
+            $.ajax({
+                method: 'POST',
+                url: '/modifier-favoris',
+                data: {idDoc: idDoc},
+                dataType: 'json',
+                success: function (data) {
+                    stopLoading(spinner);
+                    console.log(data[0]);
+
+                    if (data.length && data[0] != 'false') {
+                        if (data[0] == 'on') {
+                            firstState = 'star-on-png favoris';
+                            console.log('im here in on clause')
+                            $.gritter.add({
+                                title: 'Notification',
+                                text: 'Le document est ajouté au favoris',
+                                class_name: 'gritter-success'
+                            });
+                        }
+                        else {
+                            console.log('im here in off clause')
+                            $.gritter.add({
+                                title: 'Notification',
+                                text: 'Le document est bien retiré des favoris',
+                                class_name: 'gritter-success'
+                            });
+                            firstState = 'star-off-png favoris';
+                        }
+
+                    }
+                }
+            });
+        });
+    }
+    /**
+     * end Creation et modification document
+     */
     if ($('#dynamic-table').length) {
         $('#dynamic-table').dataTable({
             "bPaginate": true,
             "bLengthChange": false,
-            "bFilter": false,
+            "bFilter": true,
             "bInfo": false,
+            "columnDefs": [
+                {"targets": [1, 2, 3, 4, 5, 6], "searchable": false}
+            ],
+            "language": {
+                "search": "Filtrer: ",
+                "paginate": {
+                    "previous": "précédant",
+                    "next": "suivant",
+                },
+                "emptyTable": "Vous n' avez aucun document",
+                "zeroRecords": "Aucun document qui porte cet intitulé"
+            }
         });
 
 //        $('#dynamic-table').DataTable( {
@@ -190,192 +372,182 @@ jQuery(function ($) {
         });
     }
 
-    function construirChatHistory(data) {
+    /**
+     *
+     *  partie chat
+     */
 
-        //entete
-        var $entete = $('.chat-header');
-        $entete.html("");
-        var $recepteurImage = $('<img>', {class: 'contact-img', src: data[1], alt: 'avatar'});
-        var $chatAbout = $('<div>', {class: 'chat-about'});
-        var $chatWith = $('<div>', {class: 'chat-with'});
-        $chatWith.html(data[0]);
-        $chatAbout.append($chatWith);
-        $entete.append($recepteurImage);
-        $entete.append($chatAbout);
 
-        var $chatHistory = $('.chat-history');
-        $chatHistory.html("");
-        var $chatContainer = $('<ul>');
-        for (var i = 2; i < data.length; i++) {
-            //emetteur
-            if (data[i].emetteur == 'moi') {
-                var $emetteurMarkup;
-                $emetteurMarkup = $('<li>', {class: 'clearfix'});
-                var $emMsgData = $('<div>', {class: 'message-data align-right'});
-                var $emMsgDataTime = $('<span>', {class: 'message-data-time'});
-                $emMsgDataTime.html(data[i].date);
-                var $emMsgDataName = $('<span>', {class: 'message-data-name'});
-                $emMsgDataName.html(' Moi');
-                var $iconeMe = $('<i>', {class: "fa fa-circle me"});
-                $emMsgData.append($emMsgDataTime);
-                $emMsgData.append($emMsgDataName);
-                $emMsgData.append($iconeMe);
-                $emetteurMarkup.append($emMsgData);
-                var $emMessage = $('<div>', {class: 'message other-message float-right'});
-                $emMessage.html(data[i].txt);
-                $emetteurMarkup.append($emMessage);
-                $chatContainer.append($emetteurMarkup);
-            } else {
-                //recepteur
+    /**
+     *
+     *  end partie chat
+     */
+    /**
+     * Partie modification document partagé
+     */
+    if ($editeur_text.length) {
+        var idDoc = $editeur_text.data('document');
+        var docClient = new WebSocket("ws://" + location.host + "/document-modif/" + idDoc + "/" + $('#main-container').data('utilisateur'));
+        console.log(idDoc);
+        docClient.onmessage = function (evt) {
 
-                var $recepteurMarkup;
-                $recepteurMarkup = $('<li>');
-                var $recMsgData = $('<div>', {class: 'message-data'});
-                var $recMsgDataName = $('<span>', {class: 'message-data-name'});
-                var $recIcone = $('<i>', {class: "fa fa-circle online"});
-                $recMsgData.append($recIcone);
-                $recMsgDataName.html(data[i].emetteur);
-                var $recMsgDataTime = $('<span>', {class: 'message-data-time'});
-                $recMsgDataTime.html(data[i].date);
-                $recMsgData.append($recMsgDataName);
-                $recMsgData.append($recMsgDataTime);
-                var $recmessage = $('<div>', {class: 'message my-message'});
-                $recmessage.html(data[i].txt);
-                $recepteurMarkup.append($recMsgData);
-                $recepteurMarkup.append($recmessage);
-                $chatContainer.append($recepteurMarkup);
+            var doc = JSON.parse(evt.data);
+            if (Array.isArray(doc) && doc[0] == 'users') {
+                var nbEditeurs = doc.length - 1;
+                var title = (nbEditeurs <= 1 ? ' éditeur' : ' éditeurs');
+                $('.editors .title').html('<p class="lead">Actuellement ' + nbEditeurs + title + ' en ligne</p>');
+
+                var $listUsers = $('.list-users');
+                $listUsers.html('');
+                for (var i = 1; i < doc.length; i++) {
+                    var docObject = JSON.parse(doc[i]);
+                    var $span = $('<span class="label label-sm label-success">');
+                    if ($('#main-container').data('utilisateur').toString() == docObject.senderId.toString()) {
+                        var $a = $('<a>', {href: '/profil'});
+                        $span.html("moi");
+
+                    } else {
+                        var $a = $('<a>', {href: '/profil/' + docObject.senderId});
+                        $span.html(docObject.sender);
+                    }
+
+                    $a.append($span);
+                    $listUsers.append($a);
+                }
+
+
             }
-            $chatHistory.append($chatContainer);
-            $chatHistory.scrollTop($chatHistory.prop("scrollHeight"));
-        }
+            else
+                $editeur_text.html(doc.txt);
+
+
+        };
+        $editeur_text.wysiwyg('document').keyup(function (e) {
+            var doc = {
+                idDoc: idDoc.toString(),
+                idU: $editeur_text.data('utilisateur').toString(),
+                txt: $editeur_text.html()
+            };
+            var jsonDoc = JSON.stringify(doc);
+            console.log(jsonDoc);
+            docClient.send(jsonDoc);
+        });
+
     }
-
-    function contruireContactRow(data) {
-        var $peopleList = $('.people-list .list');
-        var $contactRow = $('<li>', {class: 'clearfix contact-row'});
-        $contactRow.data('contact-id', data.id);
-        $contactRow.on('click', function () {
-            var contactId = $(this).data('contact-id');
-            console.log(contactId);
-            $.ajax({
-                method: 'GET',
-                url: '/afficher-messages',
-                data: {contactId: contactId},
-                dataType: 'json',
-                success: function (data) {
-                    console.log(data);
-                    $('.chat-message').data('contact-id', contactId);
-                    openedConversation = contactId;
-                    construirChatHistory(data);
-
-                }
-            });
-        });
-        var $contactImg = $('<img>', {
-            class: 'contact-img',
-            src: data.image,
-            alt: 'image de' + data.nomComplet
-        });
-        var $about = $('<div>', {class: 'about'});
-        var $contactName = $('<div>', {class: 'name'});
-        $contactName.append(data.nomComplet);
-        var $status = $('<div>', {class: 'status green'});
-        // var $statusIcone = $('<i>', {class: 'fa fa-circle online'});
-        // $status.append($statusIcone);
-        if (data.aEnvoyeMsg == 'true')
-            $status.html('Nouveau Message');
-        $about.append($contactName);
-        $about.append($status);
-        $contactRow.append($contactImg);
-        $contactRow.append($about);
-        $peopleList.append($contactRow)
-    }
-
-    var $contactRow = $('.contact-row');
-    if ($contactRow.length) {
-        $contactRow.on('click', function () {
-            var contactId = $(this).data('contact-id');
-            console.log(contactId);
-            $.ajax({
-                method: 'GET',
-                url: '/afficher-messages',
-                data: {contactId: contactId},
-                dataType: 'json',
-                success: function (data) {
-                    console.log(data);
-                    $('.chat-message').data('contact-id', contactId);
-                    openedConversation = contactId;
-                    construirChatHistory(data);
-
-                }
-            });
-        });
-        $('#envoyer-message').on('click', function () {
-            var $message = $('#message-a-envoyer');
-            console.log('hi');
-            $.ajax({
-                method: 'POST',
-                url: '/envoyer-messages',
-                data: {contactId: $('.chat-message').data('contact-id'), messageTxt: $message.val()},
-                dataType: 'json',
-                success: function (data) {
-                    console.log(data);
-                    if (data[0] != 'erreur') {
-                        construirChatHistory(data);
-                        $message.val("");
-                    }
-
-
-                }
-            });
-        });
-        $('#message-a-envoyer').on('focus', function () {
-            var rowId = $('.chat-message').data('contact-id');
-            $('.contact-row').each(function () {
-                if ($(this).data('contact-id') == rowId) {
-                    $(this).find('.status').remove();
-                }
-            });
-        });
-        $('#rechercher-contact').on('input', function () {
-            var inputValue = $(this).val().toLowerCase();
-            $('.contact-row').each(function () {
-                if ($(this).find('.name').html().trim().toLowerCase().match('^' + inputValue)) {
-                    $(this).css('display', 'block');
-                } else {
-                    $(this).css('display', 'none');
-                }
-            });
-        });
-        setInterval(function () {
-            $.ajax({
-                method: 'GET',
-                url: '/afficher-messages-socket',
-                data: {chatActuelle: $('.chat-message').data('contact-id')},
-                // dataType: 'json',
-                success: function (data, success) {
-                    if (success == 'success' && data.length && data[0] != 'vide') {
-                        console.log(data);
-                        console.log(data instanceof Array);
-                        $('#notif')[0].play();
-                        var $peopleList = $('.people-list .list');
-                        $peopleList.html("");
-                        if (data[0] instanceof Array) {
-                            for (var i = 0; i < data[0].length; i++) {
-                                contruireContactRow(data[0][i]);
+    /**
+     * gestion historique
+     */
+    var $rollBack = $('.rollback');
+    if ($rollBack.length) {
+        $rollBack.on('click', function (e) {
+            e.preventDefault();
+            var idH = $(this).data('history');
+            bootbox.confirm("Etes vous sûr de vouloir revenir à cette version?", function (result) {
+                if (result) {
+                    $.ajax({
+                        url: location.href,
+                        method: 'post',
+                        data: {idH: idH},
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data.length && data[0] == 'true') {
+                                $.gritter.add({
+                                    title: '',
+                                    text: 'le retour en arriere est effectué avec succès!',
+                                    class_name: 'gritter-success'
+                                });
+                                location.reload();
+                            } else if (data[0] == 'false') {
+                                $.gritter.add({
+                                    title: 'This is a warning notification',
+                                    text: 'Une erreur est survenue veuillez réessayer',
+                                    class_name: 'gritter-error'
+                                });
                             }
-                        } else {
-                            contruireContactRow(data);
                         }
-                        if (data[1].length != 0) {
-                            construirChatHistory(data[1]);
-                        }
+                    });
+                }
+            });
+
+        })
+    }
+
+    var $telecharger = $('.telecharger');
+    if ($telecharger.length) {
+        $telecharger.on('click', function (e) {
+            e.preventDefault();
+            var idDoc = $(this).data('doc');
+            var spinner = loading();
+            $.ajax({
+                url: '/telecharger-document',
+                dataType: 'json',
+                method: 'get',
+                data: {id: idDoc},
+                success: function (data) {
+                    console.log(data);
+                    stopLoading(spinner);
+
+                    if (data.length && data[0] != "error") {
+                        location.href = data[0];
+                        $.ajax({
+                            url: '/telecharger-document',
+                            dataType: 'json',
+                            method: 'post',
+                            data: {id: idDoc},
+                            success: function (data) {
+
+                            }
+                        })
                     }
                 }
             });
-        }, 3000);
-        $('.chat-history').scrollTop($('.chat-history').prop("scrollHeight"));
+        });
+    }
+    var $supprimerDoc = $('.supprimer-doc');
+    if ($supprimerDoc.length) {
+        $supprimerDoc.on('click', function () {
+            var idDoc = $(this).data('doc');
+            conirm("Etes vous sur de voloir supprimer ce document?", function (result) {
+                if (result) {
+                    var spinner = loading();
+                    $.ajax({
+                        url: '/supprimer-document',
+                        dataType: 'json',
+                        method: 'post',
+                        data: {idDoc: idDoc},
+                        success: function (data) {
+                            console.log(data);
+                            stopLoading(spinner);
+                            if (data.length && data[0] != 'false')
+                                location.reload();
+                        }
+                    });
+                }
+            });
 
+        });
+    }
+    var $supprimerFav = $('.supprimer-favoris');
+    if ($supprimerFav.length) {
+        $supprimerFav.on('click', function () {
+            var idDoc = $(this).data('doc');
+            conirm("Etes vous sur de retirer ce document des favoris?", function (result) {
+                if (result) {
+                    $.ajax({
+                        url: '/supprimer-favoris',
+                        dataType: 'json',
+                        method: 'post',
+                        data: {idDoc: idDoc},
+                        success: function (data) {
+                            console.log(data);
+                            if (data.length && data[0] != 'false')
+                                location.reload();
+                        }
+                    });
+                }
+            });
+
+        });
     }
 
     //editables on first profile page

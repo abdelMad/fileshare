@@ -16,14 +16,10 @@ public interface IMessageHandler {
 
     List getUtilisateursContactes(int id_utilisateur);
 
-    List getConversation(int emetteur, int recepteur);
-
-    String getJsonConversation(int emetteur, int recepteur);
-
-    String getJsonUtilisateursContactes(int idUtilisateur, int emeteur);
 
     boolean checkNouveauContact(int idUtilisateur, int idEmetteur);
 
-    boolean changerStatusMessage(int utilisateur,int emetteur);
+    List<Message> getMessages(int sender, int receiver, int start, int end);
 
+    List<Utilisateur> getContacts(int userId);
 }

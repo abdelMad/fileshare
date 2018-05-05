@@ -10,11 +10,20 @@ public interface IDocumentHandler {
 
     boolean update(Document document);
 
-    boolean delete(Document document);
+    boolean delete(int idDoc);
 
     Document get(int id);
 
-    List getDocumentsAVoir(Utilisateur utilisateur,String intitule,String tags, int maxResultat);
+    List<Document> getDocumentsAVoir(Utilisateur utilisateurCourant, int debut, int fin);
 
+    List<Document> getDocumentsFavoris(Utilisateur utilisateurCourant, int debut, int fin);
+
+    List<Document> getMesDocuments(int id_utilisateur);
+
+    boolean estFavoris(int idDoc, int idU);
+
+    boolean supprimerFavoris(int idU, int idDoc);
+
+    boolean ajouterFavoris(int idU, int idDoc);
 }
 

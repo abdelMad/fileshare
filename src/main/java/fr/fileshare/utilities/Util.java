@@ -1,6 +1,6 @@
-package fr.fileshare.dao;
+package fr.fileshare.utilities;
 
-import fr.fileshare.socket.ChatClient;
+import fr.fileshare.dao.UtilisateurHandler;
 
 import javax.mail.Message;
 import javax.mail.Transport;
@@ -11,10 +11,7 @@ import java.io.InputStream;
 import java.net.Socket;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.Properties;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -203,6 +200,7 @@ public class Util {
 
         if (url.equals("*"))
             return tag;
+        url.replace("*", "[\\w\\d]*");
         Pattern pattern = Pattern.compile(url, Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(currentUrl);
         if (matcher.matches()) {
@@ -211,21 +209,9 @@ public class Util {
         return "";
     }
 
-    public static void initClientSocket(HttpServletRequest request){
-        if(UtilisateurHandler.isLoggedIn(request)) {
-            if (request.getSession().getAttribute("socket") == null) {
-                String host = "localhost";
-                int port = 4444;
-                try {
-                    Socket s = new Socket(host, port);
-                    ChatClient chatClient = new ChatClient(UtilisateurHandler.getLoggedInUser(request).getId(), s);
-                    request.getSession().setAttribute("socket", chatClient);
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+    public static String generateUniqueToken() {
+        UUID uuid = UUID.randomUUID();
+        return hashString(uuid.toString());
     }
 
 }
