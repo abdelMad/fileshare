@@ -31,6 +31,7 @@ public class ModifierDocument extends HttpServlet {
                     response.sendRedirect("/");
                 }
                 Utilisateur utilisateurCourant = UtilisateurHandler.getLoggedInUser(request);
+                request.setAttribute("utilisateur", utilisateurCourant);
                 Document document = documentHandler.get(id);
                 if (document != null && (
                         document.getAuteur().getId() == utilisateurCourant.getId() ||

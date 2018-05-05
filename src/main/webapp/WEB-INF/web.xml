@@ -101,6 +101,8 @@
   <servlet-mapping>
     <servlet-name>Profil</servlet-name>
     <url-pattern>/profil/*</url-pattern>
+    <url-pattern>/modifier-profil</url-pattern>
+    <url-pattern>/modifier-image-profil</url-pattern>
   </servlet-mapping>
   
   <error-page>

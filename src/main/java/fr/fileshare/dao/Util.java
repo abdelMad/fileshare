@@ -79,9 +79,9 @@ public class Util {
             msg.addHeader("format", "flowed");
             msg.addHeader("Content-Transfer-Encoding", "8bit");
 
-            msg.setFrom(new InternetAddress("no_reply@coursefacile.fr", "NoReply-CourseFacile"));
+            msg.setFrom(new InternetAddress("no_reply@FileShare.fr", "NoReply-FileShare"));
 
-            msg.setReplyTo(InternetAddress.parse("no_reply@coursefacile.fr", false));
+            msg.setReplyTo(InternetAddress.parse("no_reply@FileShare.fr", false));
 
             msg.setSubject(subject, "UTF-8");
 

@@ -39,6 +39,8 @@ public class Init extends HttpServlet {
 
         List docs = documentHandler.getDocumentsAVoir(UtilisateurHandler.getLoggedInUser(request), intitule,tags,10);
         request.setAttribute("docs", docs);
+        if (UtilisateurHandler.isLoggedIn(request))
+            request.setAttribute("utilisateur", UtilisateurHandler.getLoggedInUser(request));
         this.getServletContext().getRequestDispatcher("/views/index.jsp").forward(request, response);
 
     }

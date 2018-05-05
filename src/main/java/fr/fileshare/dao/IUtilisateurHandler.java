@@ -3,6 +3,7 @@ package fr.fileshare.dao;
 import fr.fileshare.model.Utilisateur;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public interface IUtilisateurHandler {
     /**
@@ -30,12 +31,12 @@ public interface IUtilisateurHandler {
     boolean delete(Utilisateur utilisateur);
 
     /**
-     * authenticate a user via request parameters
-     *
-     * @param request the servlet request
+     * authenticate a user via request parameters and set cookie
+     * @param request
+     * @param response
      * @return return true if the user is successfully logged in if not false.
      */
-    boolean authenticate(HttpServletRequest request);
+    boolean authenticate(HttpServletRequest request, HttpServletResponse response);
 
     /**
      * register a user vie request parameters
@@ -43,7 +44,7 @@ public interface IUtilisateurHandler {
      * @param request the servlet request
      * @return return true if the user is successfully registered if not false.
      */
-    boolean register(HttpServletRequest request);
+    boolean register(HttpServletRequest request, HttpServletResponse response);
 
     /**
      * get user by id

@@ -99,14 +99,14 @@ public class Messages extends HttpServlet {
 
                 request.setAttribute("title", "Messagerie instantanée");
                 IMessageHandler messageHandler = new MessageHandler();
-                int idUtilisateurCourant = UtilisateurHandler.getLoggedInUser(request).getId();
+                Utilisateur utilisateurCourant = UtilisateurHandler.getLoggedInUser(request);
                 Utilisateur contact = null;
-                List<Utilisateur> contacts = (List<Utilisateur>) messageHandler.getUtilisateursContactes(idUtilisateurCourant);
-
+                List<Utilisateur> contacts = (List<Utilisateur>) messageHandler.getUtilisateursContactes(utilisateurCourant.getId());
+                request.setAttribute("utilisateur", utilisateurCourant);
                 if (request.getParameterMap().containsKey("utilisateur")) {
                     try {
                         int idEmetteur = Integer.parseInt(request.getParameter("utilisateur"));
-                        if (messageHandler.checkNouveauContact(idUtilisateurCourant, idEmetteur)) {
+                        if (messageHandler.checkNouveauContact(utilisateurCourant.getId(), idEmetteur)) {
                             IUtilisateurHandler utilisateurHandler = new UtilisateurHandler();
                             contact = utilisateurHandler.get(idEmetteur);
                             Collections.reverse(contacts);
@@ -126,7 +126,7 @@ public class Messages extends HttpServlet {
                     }
                 }
                 if (contact != null) {
-                    List<Message> messages = (List<Message>) messageHandler.getConversation(contact.getId(), idUtilisateurCourant);
+                    List<Message> messages = (List<Message>) messageHandler.getConversation(contact.getId(), utilisateurCourant.getId());
                     request.setAttribute("messages", Lists.reverse(messages));
                     request.setAttribute("recepteur", contact);
                     request.setAttribute("contacts", contacts);

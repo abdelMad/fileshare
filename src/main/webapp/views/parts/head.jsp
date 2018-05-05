@@ -17,7 +17,9 @@
     <link rel="stylesheet" href="/assets/font-awesome/4.2.0/css/font-awesome.min.css" />
 
     <!-- page specific plugin styles -->
+    <%= Util.includeCssOrJs(request, "/profil", "/assets/css/jquery.gritter.min.css")%>
     <%= Util.includeCssOrJs(request,"/mes-documents","/assets/css/ui.jqgrid.min.css")%>
+    <link rel="stylesheet" href="/assets/css/bootstrap-editable.min.css"/>
     <!-- text fonts -->
     <link rel="stylesheet" href="/assets/fonts/fonts.googleapis.com.css" />
 

@@ -31,6 +31,7 @@ public class MesDocuments extends HttpServlet {
                 request.setAttribute("title", "Mes documents");
                 request.setAttribute("documents", documents);
             }
+            request.setAttribute("utilisateur", utilisateur);
             this.getServletContext().getRequestDispatcher("/views/mesDocuments.jsp").forward(request, response);
 
         }else{

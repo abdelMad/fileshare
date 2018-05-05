@@ -60,6 +60,7 @@ public class NouveauDocument extends HttpServlet {
                 }
                 doc.setDatePublixation(new Date());
                 Utilisateur utilisateurCourant =UtilisateurHandler.getLoggedInUser(request);
+                request.setAttribute("utilisateur", utilisateurCourant);
                 doc.setAuteur(utilisateurCourant);
                 if(documentHandler.add(doc)){
                     UtilisateurHandler.refresh(request);
@@ -77,6 +78,7 @@ public class NouveauDocument extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if (UtilisateurHandler.isLoggedIn(request)) {
             request.setAttribute("title", "Nouveau Document");
+            request.setAttribute("utilisateur", UtilisateurHandler.getLoggedInUser(request));
             this.getServletContext().getRequestDispatcher("/views/nouveauDocument.jsp").forward(request, response);
         } else {
             this.getServletContext().setAttribute("destinationUrl", request.getRequestURI());

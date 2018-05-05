@@ -15,3 +15,5 @@
 log/
 target/
 /bin/
+/src/main/webapp/uploads/
+src/main/java/fr/fileshare/CryptoUtil.java

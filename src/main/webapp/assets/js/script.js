@@ -3,6 +3,20 @@ jQuery(function ($) {
     var $editeur_text = $('#editor2');
     var checkEventOnTags = false;
     var openedConversation = -1;
+    var last_gritter;
+    var checkValue = false;
+
+    function showNotif(title, text, type, clearGritter) {
+        if (clearGritter) {
+            if (last_gritter) $.gritter.remove(last_gritter);
+        }
+        last_gritter = $.gritter.add({
+            title: title,
+            text: text,
+            class_name: 'gritter-' + type + ' gritter-right'
+        });
+    }
+
     function showErrorAlert(reason, detail) {
         var msg = '';
         if (reason === 'unsupported-file-type') {
@@ -67,7 +81,8 @@ jQuery(function ($) {
             $(this)[0].submit();
         });
     }
-    function getEmailsAddAndEditDocs(){
+
+    function getEmailsAddAndEditDocs() {
         bootbox.prompt({
             title: 'Veuillez entrer les adresses emails des utilisateurs',
             placeholder: 'utilisateur1@email.com utilisateur2@email.com ...',
@@ -100,8 +115,11 @@ jQuery(function ($) {
                             $tag_container.append($span_tag);
                             $tags.append($tag_container);
                         } else {
-                            if(!$('#erreur_mail').length)
-                            $('.bootbox-form').append($('<p>', {class: 'alert alert-danger',id:'erreur_mail'}).html('Veuillez entrer des emails valides!\n Example1@domaine.com Example2@domaine.com Example3@domaine.fr ... ').css('margin-top', '10px'))
+                            if (!$('#erreur_mail').length)
+                                $('.bootbox-form').append($('<p>', {
+                                    class: 'alert alert-danger',
+                                    id: 'erreur_mail'
+                                }).html('Veuillez entrer des emails valides!\n Example1@domaine.com Example2@domaine.com Example3@domaine.fr ... ').css('margin-top', '10px'))
                             return false;
                         }
                     }
@@ -116,17 +134,17 @@ jQuery(function ($) {
     if ($creer_document_form.length || $modifier_document.length) {
         $('#status').change(function () {
             if (this.value === '2') {
-                var $tags  = $('.tags');
+                var $tags = $('.tags');
                 $tags.html("");
 
                 getEmailsAddAndEditDocs();
-                if(!checkEventOnTags){
-                    $tags.on('click',function () {
+                if (!checkEventOnTags) {
+                    $tags.on('click', function () {
                         getEmailsAddAndEditDocs();
                     });
                     checkEventOnTags = true;
                 }
-            }else{
+            } else {
                 $('#utilisateurs_emails').slideUp();
                 $('.inline.tags-col').children().remove();
             }
@@ -151,12 +169,12 @@ jQuery(function ($) {
 //        } );
     }
     var $view_doc = $(".view-doc");
-    if($view_doc.length) {
+    if ($view_doc.length) {
         $view_doc.on('click', function () {
             var $element = $("#" + $(this).data('doc-id'));
             if ($element.length) {
                 bootbox.dialog({
-                    title: $("#titre"+$(this).data('doc-id')).html(),
+                    title: $("#titre" + $(this).data('doc-id')).html(),
                     message: $element.html(),
                     buttons:
                         {
@@ -172,14 +190,14 @@ jQuery(function ($) {
         });
     }
 
-    function construirChatHistory(data){
+    function construirChatHistory(data) {
 
         //entete
         var $entete = $('.chat-header');
         $entete.html("");
-        var $recepteurImage = $('<img>',{class: 'contact-img',src:data[1], alt: 'avatar'});
-        var $chatAbout = $('<div>',{class: 'chat-about'});
-        var $chatWith = $('<div>',{class: 'chat-with'});
+        var $recepteurImage = $('<img>', {class: 'contact-img', src: data[1], alt: 'avatar'});
+        var $chatAbout = $('<div>', {class: 'chat-about'});
+        var $chatWith = $('<div>', {class: 'chat-with'});
         $chatWith.html(data[0]);
         $chatAbout.append($chatWith);
         $entete.append($recepteurImage);
@@ -188,9 +206,9 @@ jQuery(function ($) {
         var $chatHistory = $('.chat-history');
         $chatHistory.html("");
         var $chatContainer = $('<ul>');
-        for(var i=2;i<data.length;i++) {
+        for (var i = 2; i < data.length; i++) {
             //emetteur
-            if(data[i].emetteur == 'moi') {
+            if (data[i].emetteur == 'moi') {
                 var $emetteurMarkup;
                 $emetteurMarkup = $('<li>', {class: 'clearfix'});
                 var $emMsgData = $('<div>', {class: 'message-data align-right'});
@@ -207,7 +225,7 @@ jQuery(function ($) {
                 $emMessage.html(data[i].txt);
                 $emetteurMarkup.append($emMessage);
                 $chatContainer.append($emetteurMarkup);
-            }else {
+            } else {
                 //recepteur
 
                 var $recepteurMarkup;
@@ -232,21 +250,21 @@ jQuery(function ($) {
         }
     }
 
-    function contruireContactRow(data){
+    function contruireContactRow(data) {
         var $peopleList = $('.people-list .list');
         var $contactRow = $('<li>', {class: 'clearfix contact-row'});
-        $contactRow.data('contact-id',data.id);
-        $contactRow.on('click',function () {
+        $contactRow.data('contact-id', data.id);
+        $contactRow.on('click', function () {
             var contactId = $(this).data('contact-id');
             console.log(contactId);
             $.ajax({
-                method:'GET',
+                method: 'GET',
                 url: '/afficher-messages',
                 data: {contactId: contactId},
                 dataType: 'json',
                 success: function (data) {
                     console.log(data);
-                    $('.chat-message').data('contact-id',contactId);
+                    $('.chat-message').data('contact-id', contactId);
                     openedConversation = contactId;
                     construirChatHistory(data);
 
@@ -272,36 +290,37 @@ jQuery(function ($) {
         $contactRow.append($about);
         $peopleList.append($contactRow)
     }
+
     var $contactRow = $('.contact-row');
-    if($contactRow.length){
-        $contactRow.on('click',function () {
+    if ($contactRow.length) {
+        $contactRow.on('click', function () {
             var contactId = $(this).data('contact-id');
             console.log(contactId);
             $.ajax({
-                method:'GET',
+                method: 'GET',
                 url: '/afficher-messages',
                 data: {contactId: contactId},
                 dataType: 'json',
                 success: function (data) {
                     console.log(data);
-                    $('.chat-message').data('contact-id',contactId);
+                    $('.chat-message').data('contact-id', contactId);
                     openedConversation = contactId;
                     construirChatHistory(data);
 
                 }
             });
         });
-        $('#envoyer-message').on('click',function () {
+        $('#envoyer-message').on('click', function () {
             var $message = $('#message-a-envoyer');
             console.log('hi');
             $.ajax({
-                method:'POST',
+                method: 'POST',
                 url: '/envoyer-messages',
-                data: {contactId: $('.chat-message').data('contact-id'),messageTxt: $message.val()},
+                data: {contactId: $('.chat-message').data('contact-id'), messageTxt: $message.val()},
                 dataType: 'json',
                 success: function (data) {
                     console.log(data);
-                    if(data[0]!='erreur') {
+                    if (data[0] != 'erreur') {
                         construirChatHistory(data);
                         $message.val("");
                     }
@@ -310,53 +329,323 @@ jQuery(function ($) {
                 }
             });
         });
-        $('#message-a-envoyer').on('focus',function () {
+        $('#message-a-envoyer').on('focus', function () {
             var rowId = $('.chat-message').data('contact-id');
-            $('.contact-row').each(function(){
-                if($(this).data('contact-id')==rowId){
+            $('.contact-row').each(function () {
+                if ($(this).data('contact-id') == rowId) {
                     $(this).find('.status').remove();
                 }
             });
         });
-        $('#rechercher-contact').on('input',function(){
-            var inputValue=$(this).val().toLowerCase();
-            $('.contact-row').each(function(){
-                if($(this).find('.name').html().trim().toLowerCase().match('^'+inputValue)){
-                    $(this).css('display','block');
-                }else{
-                    $(this).css('display','none');
+        $('#rechercher-contact').on('input', function () {
+            var inputValue = $(this).val().toLowerCase();
+            $('.contact-row').each(function () {
+                if ($(this).find('.name').html().trim().toLowerCase().match('^' + inputValue)) {
+                    $(this).css('display', 'block');
+                } else {
+                    $(this).css('display', 'none');
                 }
             });
         });
         setInterval(function () {
             $.ajax({
-                method:'GET',
+                method: 'GET',
                 url: '/afficher-messages-socket',
-                data:{chatActuelle:$('.chat-message').data('contact-id')},
+                data: {chatActuelle: $('.chat-message').data('contact-id')},
                 // dataType: 'json',
-                success: function (data,success) {
-                    if(success=='success' && data.length && data[0]!='vide') {
+                success: function (data, success) {
+                    if (success == 'success' && data.length && data[0] != 'vide') {
                         console.log(data);
                         console.log(data instanceof Array);
                         $('#notif')[0].play();
                         var $peopleList = $('.people-list .list');
                         $peopleList.html("");
-                        if(data[0] instanceof Array) {
+                        if (data[0] instanceof Array) {
                             for (var i = 0; i < data[0].length; i++) {
                                 contruireContactRow(data[0][i]);
                             }
-                        }else{
+                        } else {
                             contruireContactRow(data);
                         }
-                        if(data[1].length != 0){
+                        if (data[1].length != 0) {
                             construirChatHistory(data[1]);
                         }
                     }
                 }
             });
-        },3000);
-            $('.chat-history').scrollTop($('.chat-history').prop("scrollHeight"));
+        }, 3000);
+        $('.chat-history').scrollTop($('.chat-history').prop("scrollHeight"));
 
+    }
+
+    //editables on first profile page
+    $.fn.editable.defaults.mode = 'inline';
+    $.fn.editableform.loading = "<div class='editableform-loading'><i class='ace-icon fa fa-spinner fa-spin fa-2x light-blue'></i></div>";
+    $.fn.editableform.buttons = '<button type="submit" class="btn btn-info editable-submit"><i class="ace-icon fa fa-check"></i></button>' +
+        '<button type="button" class="btn editable-cancel"><i class="ace-icon fa fa-times"></i></button>';
+    $.fn.editable.defaults.ajaxOptions = {type: 'POST'};
+
+    //editables
+    var check = false;
+
+    function submitValue(name, newValue) {
+        check = false;
+        $.ajax({
+            method: 'POST',
+            url: '/modifier-profil',
+            data: {key: name, value: newValue},
+            // contentType: false,
+            // cache: false,
+            // processData:false,
+            success: function (data) {
+                console.log(data);
+
+                if (data.trim() == 'true') {
+                    check = true;
+                }
+            }
+        });
+    }
+
+    //text editable
+    $('#nom')
+        .editable({
+            type: 'text',
+            name: 'nom',
+            emptytext: '',
+            success: function (data, newValue) {
+                submitValue('nom', newValue);
+                setTimeout(function () {
+                    console.log(check);
+                    if (check) {
+                        showNotif('Modification reussie', 'La modification de votre est effectué avec succès!', 'success', true);
+                        $('.navbar-container .utilisateur-info').html('<small>Bienvenu, </small>' + newValue);
+                    }
+                }, 400);
+
+            },
+            validate: function (value) {
+                if ($.trim(value) == '') {
+                    return 'This field is required';
+                }
+            }
+        });
+
+    $('#prenom')
+        .editable({
+            type: 'text',
+            name: 'prenom',
+            emptytext: '',
+            success: function (data, newValue) {
+                submitValue('prenom', newValue);
+                setTimeout(function () {
+                    console.log(check);
+                    if (check) {
+                        showNotif('Modification reussie', 'La modification de votre prenom est effectué avec succès!', 'success', true);
+                    }
+                }, 400);
+            },
+            validate: function (value) {
+                if ($.trim(value) == '') {
+                    return 'This field is required';
+                }
+            }
+        });
+    var $emailInput = $('#email');
+    var $emailProfil = $emailInput.html();
+    var $emailParent = $emailInput.parent();
+
+    console.log($emailProfil);
+
+    function bindEmail(emailInput) {
+        emailInput
+            .editable({
+                type: 'text',
+                name: 'email',
+                emptytext: '',
+                success: function (data, newValue) {
+                    bootbox.prompt({
+                        title: "Veuillez entrer votre mot de passe",
+                        inputType: "password",
+                        callback: function (result) {
+                            if (result === null) {
+
+                            } else
+                                submitValue('verify', result);
+                            console.log(newValue);
+                            setTimeout(function () {
+                                console.log('Im here');
+                                if (check) {
+                                    submitValue('email', newValue);
+                                    setTimeout(function () {
+                                        console.log(check);
+                                        if (check) {
+                                            showNotif('Modification reussie', 'La modification de votre l\'email est effectué avec succès!', 'success', true);
+                                            showNotif('Email Validation', 'Un email de validation vient d\'être envoyé', 'info', false);
+                                            $emailParent.html('');
+                                            var $thisEmail = emailInput;
+                                            $thisEmail.html(newValue);
+                                            $emailParent.append($thisEmail);
+                                            bindEmail($thisEmail);
+                                        } else {
+                                            showNotif('Modification echouée', 'L\'email que vous venez d\'entrer existe dèja', 'error', true);
+
+                                        }
+                                    }, 1400);
+                                } else {
+                                    showNotif('Mot de passe incorrect', 'Le mot de passe que vous venez d\'entrer est invalide', 'error', true);
+                                    $emailParent.html('');
+                                    var $thisEmail = emailInput;
+                                    $emailParent.append($thisEmail);
+                                    bindEmail($thisEmail);
+
+                                }
+                            }, 400);
+
+                        }
+                    });
+                    return false;
+                }
+                , validate: function (value) {
+                    if ($.trim(value) == '') {
+                        return 'This field is required';
+                    }
+                }
+            });
+    }
+
+    bindEmail($emailInput);
+
+    $('#about').editable({
+        mode: 'inline',
+        type: 'wysiwyg',
+        name: 'description',
+        emptytext: '',
+        wysiwyg: {
+            //css : {'max-width':'300px'}
+        },
+        success: function (response, newValue) {
+            console.log(newValue.length);
+            submitValue('description', newValue);
+            setTimeout(function () {
+                console.log(check);
+                if (check) {
+                    showNotif('Modification reussie', 'La modification de votre description est effectué avec succès!', 'success', true);
+                }
+            }, 400);
+
+        }
+    });
+    cpt = 0;
+
+    // *** editable avatar *** //
+    try {//ie8 throws some harmless exceptions, so let's catch'em
+
+        //first let's add a fake appendChild method for Image element for browsers that have a problem with this
+        //because editable plugin calls appendChild, and it causes errors on IE at unpredicted points
+        try {
+            document.createElement('IMG').appendChild(document.createElement('B'));
+        } catch (e) {
+            Image.prototype.appendChild = function (el) {
+            }
+        }
+
+        var srcImage = "";
+        $('#imageProfile').editable({
+            type: 'image',
+            name: 'imageProfile',
+            id: 'imageProfile',
+            value: null,
+            image: {
+                //specify ace file input plugin's options here
+                btn_choose: 'Changer Image',
+                droppable: true,
+                maxSize: 2100000,//~100Kb
+
+                //and a few extra ones here
+                name: 'imageProfile',//put the field name here as well, will be used inside the custom plugin
+                on_error: function (error_type) {//on_error function will be called when the selected file has a problem
+                    console.log(error_type);
+                    if (last_gritter) $.gritter.remove(last_gritter);
+                    if (error_type == 1) {//file format error
+                        last_gritter = $.gritter.add({
+                            title: 'File is not an image!',
+                            text: 'Please choose a jpg|gif|png image!',
+                            class_name: 'gritter-error gritter-center'
+                        });
+                    } else if (error_type == 2) {//file size rror
+                        last_gritter = $.gritter.add({
+                            title: 'File too big!',
+                            text: 'Image size should not exceed 100Kb!',
+                            class_name: 'gritter-error gritter-center'
+                        });
+                    }
+                    else {//other error
+                    }
+                },
+                on_success: function () {
+                    $.gritter.removeAll();
+                    // console.log(newValue);
+
+                }
+            }
+            ,
+            url: function (params) {
+                console.log(params);
+                // ***UPDATE AVATAR HERE*** //
+                //for a working upload example you can replace the contents of this function with
+                //examples/profile-avatar-update.js
+                var deferred = new $.Deferred
+
+                var value = $('#imageProfile').next().find('input[type=hidden]:eq(0)').val();
+                if (!value || value.length == 0) {
+                    deferred.resolve();
+                    return deferred.promise();
+                }
+                $.ajax({
+                    url: '/modifier-image-profil',
+                    data: new FormData(document.getElementsByClassName('editableform')[0]),
+                    contentType: false,
+                    processData: false,
+                    cache: false,
+                    enctype: 'multipart/form-data',
+                    type: "POST",
+                    success: function (data) {
+                        if (data.trim().length && data.trim() != 'false') {
+                            // check = true ;
+                            srcImage = data;
+                            console.log(check);
+                        }
+                    }
+                });
+
+                //dummy upload
+                setTimeout(function () {
+                    //for browsers that have a thumbnail of selected
+                    console.log(srcImage);
+                    if (srcImage.length) {
+                        $('#imageProfile').attr('src', srcImage);
+                        $('.nav-utilisateur-photo').attr('src', srcImage);
+                        // submitValue()
+                        deferred.resolve({'status': 'OK'});
+
+                        showNotif('Modification reussie', 'La modification de votre Image de profil est effectué avec succès!', 'success', true);
+                    } else {
+                        showNotif('Modification echouée', 'La modification est echouée! Veuillez reéssayer', 'error', true);
+
+                    }
+
+                }, 400)
+
+                return deferred.promise();
+                // ***END OF UPDATE AVATAR HERE*** //
+            },
+
+            success: function (response, newValue) {
+
+            }
+        })
+    } catch (e) {
     }
 
 
