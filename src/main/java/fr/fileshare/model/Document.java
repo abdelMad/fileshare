@@ -33,6 +33,9 @@ public class Document {
     @OneToMany(mappedBy = "document", cascade = CascadeType.REMOVE)
     private Set<Historique> historique;
 
+    @OneToMany(mappedBy = "groupe")
+    private Set<Message> messagesGroupe;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name="document_utilisateur", joinColumns=@JoinColumn(name="document_id"), inverseJoinColumns=@JoinColumn(name="utilisateur_id"))
     private Set<Utilisateur> utilisateursAvecDroit;
@@ -167,6 +170,14 @@ public class Document {
 
     public void setReadOnly(boolean readOnly) {
         this.readOnly = readOnly;
+    }
+
+    public Set<Message> getMessagesGroupe() {
+        return messagesGroupe;
+    }
+
+    public void setMessagesGroupe(Set<Message> messagesGroupe) {
+        this.messagesGroupe = messagesGroupe;
     }
 
     @Override

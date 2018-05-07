@@ -22,4 +22,6 @@ public interface IMessageHandler {
     List<Message> getMessages(int sender, int receiver, int start, int end);
 
     List<Utilisateur> getContacts(int userId);
+
+    List<Message> getGroupeMessages(int idG, int start, int end);
 }

@@ -131,6 +131,7 @@ public class Profil extends HttpServlet {
             }
             Utilisateur profilUtilisateur = utilisateurHandler.get(id);
             request.setAttribute("title", "Profil");
+            request.setAttribute("utilisateur", UtilisateurHandler.getLoggedInUser(request));
             if (profilUtilisateur.equals(UtilisateurHandler.getLoggedInUser(request)))
                 this.getServletContext().getRequestDispatcher("/views/profil.jsp").forward(request, response);
             else {

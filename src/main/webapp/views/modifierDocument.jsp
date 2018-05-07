@@ -52,16 +52,6 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-10">
-                        <div class="checkbox">
-                            <label>
-                                <input name="lectureS" type="checkbox"> Mode lecture seule
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
                     <label class="col-sm-3 control-label no-padding-right" for="status"> Qui peut voir ce
                         fichier? </label>
 
@@ -125,12 +115,20 @@
                     </div>
                 </div>
             </c:if>
-            <div class="editors well">
-                <div class="title"><p class="lead">Actuellement editeurs</p></div>
-                <div class="list-users">
+            <div class="row well">
+                <div class="col-sm-8 mb-20">
+                    <div class="editors ">
+                        <div class="title"><p class="lead">Actuellement editeurs</p></div>
+                        <div class="list-users">
 
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <button class="btn btn-primary" id="show-conversation">Conversation de ce groupe</button>
                 </div>
             </div>
+
             <div class="widget-box widget-color-green">
                 <div class="widget-header widget-header-small center"></div>
                 <div class="widget-body">
@@ -146,4 +144,63 @@
     </div>
 
 </div>
+<div class="row chat-window col-xs-6 col-sm-5 col-md-3" data-msg-type="groupe" id="conversation-group"
+     data-doc="${document.id}" style="display:none;margin-left: 10px; right: 10px;">
+    <div class="chat-col col-xs-12 col-md-12">
+        <div class="chat-panel panel panel-default">
+            <div class="panel-heading top-bar chat-top-bar">
+                <div class="chat-col col-md-8 col-xs-8"><h3 class="panel-title"><span
+                        class="glyphicon glyphicon-comment"></span>Groupe de ${document.intitule}</h3></div>
+                <div class="chat-col col-md-4 col-xs-4" style="text-align: right;"><a href="#"
+                                                                                      class="minim-chat-window"><span
+                        id="minim_chat_window" class="glyphicon glyphicon-minus icon_minim"></span></a><a href="#"
+                                                                                                          class="close-chat-window"><span
+                        class="glyphicon glyphicon-remove icon_close" data-id="chat_window_1"></span></a></div>
+            </div>
+            <div class="panel-body msg_container_base" id="contact-1">
+                <c:if test="${not empty grpMessages}">
+                    <c:forEach var="m" items="${grpMessages}">
+                        <c:set var="image" scope="page" value="/assets/images/people.png"/>
+                        <c:if test="${not empty m.emetteur.image}">
+                            <c:set var="image" scope="page" value="${m.emetteur.image}"/>
+                        </c:if>
+                        <c:if test="${m.emetteur.id ne utilisateur.id}">
+                            <div class="row msg_container base_receive">
+                                <div class="chat-col col-md-2 col-xs-2 avatar chat-avatar"><a
+                                        href="/profil/${m.emetteur.id}"><img
+                                        class=" chat-img img-responsive img-chat" src="${image}"></a></div>
+                                <div class="chat-col col-md-10 col-xs-10">
+                                    <div class="messages msg_receive"><p>${m.text}</p>
+                                        <time>${m.emetteur.nom} <fmt:formatDate pattern="dd/MM/yyyy HH:mm"
+                                                                                value="${m.date}"/></time>
+                                    </div>
+                                </div>
+                            </div>
+                        </c:if>
+                        <c:if test="${m.emetteur.id eq utilisateur.id}">
+                            <div class="row msg_container base_sent">
+                                <div class="chat-col col-md-10 col-xs-10">
+                                    <div class="messages msg_sent"><p>${m.text}</p>
+                                        <time>moi <fmt:formatDate pattern="dd/MM/yyyy HH:mm"
+                                                                  value="${m.date}"/></time>
+                                    </div>
+                                </div>
+                                <div class="chat-col col-md-2 col-xs-2 avatar chat-avatar"><a href="/profil"><img
+                                        class="chat-img img-responsive img-chat"
+                                        src="${image}"></a></div>
+                            </div>
+                        </c:if>
+                    </c:forEach>
+                </c:if>
+            </div>
+
+            <div class="panel-footer">
+                <div class="input-group"><input id="btn-input" type="text" class="form-control input-sm chat_input"
+                                                placeholder="Entrez votre message ..."><span class="input-group-btn"><button
+                        class="btn btn-primary btn-sm" id="btn-send-grp">Envoyer</button></span></div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <%@include file="parts/footer.jsp" %>

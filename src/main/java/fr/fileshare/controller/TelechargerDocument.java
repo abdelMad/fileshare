@@ -50,7 +50,7 @@ public class TelechargerDocument extends HttpServlet {
                 }
                 request.setCharacterEncoding("utf8");
                 response.setContentType("application/json");
-                if (document != null && document.getDernierContenu().length() > 0) {
+                if (document != null && document.getDernierContenu() != null) {
                     //convert document to word..
                     try {
                         String html = "<html><head><title>Import me</title></head><body>" + document.getDernierContenu() + "</body></html>";

@@ -11,6 +11,7 @@
         <thead>
         <tr>
             <th>Intitule</th>
+            <th>Auteur</th>
             <th>
                 <i class="ace-icon fa fa-clock-o bigger-110 hidden-480"></i>
                 Date Publication
@@ -35,9 +36,18 @@
                 <td id="titre${doc.id}">
                     <c:out value="${doc.intitule}"></c:out>
                 </td>
-                <td><fmt:formatDate pattern="dd-MM-yyyy HH:mm"
+                <td>
+                    <c:if test="${doc.auteur.id eq utilisateur.id}">
+                        <a href="/profil">moi</a>
+                    </c:if>
+                    <c:if test="${doc.auteur.id ne utilisateur.id}">
+                        <a href="/profil/${doc.auteur.id}">${doc.auteur.prenom} ${doc.auteur.nom}</a>
+                    </c:if>
+
+                </td>
+                <td><fmt:formatDate pattern="dd/MM/yyyy HH:mm"
                                     value="${doc.datePublixation}"/></td>
-                <td><fmt:formatDate pattern="dd-MM-yyyy HH:mm"
+                <td><fmt:formatDate pattern="dd/MM/yyyy HH:mm"
                                     value="${doc.dateDerniereModif}"/></td>
                 <c:if test="${not empty doc.tag}">
                     <c:set var="tags" value="${fn:split(doc.tag, ' ')}"/>
@@ -83,7 +93,8 @@
 
                 <td>
                     <div class="hidden-sm hidden-xs action-buttons">
-                        <a class="blue view-doc" data-doc-id="<c:out value="${doc.id}"></c:out>" href="#">
+                        <a class="blue view-doc" title="voir le document"
+                           data-doc-id="<c:out value="${doc.id}"></c:out>" href="#">
                             <i class="ace-icon fa fa-search-plus bigger-130"></i>
                         </a>
                         <div class="wysiwyg-editor hidden" id="<c:out value="${doc.id}"></c:out>"
@@ -91,20 +102,22 @@
                             <c:out value="${doc.dernierContenu}" escapeXml="false"></c:out>
                         </div>
 
-                        <a class="green telecharger" href="#" data-doc="${doc.id}">
+                        <a class="green telecharger" title="télecharger" href="#" data-doc="${doc.id}">
                             <i class="ace-icon fa fa-download bigger-130"></i>
                         </a>
-
-                        <a class="blue" href="/modifier-document?id=<c:out value="${doc.id}"></c:out>">
+                        <c:if test="${(not empty utilisateur and utilisateur.id eq doc.auteur.id) or (doc.readOnly eq false)}">
+                            <a class="blue" title="éditer le document"
+                               href="/modifier-document?id=<c:out value="${doc.id}"></c:out>">
                             <i class="ace-icon fa fa-pencil bigger-130"></i>
                         </a>
+                        </c:if>
                         <c:if test="${utilisateur.id eq doc.auteur.id}">
-                            <a class="red supprimer-doc" data-doc="${doc.id}">
+                            <a class="red supprimer-doc" title="supprimer le document" data-doc="${doc.id}">
                                 <i class="ace-icon fa fa-trash-o bigger-130"></i>
                             </a>
                         </c:if>
                         <c:if test="${title eq 'Mes Favoris'}">
-                            <a class="red supprimer-favoris" data-doc="${doc.id}">
+                            <a class="red supprimer-favoris" title="retirer des favoris" data-doc="${doc.id}">
                                 <i class="ace-icon fa fa-trash-o bigger-130"></i>
                             </a>
                         </c:if>

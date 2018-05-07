@@ -11,6 +11,7 @@
             <thead>
             <tr>
                 <th>Intitule</th>
+                <th>Auteur</th>
                 <th>
                     <i class="ace-icon fa fa-clock-o bigger-110 hidden-480"></i>
                     Date Publication
@@ -34,6 +35,15 @@
                 <c:forEach items="${documents}" var="doc">
                     <td id="titre${doc.id}">
                         <c:out value="${doc.intitule}"></c:out>
+                    </td>
+                    <td>
+                        <c:if test="${doc.auteur.id eq utilisateur.id}">
+                            <a href="/profil">moi</a>
+                        </c:if>
+                        <c:if test="${doc.auteur.id ne utilisateur.id}">
+                            <a href="/profil/${doc.auteur.id}">${doc.auteur.prenom} ${doc.auteur.nom}</a>
+                        </c:if>
+
                     </td>
                     <td><fmt:formatDate pattern="dd-MM-yyyy HH:mm"
                                         value="${doc.datePublixation}"/></td>

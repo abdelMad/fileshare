@@ -118,6 +118,8 @@ public class DocumentServer {
         docPOJO = documentHandler.get(docPOJO.getId());
         String version = Util.generateUniqueToken();
         historique.setVersion(version);
+        if (docPOJO.getDernierContenu() == null)
+            docPOJO.setDernierContenu("");
         historique.setContenu(docPOJO.getDernierContenu());
         historique.setEditeur(uSession.get(session.getId()));
         historique.setDateModif(docPOJO.getDateDerniereModif());
@@ -132,6 +134,23 @@ public class DocumentServer {
         //remove session reference
         uSession.remove(session.getId());
 
+        JSONArray usersArray = new JSONArray();
+        JsonHelper jsonHelper = new JsonHelper();
+
+        try {
+            usersArray.put("users");
+            for (String name : uSession.keySet()) {
+                Utilisateur value = uSession.get(name);
+                usersArray.put(jsonHelper.encodeUtilisateur(value));
+            }
+            for (Session s : session.getOpenSessions()) {
+                if (s.isOpen() && docsSession.get(s.getId()) != null && docsSession.get(s.getId()).getId() == docPOJO.getId()) {
+                    s.getBasicRemote().sendText(usersArray.toString());
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 

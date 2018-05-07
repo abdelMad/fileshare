@@ -1,9 +1,7 @@
 <%@ page import="fr.fileshare.utilities.Util" %>
 <%@ page import="fr.fileshare.dao.UtilisateurHandler" %>
 </div><!-- /.col -->
-<c:if test="${not empty utilisateur}">
-    <%@include file="chatSideBar.jsp" %>
-</c:if>
+
 <!-- PAGE CONTENT ENDS -->
 </div><!-- /.row -->
 </div><!-- /.page-content -->
@@ -19,8 +17,8 @@
         <div class="footer-content <c:if test="${not empty utilisateur}">col-md-8</c:if>">
 						<span class="bigger-120">
 							<span class="blue bolder">File</span>
-							Share &copy; <fmt:formatDate pattern = "yyyy"
-                                                         value="${now}"/>
+							Share &copy; <fmt:formatDate pattern="yyyy"
+														 value="${now}"/>
 						</span>
 
             &nbsp; &nbsp;
@@ -60,7 +58,7 @@
 
 <!--[if !IE]> -->
 <script type="text/javascript">
-    window.jQuery || document.write("<script src='assets/js/jquery.min.js'>"+"<"+"/script>");
+    window.jQuery || document.write("<script src='assets/js/jquery.min.js'>" + "<" + "/script>");
 </script>
 
 <!-- <![endif]-->
@@ -71,14 +69,14 @@ window.jQuery || document.write("<script src='assets/js/jquery1x.min.js'>"+"<"+"
 </script>
 <![endif]-->
 <script type="text/javascript">
-    if('ontouchstart' in document.documentElement) document.write("<script src='assets/js/jquery.mobile.custom.min.js'>"+"<"+"/script>");
+    if ('ontouchstart' in document.documentElement) document.write("<script src='assets/js/jquery.mobile.custom.min.js'>" + "<" + "/script>");
 </script>
 <script src="/assets/js/bootstrap.min.js"></script>
 
 <!-- page specific plugin scripts -->
-<%= Util.includeCssOrJs(request,"/nouveau-document|/modifier-document","/assets/js/jquery-ui.custom.min.js")%>
-<%= Util.includeCssOrJs(request,"/nouveau-document|/modifier-document","/assets/js/jquery.ui.touch-punch.min.js")%>
-<%= Util.includeCssOrJs(request,"/nouveau-document|/modifier-document","/assets/js/jquery.hotkeys.min.js")%>
+<%= Util.includeCssOrJs(request, "/nouveau-document|/modifier-document", "/assets/js/jquery-ui.custom.min.js")%>
+<%= Util.includeCssOrJs(request, "/nouveau-document|/modifier-document", "/assets/js/jquery.ui.touch-punch.min.js")%>
+<%= Util.includeCssOrJs(request, "/nouveau-document|/modifier-document", "/assets/js/jquery.hotkeys.min.js")%>
 <%= Util.includeCssOrJs(request, "/nouveau-document|/modifier-document|/messages", "/assets/js/bootstrap-wysiwyg.min.js")%>
 <%= Util.includeCssOrJs(request, "/documents-favoris|/mes-documents|/historique", "/assets/js/jquery.dataTables.min.js")%>
 <%= Util.includeCssOrJs(request, "/documents-favoris|/mes-documents|/historique", "/assets/js/jquery.dataTables.bootstrap.min.js")%>

@@ -336,7 +336,7 @@ jQuery(function ($) {
             "bFilter": true,
             "bInfo": false,
             "columnDefs": [
-                {"targets": [1, 2, 3, 4, 5, 6], "searchable": false}
+                {"targets": [1, 2, 3, 4, 5, 6, 7], "searchable": false}
             ],
             "language": {
                 "search": "Filtrer: ",
@@ -345,7 +345,7 @@ jQuery(function ($) {
                     "next": "suivant",
                 },
                 "emptyTable": "Vous n' avez aucun document",
-                "zeroRecords": "Aucun document qui porte cet intitulé"
+                "zeroRecords": "Aucun document qui a cet intitulé"
             }
         });
 
@@ -425,7 +425,7 @@ jQuery(function ($) {
 
 
         };
-        $editeur_text.wysiwyg('document').keyup(function (e) {
+        $editeur_text.on("DOMSubtreeModified", function () {
             var doc = {
                 idDoc: idDoc.toString(),
                 idU: $editeur_text.data('utilisateur').toString(),
@@ -487,22 +487,22 @@ jQuery(function ($) {
                 method: 'get',
                 data: {id: idDoc},
                 success: function (data) {
-                    console.log(data);
                     stopLoading(spinner);
-
+                    console.log(data);
                     if (data.length && data[0] != "error") {
                         location.href = data[0];
-                        $.ajax({
-                            url: '/telecharger-document',
-                            dataType: 'json',
-                            method: 'post',
-                            data: {id: idDoc},
-                            success: function (data) {
-
-                            }
-                        })
                     }
                 }
+            }).done(function () {
+                // $.ajax({
+                //     url: '/telecharger-document',
+                //     dataType: 'json',
+                //     method: 'post',
+                //     data: {id: idDoc},
+                //     success: function (data) {
+                //
+                //     }
+                // })
             });
         });
     }

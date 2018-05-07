@@ -2,6 +2,7 @@ package fr.fileshare.controller;
 
 import fr.fileshare.dao.*;
 import fr.fileshare.model.Document;
+import fr.fileshare.model.Message;
 import fr.fileshare.model.Utilisateur;
 import fr.fileshare.utilities.Util;
 
@@ -227,11 +228,13 @@ public class ModifierDocument extends HttpServlet {
                 Document document = documentHandler.get(id);
                 Utilisateur utilisateurCourant = UtilisateurHandler.getLoggedInUser(request);
 
-                if ((document != null && (
-                        document.getAuteur().getId() == utilisateurCourant.getId() ||
-                                document.getStatus() == Document.PUBLIC ||
-                                document.getUtilisateursAvecDroit().contains(utilisateurCourant)
+                if ((document != null && (document.getAuteur().getId() == utilisateurCourant.getId()
+                        || (document.getStatus() == Document.PUBLIC && !document.isReadOnly()) ||
+                        (document.getStatus() == Document.PARTAGE && document.getUtilisateursAvecDroit().contains(utilisateurCourant) && !document.isReadOnly())
                 ))) {
+                    IMessageHandler messageHandler = new MessageHandler();
+                    List<Message> messages = messageHandler.getGroupeMessages(id, 0, 10);
+                    request.setAttribute("grpMessages", messages);
                     request.setAttribute("document", document);
                     request.setAttribute("doc_id", id);
                     request.setAttribute("estFavoris", documentHandler.estFavoris(id, utilisateurCourant.getId()));

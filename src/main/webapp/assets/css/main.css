@@ -49,7 +49,8 @@ b{
 
 .people-list ul {
     list-style: none;
-    padding: 20px;
+    min-width: 190px;
+    min-height: 550px;
 }
 
 .people-list ul li {
@@ -243,7 +244,8 @@ b{
 }
 
 .people-list .contact-row{
-    padding: 10px;
+    padding: 15px;
+    min-width: 190px;
 }
 .people-list .contact-row:hover{
     cursor: pointer;
@@ -429,17 +431,21 @@ h3.panel-title span {
 }
 
 .chat-sidebar {
-    position: fixed;
-    right: 0;
-    width: 22%;
+    z-index: 9999;
+    width: 100%;
 }
 
 .chat-sidebar ul.list {
     max-height: 500px;
     overflow-y: auto;
     overflow-x: hidden;
+    margin-left: 0;
 }
 
+.chat-sidebar-container, .chat-sidebar-container .ace-settings-box {
+    padding-left: 0;
+    padding-right: 0;
+}
 .list-users a {
     margin-right: 10px;
 }
@@ -449,6 +455,10 @@ h3.panel-title span {
     padding-top: 10px;
 }
 
-.supprimer-doc, .supprimer-favoris {
+.supprimer-doc, .supprimer-favoris, .telecharger {
     cursor: pointer;
+}
+
+.mb-20 {
+    margin-bottom: 20px !important;
 }

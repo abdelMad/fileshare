@@ -3,7 +3,7 @@ jQuery(function ($) {
     if (utilisateur != undefined) {
         var $peopleList = $('#people-list');
         var positionStart = 10;
-        var chatClient = new WebSocket("ws://" + location.host + "/chat/" + $("#main-container").data('utilisateur'));
+        var chatClient = new WebSocket("ws://" + location.host + "/chat/" + $("#main-container").data('utilisateur') + "/-1");
         var MAX_MSG = 10;
 
         function correctDate(val) {
@@ -21,8 +21,9 @@ jQuery(function ($) {
                 var $p = $('<p>');
                 $p.html(data.message);
                 var $time = $('<time>');
-                $time.html(data.sender + " " + data.sentDate);
-
+                var $b = $('<b>', {class: 'blue'});
+                $b.html(data.sender + " " + data.sentDate);
+                $time.append($b);
                 $msgSent.append($p);
                 $msgSent.append($time);
                 var $col5 = $('<div class="chat-col col-md-2 col-xs-2 avatar chat-avatar">');
@@ -46,8 +47,10 @@ jQuery(function ($) {
                 var $msgReceive = $('<div class="messages msg_receive">');
                 var $p2 = $('<p>');
                 $p2.html(data.message);
+                var $b = $('<b>', {class: 'red'});
                 var $time2 = $('<time >');
-                $time2.html(data.sender + " " + data.sentDate);
+                $b.html(data.sender + " " + data.sentDate);
+                $time2.append($b);
                 $msgReceive.append($p2);
                 $msgReceive.append($time2);
                 $col7.append($msgReceive);
@@ -80,7 +83,7 @@ jQuery(function ($) {
                                     if (chatWindows.length > 0 && $.inArray(data[0].toString(), chatWindows) != -1)
                                         return;
                                     chatWindows.push(data[0].toString());
-                                    var $chatWindow = $('<div class="row chat-window col-sm-3 col-md-3" style="margin-left:10px;">');
+                                    var $chatWindow = $('<div class="row chat-window col-xs-6 col-sm-5 col-md-3" style="margin-left:10px;">');
                                     var $col1 = $('<div class="chat-col col-xs-12 col-md-12">');
                                     var $chatPanel = $('<div class="chat-panel panel panel-default">');
                                     // panel heading begin
@@ -100,11 +103,13 @@ jQuery(function ($) {
                                     var $closeChatIcon = $('<span class="glyphicon glyphicon-remove icon_close" data-id="chat_window_1">');
                                     $minimChat.append($minimCHatIcon);
                                     $closeChat.append($closeChatIcon);
-                                    $minimChat.click(function () {
+                                    $minimChat.click(function (e) {
+                                        e.preventDefault();
                                         $(this).parent().parent().parent().parent().find('.panel-body.msg_container_base').slideToggle();
 
                                     });
-                                    $closeChat.click(function () {
+                                    $closeChat.click(function (e) {
+                                        e.preventDefault();
                                         var $chatwindow = $(this).parent().parent().parent().parent().parent();
                                         chatWindows = $.grep(chatWindows, function (value) {
                                             return value.toString() != $chatWindow.data('chat-id').toString();
@@ -182,6 +187,7 @@ jQuery(function ($) {
                                         var $textInput = $(this).parent().parent().find('input');
                                         if (!$textInput.val().length) return;
                                         var messageObject = {
+                                            type: "solo",
                                             message: $textInput.val(),
                                             senderId: $("#main-container").data('utilisateur').toString(),
                                             receiver: $(this).data('recepteur').toString(),
@@ -283,14 +289,25 @@ jQuery(function ($) {
             var msg = JSON.parse(evt.data);
             var trouve = false;
             var uId = msg.senderId;
+            console.log(msg);
+            if (msg.type != "solo")
+                return;
             $('.contact-row').each(function () {
                 if ($(this).data('contact-id') == uId) {
-                    $(this).trigger('click');
+                    console.log('Found');
+                    var $panelBody = $('#contact-' + msg.senderId);
+                    if ($panelBody.length) {
+                        $panelBody.append(buildChatRow(msg));
+                        $panelBody.scrollTop($panelBody.prop("scrollHeight"));
+                    }
+                    else
+                        $(this).trigger('click');
                     trouve = true;
                     return;
                 }
             });
             if (!trouve) {
+                console.log('not found');
                 contruireContactRow(msg, true);
                 setTimeout(function () {
                     var $panelBody = $('#contact-' + msg.senderId);
@@ -574,5 +591,67 @@ jQuery(function ($) {
             } catch (e) {
             }
         }
+
+        var $showConversation = $('#show-conversation');
+        if ($showConversation.length) {
+            var $chatWindow = $('#conversation-group');
+            console.log('hey');
+            var chatClientGroup = new WebSocket("ws://" + location.host + "/chat/" + $("#main-container").data('utilisateur') + "/" + $chatWindow.data('doc'));
+            var $panelBody = $('#conversation-group .panel-body');
+            $('#btn-send-grp').on('click', function (e) {
+                e.preventDefault();
+                var today = new Date();
+                var fullDate = correctDate(today.getDate()) + "/" + correctDate(today.getMonth() + 1) + "/" + correctDate(today.getFullYear()) + "  " + correctDate(today.getHours()) + ":" + correctDate(today.getMinutes());
+                var $textInput = $chatWindow.find('input');
+                if (!$textInput.val().trim().length) return;
+                var messageObject = {
+                    type: "grp",
+                    message: $textInput.val(),
+                    senderId: $("#main-container").data('utilisateur').toString(),
+                    receiver: $chatWindow.data('doc').toString(),
+                    senderImg: $('.nav-utilisateur-photo').attr('src'),
+                    sender: "moi",
+                    sentDate: fullDate
+                };
+                $textInput.val("");
+                $panelBody.append(buildChatRow(messageObject));
+                chatClientGroup.send(JSON.stringify(messageObject));
+                $panelBody.scrollTop($panelBody.prop("scrollHeight"));
+
+            });
+
+            chatClientGroup.onmessage = function (evt) {
+                var msg = JSON.parse(evt.data);
+                if (msg.type != "grp") return;
+                if ($chatWindow.css('display') == 'none') {
+                    $showConversation.trigger('click');
+                }
+                $panelBody.append(buildChatRow(msg));
+                $panelBody.scrollTop($panelBody.prop("scrollHeight"));
+                var notif = new Audio("/assets/sons/definite.mp3");
+                notif.play();
+            };
+
+            $showConversation.on('click', function (e) {
+                e.preventDefault();
+                $chatWindow.css('right', positionStart);
+                $chatWindow.css('display', 'block');
+                $panelBody.scrollTop($panelBody.prop("scrollHeight"));
+                positionStart += $chatWindow.width();
+            });
+            $chatWindow.find('.minim-chat-window').click(function (e) {
+                e.preventDefault();
+                $(this).parent().parent().parent().parent().find('.panel-body.msg_container_base').slideToggle();
+
+            });
+            $chatWindow.find('.close-chat-window').click(function (e) {
+                e.preventDefault();
+                positionStart -= $chatWindow.width();
+                $chatWindow.css('display', 'none');
+                if (positionStart < 10) positionStart = 10;
+
+            });
+        }
     }
-});
+})
+;

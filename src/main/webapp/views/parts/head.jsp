@@ -52,12 +52,15 @@
     <c:if test="${not empty utilisateur}">
         <%@include file="sidebar.jsp"%>
     </c:if>
+
         <div class="main-content">
         <div class="main-content-inner">
             <div class="page-content">
-
+                <c:if test="${not empty utilisateur}">
+                    <%@include file="chatSideBar.jsp" %>
+                </c:if>
                 <div class="row">
-                    <div class="col-md-<c:if test="${not empty utilisateur}">9</c:if><c:if test="${empty utilisateur}">12</c:if>">
+                    <div class="col-md-12">
                         <div class="global-alert">
                             <%= Util.showGlobalAlerts() %>
                         </div>

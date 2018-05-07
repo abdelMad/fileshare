@@ -31,7 +31,8 @@
                                     <c:if test="${not empty doc.auteur.image}">
                                         <c:set var="image" scope="page" value="${doc.auteur.image}"/>
                                     </c:if>
-                                    <img alt="image de ${doc.auteur.nom}" src="${image}"/>
+                                    <a href="/profil<c:if test="${doc.auteur.id ne utilisateur.id}"> /${doc.auteur.id} </c:if>">
+                                        <img alt="image de ${doc.auteur.nom}" src="${image}"/></a>
                                 </div>
 
                                 <div class="widget-box transparent">
@@ -86,11 +87,13 @@
                                                 </div>
 
                                                 <div class="pull-right action-buttons">
-                                                    <a class="telecharger" data-doc="${doc.id}">
+                                                    <a class="telecharger" title="télecharger le document"
+                                                       data-doc="${doc.id}">
                                                         <i class="ace-icon fa fa-download green bigger-130"></i>
                                                     </a>
                                                     <c:if test="${(not empty utilisateur and utilisateur.id eq doc.auteur.id) or (doc.readOnly eq false)}">
-                                                    <a href="/modifier-document?id=${doc.id}">
+                                                        <a href="/modifier-document?id=${doc.id}"
+                                                           title="modifier le document">
                                                         <i class="ace-icon fa fa-pencil blue bigger-125"></i>
                                                     </a>
                                                     </c:if>
