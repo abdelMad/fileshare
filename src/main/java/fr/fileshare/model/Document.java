@@ -18,6 +18,7 @@ public class Document {
     @Column(name = "document_id")
     private int id;
     private String intitule;
+    @Column(columnDefinition = "TEXT")
     private String description;
     private Date datePublixation;
     private Date dateDerniereModif;

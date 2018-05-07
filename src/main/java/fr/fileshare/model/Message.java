@@ -11,6 +11,7 @@ public class Message {
     @Id
     @GeneratedValue
     private int id;
+    @Column(columnDefinition = "TEXT")
     private String text;
     @ManyToOne
     @JoinColumn(name = "emetteur")

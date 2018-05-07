@@ -19,6 +19,7 @@ public class Utilisateur {
     private String loginStatus;
     private boolean emailChecked;
     private Date registerDate;
+    @Column(columnDefinition = "TEXT")
     private String description;
     private String image;
     @OneToMany(mappedBy = "auteur", fetch = FetchType.EAGER)

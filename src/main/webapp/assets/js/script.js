@@ -81,6 +81,9 @@ jQuery(function ($) {
     /**
      * validation functions
      */
+    $.validator.methods.email = function (value, element) {
+        return this.optional(element) || /^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/.test(value);
+    };
     function errorPlacement(error, element) {
         // Add the `help-block` class to the error element
         error.addClass("help-block");
@@ -96,7 +99,7 @@ jQuery(function ($) {
         $(element).parents(".form-group").addClass("has-error").removeClass("has-success");
     }
 
-    jQuery.validator.addMethod("tags", function (value, element) {
+    $.validator.addMethod("tags", function (value, element) {
         var checked = true;
         if (value.length) {
             var tags = new RegExp('^#[\\w\\d]+$|^#[\\w\\d]+( #[\\w\\d]+)*$');
@@ -214,7 +217,22 @@ jQuery(function ($) {
     }
 
     if ($modifier_document.length) {
-
+        var $tag = $('.tag');
+        if ($tag.length) {
+            $tag.each(function () {
+                $('.tags').on('click', function () {
+                    getEmailsAddAndEditDocs();
+                });
+                $(this).find("button.close").on('click', function () {
+                    $(this).parent().parent().remove();
+                    if ($tags.children().length == 0) {
+                        $tags.remove()
+                        $('#utilisateurs_emails').slideUp();
+                        $('#status').val(0);
+                    }
+                });
+            });
+        }
         $modifier_document.on('submit', function (event) {
             event.preventDefault();
             var $contenu = $('<textarea>', {name: 'contenu'});
@@ -239,18 +257,18 @@ jQuery(function ($) {
 
                     for (var i = 0; i < users.length; i++) {
                         if (/^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,3})$/.test(users[i])) {
-                            $tag_container = $('<div>');
-                            $button_close = $('<button>', {type: 'button', class: 'close'});
+                            var $tag_container = $('<div>');
+                            var $button_close = $('<button>', {type: 'button', class: 'close'});
                             $button_close.html('x');
                             $button_close.on('click', function () {
                                 $(this).parent().parent().remove();
                                 if ($tags.children().length == 0) {
                                     $tags.remove()
                                     $('#utilisateurs_emails').slideUp();
-                                    $('#status').val('public');
+                                    $('#status').val(0);
                                 }
                             });
-                            $span_tag = $('<span>', {class: 'tag'}).html(users[i]);
+                            var $span_tag = $('<span>', {class: 'tag'}).html(users[i]);
                             $span_tag.append($button_close);
                             $tag_container.append($('<input>', {
                                 type: 'hidden',
@@ -377,13 +395,105 @@ jQuery(function ($) {
 
     /**
      *
-     *  partie chat
+     *  partie connexion validation
      */
+    var $login = $('.login-container');
+    if ($login.length) {
+        $("#login-form").validate({
+            rules: {
+                cnx_email: {
+                    required: true,
+                    email: true
+                },
+                cnx_mdp: {
+                    required: true,
+                    minlength: 8
+                }
+            },
+            messages: {
+                cnx_mdp: {
+                    required: "Veuillez saisir votre mot de passe",
+                    minlength: "Votre mot de passe doit contenir un minimum de 8 caractères"
+                },
+                cnx_email: {
+                    required: "Veuillez saisir votre adresse email",
+                    email: "Veuillez sasir une adresse email correcte"
+                }
+            },
+            errorElement: "em",
+            errorPlacement: errorPlacement,
+            highlight: highlight,
+            unhighlight: unhighlight
+        });
+        $("#forgot-form").validate({
+            rules: {
+                email: {
+                    required: true,
+                    email: true
+                }
+            },
+            messages: {
+                email: {
+                    required: "Veuillez saisir votre adresse email",
+                    email: "Veuillez sasir une adresse email correcte"
+                }
+            },
+            errorElement: "em",
+            errorPlacement: errorPlacement,
+            highlight: highlight,
+            unhighlight: unhighlight
+        });
 
-
+        $('#sign-up-form').validate({
+            rules: {
+                nom: {
+                    required: true
+                },
+                prenom: {
+                    required: true
+                },
+                mdp: {
+                    required: false,
+                    minlength: 8
+                },
+                confirm_mdp: {
+                    required: true,
+                    minlength: 8,
+                    equalTo: "mdp"
+                },
+                email: {
+                    required: true,
+                    email: true
+                },
+                conditions: "required"
+            },
+            messages: {
+                nom: "Veuillez saisir votre nom",
+                prenom: "Veuillez saisir votre prénom",
+                conditions: "Veuillez accepter les conditions d'utilisation",
+                mdp: {
+                    required: "Veuillez saisir votre mot de passe",
+                    minlength: "Votre mot de passe doit contenir un minimum de 8 caractères"
+                },
+                confirm_mdp: {
+                    required: "Veuillez saisir votre mot de passe",
+                    minlength: "Votre mot de passe doit contenir un minimum de 8 caractères",
+                    equalTo: "Veuillez saisir le meme mot de passe"
+                },
+                email: {
+                    required: "Veuillez saisir votre adresse email",
+                    email: "Veuillez sasir une adresse email correcte"
+                }
+            },
+            errorElement: "em",
+            errorPlacement: errorPlacement,
+            highlight: highlight,
+            unhighlight: unhighlight
+        });
+    }
     /**
      *
-     *  end partie chat
+     *  end partie connexion
      */
     /**
      * Partie modification document partagé

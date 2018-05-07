@@ -462,3 +462,7 @@ h3.panel-title span {
 .mb-20 {
     margin-bottom: 20px !important;
 }
+
+em.error.help-block {
+    color: #dd5a43;
+}

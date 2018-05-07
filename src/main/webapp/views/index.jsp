@@ -18,11 +18,14 @@
 <div id="timeline-1">
     <div class="row">
         <div class="col-xs-12 col-sm-10 col-sm-offset-1">
-            <div class="timeline-container">
-                <c:if test="${empty docs}">
+            <c:if test="${empty docs}">
+                <div class="text-center">
                     Aucun document disponible pour l'instant
-                </c:if>
-                <c:if test="${not empty docs}">
+                </div>
+            </c:if>
+            <c:if test="${not empty docs}">
+                <div class="timeline-container">
+
                     <c:forEach items="${docs}" var="doc">
                         <div class="timeline-items">
                             <div class="timeline-item clearfix">
@@ -94,8 +97,8 @@
                                                     <c:if test="${(not empty utilisateur and utilisateur.id eq doc.auteur.id) or (doc.readOnly eq false)}">
                                                         <a href="/modifier-document?id=${doc.id}"
                                                            title="modifier le document">
-                                                        <i class="ace-icon fa fa-pencil blue bigger-125"></i>
-                                                    </a>
+                                                            <i class="ace-icon fa fa-pencil blue bigger-125"></i>
+                                                        </a>
                                                     </c:if>
                                                 </div>
                                             </div>
@@ -106,8 +109,10 @@
 
                         </div>
                     </c:forEach>
-                </c:if>
-            </div><!-- /.timeline-container -->
+                </div>
+                <!-- /.timeline-container -->
+            </c:if>
+
         </div>
     </div>
 </div>
