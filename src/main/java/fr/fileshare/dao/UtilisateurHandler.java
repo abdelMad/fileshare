@@ -138,11 +138,11 @@ public class UtilisateurHandler implements IUtilisateurHandler {
 
     public boolean register(HttpServletRequest request, HttpServletResponse response) {
         Map<String, String[]> params = request.getParameterMap();
-        if (params.containsKey("nom") && params.containsKey("prenom") && params.containsKey("email") && params.containsKey("mdp") && params.containsKey("confirm_mdp") ) {
+        if (params.containsKey("nom") && params.containsKey("prenom") && params.containsKey("email") && params.containsKey("mdp_register") && params.containsKey("confirm_mdp")) {
             String nom = request.getParameter("nom"),
                     prenom = request.getParameter("prenom"),
                     email = request.getParameter("email"),
-                    mdp = request.getParameter("mdp"),
+                    mdp = request.getParameter("mdp_register"),
                     confirmMdp = request.getParameter("confirm_mdp"),
                     description = "";
             if(params.containsKey("description"))

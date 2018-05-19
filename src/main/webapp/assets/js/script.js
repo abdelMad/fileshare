@@ -452,14 +452,13 @@ jQuery(function ($) {
                 prenom: {
                     required: true
                 },
-                mdp: {
+                mdp_register: {
                     required: false,
                     minlength: 8
                 },
                 confirm_mdp: {
                     required: true,
                     minlength: 8,
-                    equalTo: "mdp"
                 },
                 email: {
                     required: true,
@@ -471,14 +470,13 @@ jQuery(function ($) {
                 nom: "Veuillez saisir votre nom",
                 prenom: "Veuillez saisir votre prénom",
                 conditions: "Veuillez accepter les conditions d'utilisation",
-                mdp: {
+                mdp_register: {
                     required: "Veuillez saisir votre mot de passe",
                     minlength: "Votre mot de passe doit contenir un minimum de 8 caractères"
                 },
                 confirm_mdp: {
                     required: "Veuillez saisir votre mot de passe",
                     minlength: "Votre mot de passe doit contenir un minimum de 8 caractères",
-                    equalTo: "Veuillez saisir le meme mot de passe"
                 },
                 email: {
                     required: "Veuillez saisir votre adresse email",
@@ -535,7 +533,7 @@ jQuery(function ($) {
 
 
         };
-        $editeur_text.on("DOMSubtreeModified", function () {
+        $editeur_text.wysiwyg('document').keyup(function (e) {
             var doc = {
                 idDoc: idDoc.toString(),
                 idU: $editeur_text.data('utilisateur').toString(),

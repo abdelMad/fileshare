@@ -104,6 +104,7 @@ public class NouveauDocument extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if (UtilisateurHandler.isLoggedIn(request)) {
             request.setAttribute("title", "Nouveau Document");
+            request.setAttribute("utilisateur", UtilisateurHandler.getLoggedInUser(request));
             this.getServletContext().getRequestDispatcher("/views/nouveauDocument.jsp").forward(request, response);
         } else {
             request.getSession().setAttribute("destinationUrl", request.getRequestURI());

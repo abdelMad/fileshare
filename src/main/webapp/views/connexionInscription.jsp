@@ -204,7 +204,8 @@
 
                                             <label class="block clearfix">
 														<span class="block input-icon input-icon-right">
-															<input name="mdp" type="password" class="form-control" placeholder="Mot de passe">
+															<input name="mdp_register" id="mdp" type="password"
+                                                                   class="form-control" placeholder="Mot de passe">
 															<i class="ace-icon fa fa-lock"></i>
 														</span>
                                             </label>
