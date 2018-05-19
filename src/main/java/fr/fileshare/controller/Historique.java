@@ -61,7 +61,7 @@ public class Historique extends HttpServlet {
                 int end = MAX_RESULTS;
                 List<Document> docsModifies = historiqueHandler.getDocsModifies(utilisateur.getId(), start, end);
                 request.setAttribute("documents", docsModifies);
-                Util.addGlobalAlert(Util.INFO, "Veuillez selectionner un document pour consulter son historique!");
+                Util.addGlobalAlert(Util.INFO, "Veuillez selectionner un document pour consulter son historique !");
                 this.getServletContext().getRequestDispatcher("/views/historique.jsp").forward(request, response);
             } else if (pathParts.length == 2) {
                 String param = pathParts[1];

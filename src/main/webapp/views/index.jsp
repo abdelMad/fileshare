@@ -7,7 +7,7 @@
 </div>
 <form action="/" method="get" class="form-inline search-form-home">
     <div class="center">
-        <input type="text" name="intitule" value="${param.intitule}" class="input-large" placeholder="Intitule fichier">
+        <input type="text" name="intitule" value="${param.intitule}" class="input-large" placeholder="Intitulé fichier">
         <input type="text" name="tags" value="${param.tags}" class="input-large" placeholder="Tags">
 
         <button type="submit" class="btn btn-info btn-sm">
@@ -48,7 +48,7 @@
                                                 <a href="/profil/${doc.auteur.id}" class="blue"><c:out
                                                         value="${doc.auteur.nom}"></c:out></a>
                                             </c:if>
-                                            <span class="grey">a publié un nouveau document: </span>
+                                            <span class="grey">a publié un nouveau document : </span>
                                         </h5>
                                         <span id="titre${doc.id}">${doc.intitule}</span>
                                         <span class="widget-toolbar no-border">

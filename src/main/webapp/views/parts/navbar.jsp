@@ -32,7 +32,7 @@
                         <a data-toggle="dropdown" href="#" class="dropdown-toggle">
                             <img class="nav-utilisateur-photo" src="${image}" alt="${utilisateur.nom}"/>
                             <span class="utilisateur-info">
-									<small>Bienvenu,</small>
+									<small>Bienvenue</small>
 									${utilisateur.nom}
 								</span>
 

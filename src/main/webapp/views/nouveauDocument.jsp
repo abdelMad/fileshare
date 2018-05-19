@@ -32,8 +32,8 @@
                 <div class="col-xs-10 col-sm-5">
                     <select class="form-control" name="status" id="status">
                         <option value="0" selected>Public</option>
-                        <option value="1">just moi</option>
-                        <option value="2">des utilisateurs</option>
+                        <option value="1">Juste moi</option>
+                        <option value="2">Des utilisateurs</option>
                     </select>
                 </div>
             </div>
@@ -62,13 +62,13 @@
                 <div class="col-md-offset-3 col-md-9">
                     <button class="btn btn-success" type="submit">
                         <i class="ace-icon fa fa-floppy-o bigger-125"></i>
-                        Creer et editer
+                        Créer et éditer
                     </button>
 
                     &nbsp; &nbsp; &nbsp;
                     <button class="btn reset"  type="reset">
                         <i class="ace-icon fa fa-undo bigger-110"></i>
-                        Reset
+                        Réinitialiser
                     </button>
                 </div>
             </div>
