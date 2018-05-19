@@ -10,18 +10,18 @@
         <table id="dynamic-table" class="table table-striped table-bordered table-hover">
             <thead>
             <tr>
-                <th>Intitule</th>
+                <th>Intitulé</th>
                 <th>Auteur</th>
                 <th>
                     <i class="ace-icon fa fa-clock-o bigger-110 hidden-480"></i>
-                    Date Publication
+                    Date de publication
                 </th>
                 <th>
                     <i class="ace-icon fa fa-clock-o bigger-110 hidden-480"></i>
                     Dernière modification
                 </th>
                 <th>Tags</th>
-                <th class="hidden-480">Dernier Editeur</th>
+                <th class="hidden-480">Dernier éditeur</th>
 
 
                 <th class="hidden-480">Status</th>
@@ -74,7 +74,7 @@
                     <td class="hidden-480">
                         <c:if test="${doc.status eq 0}"><span class="label label-sm label-default">Public</span></c:if>
                         <c:if test="${doc.status eq 1}"><span class="label label-sm label-default">Privé</span></c:if>
-                        <c:if test="${doc.status eq 2}">Partagé avec:
+                        <c:if test="${doc.status eq 2}">Partagé avec :
                             <c:forEach items="${doc.utilisateursAvecDroit}" var="ut">
 
                                 <c:if test="${ut.id eq utilisateur.id}">

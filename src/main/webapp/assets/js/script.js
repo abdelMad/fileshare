@@ -357,9 +357,9 @@ jQuery(function ($) {
                 {"targets": [1, 2, 3, 4, 5, 6, 7], "searchable": false}
             ],
             "language": {
-                "search": "Filtrer: ",
+                "search": "Filtrer : ",
                 "paginate": {
-                    "previous": "précédant",
+                    "previous": "précédent",
                     "next": "suivant",
                 },
                 "emptyTable": "Vous n' avez aucun document",

@@ -81,7 +81,7 @@ public class NouveauDocument extends HttpServlet {
                         doc.setDernierEditeur(utilisateurCourant);
                         if (documentHandler.add(doc)) {
                             UtilisateurHandler.refresh(request);
-                            Util.addGlobalAlert(Util.SUCCESS, "Document crée avec succès!");
+                            Util.addGlobalAlert(Util.SUCCESS, "Document créé avec succès !");
                             response.sendRedirect("/modifier-document?id=" + doc.getId());
                         }
 

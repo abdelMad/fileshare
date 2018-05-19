@@ -72,7 +72,7 @@
                                 <div class="widget-main">
                                     <h4 class="header blue lighter bigger">
                                         <i class="ace-icon fa fa-coffee green"></i>
-                                        Merci d' entrer vos informations
+                                        Merci d'entrer vos informations
                                     </h4>
 
                                     <div class="space-6"></div>
@@ -177,7 +177,7 @@
                                     </h4>
 
                                     <div class="space-6"></div>
-                                    <p> Merci d'entrer vos informations: </p>
+                                    <p> Merci d'entrer vos informations </p>
 
                                     <form action="/inscription" id="sign-up-form" method="post">
                                         <fieldset>
@@ -230,7 +230,7 @@
                                             <div class="clearfix">
                                                 <button type="reset" class="width-40 pull-left btn btn-sm">
                                                     <i class="ace-icon fa fa-refresh"></i>
-                                                    <span class="bigger-110">Renitialiser</span>
+                                                    <span class="bigger-110">Rénitialiser</span>
                                                 </button>
                                                 <input value="inscription" name="type" type="hidden">
                                                 <button type="submit" class="width-40 pull-right btn btn-sm btn-success">

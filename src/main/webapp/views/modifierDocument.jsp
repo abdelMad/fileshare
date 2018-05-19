@@ -13,7 +13,7 @@
             </c:if>
         </h2>
         <div class="well">
-            <p>Le contenu du document s'enregistre automatiquement! amusez vous bien</p>
+            <p>Le contenu du document s'enregistre automatiquement ! Amusez-vous bien !</p>
         </div>
         <form class="form-horizontal doc-form" id="modifier_document" action="" method="post">
             <c:if test="${document.auteur.id != utilisateur.id}">
@@ -53,7 +53,7 @@
                 </div>
                 <div class="form-group">
                     <label class="col-sm-3 control-label no-padding-right" for="status"> Qui peut voir ce
-                        fichier? </label>
+                        fichier ? </label>
 
                     <div class="col-xs-10 col-sm-5">
                         <select class="form-control" name="status" id="status">
@@ -118,14 +118,14 @@
             <div class="row well">
                 <div class="col-sm-8 mb-20">
                     <div class="editors ">
-                        <div class="title"><p class="lead">Actuellement editeurs</p></div>
+                        <div class="title"><p class="lead">Actuellement éditeurs</p></div>
                         <div class="list-users">
 
                         </div>
                     </div>
                 </div>
                 <div class="col-sm-4">
-                    <button class="btn btn-primary" id="show-conversation">Conversation de ce groupe</button>
+                    <button class="btn btn-primary" id="show-conversation">Conversation du groupe</button>
                 </div>
             </div>
 
