@@ -15,6 +15,9 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Web socket qui gere les fonctionalites de chat groupe ou entre personnes
+ */
 @ServerEndpoint(value = "/chat/{userId}/{doc}")
 public class ChatServer {
     private static final Logger LOGGER =

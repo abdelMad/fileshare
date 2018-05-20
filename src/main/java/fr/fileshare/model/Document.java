@@ -5,6 +5,9 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * Table document
+ */
 @Entity
 @Table(name = "document")
 public class Document {

@@ -17,6 +17,9 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * websocket qui gere l'edition en temps reel des documents
+ */
 @ServerEndpoint(value = "/document-modif/{doc}/{idU}")
 public class DocumentServer {
     private static final Logger LOGGER =

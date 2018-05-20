@@ -3,6 +3,9 @@ package fr.fileshare.model;
 import javax.persistence.*;
 import java.util.Date;
 
+/**
+ * Table historique
+ */
 @Entity
 @Table(name = "historique")
 public class Historique {

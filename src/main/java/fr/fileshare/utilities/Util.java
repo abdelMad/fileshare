@@ -17,6 +17,9 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * classe qui contient des methodes utiles
+ */
 public class Util {
     /**
      * global alert status: success,info,warning,danger

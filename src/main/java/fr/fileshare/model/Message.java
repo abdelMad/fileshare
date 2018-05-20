@@ -3,6 +3,9 @@ package fr.fileshare.model;
 import javax.persistence.*;
 import java.util.Date;
 
+/**
+ * Table message
+ */
 @Entity
 @Table(name = "message")
 public class Message {
@@ -24,6 +27,7 @@ public class Message {
     @ManyToOne
     @JoinColumn(name = "messagesGroupe")
     private Document groupe;
+
     public Message() {
     }
 
