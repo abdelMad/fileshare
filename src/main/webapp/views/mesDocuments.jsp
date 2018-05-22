@@ -111,7 +111,7 @@
                             <i class="ace-icon fa fa-pencil bigger-130"></i>
                         </a>
                         </c:if>
-                        <c:if test="${utilisateur.id eq doc.auteur.id}">
+                        <c:if test="${utilisateur.id eq doc.auteur.id and title eq 'Mes documents'}">
                             <a class="red supprimer-doc" title="supprimer le document" data-doc="${doc.id}">
                                 <i class="ace-icon fa fa-trash-o bigger-130"></i>
                             </a>
