@@ -660,6 +660,18 @@ jQuery(function ($) {
 
         });
     }
-
+    var $rechercherContact = $('#rechercher-contact');
+    if ($rechercherContact.length) {
+        $rechercherContact.on('input', function () {
+            var inputValue = $(this).val().toLowerCase();
+            $('.contact-row').each(function () {
+                if ($(this).find('.name').html().trim().toLowerCase().match('^' + inputValue)) {
+                    $(this).css('display', 'block');
+                } else {
+                    $(this).css('display', 'none');
+                }
+            });
+        });
+    }
 })
 ;
