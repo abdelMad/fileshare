@@ -266,15 +266,23 @@ jQuery(function ($) {
         });
         $('.tabbable #send_message').click(function (e) {
             e.preventDefault();
+            console.log("hey");
             var trouve = false;
             var uId = $(this).data('u-id');
+            var $contactRow;
+            console.log(uId);
             $('.contact-row').each(function () {
                 if ($(this).data('contact-id') === uId) {
                     trouve = true;
+                    $contactRow = $(this);
                     return;
                 }
             });
-            if (trouve) return;
+            console.log(trouve);
+            if (trouve) {
+                $contactRow.trigger('click');
+                return;
+            }
             var url = $(this).attr('href');
             $.ajax({
                 method: 'get',
@@ -320,7 +328,7 @@ jQuery(function ($) {
             var notif = new Audio("/assets/sons/definite.mp3");
             notif.play();
         };
-        if ($('.user-profile').length) {
+        if ($('.user-profile').length && $("#user-profile-1").length) {
             //editables on first profile page
             $.fn.editable.defaults.mode = 'inline';
             $.fn.editableform.loading = "<div class='editableform-loading'><i class='ace-icon fa fa-spinner fa-spin fa-2x light-blue'></i></div>";
@@ -463,7 +471,7 @@ jQuery(function ($) {
                 mode: 'inline',
                 type: 'wysiwyg',
                 name: 'description',
-                emptytext: '',
+                emptytext: 'vide',
                 wysiwyg: {
                     //css : {'max-width':'300px'}
                 },
@@ -595,7 +603,6 @@ jQuery(function ($) {
         var $showConversation = $('#show-conversation');
         if ($showConversation.length) {
             var $chatWindow = $('#conversation-group');
-            console.log('hey');
             var chatClientGroup = new WebSocket("ws://" + location.host + "/chat/" + $("#main-container").data('utilisateur') + "/" + $chatWindow.data('doc'));
             var $panelBody = $('#conversation-group .panel-body');
             $('#btn-send-grp').on('click', function (e) {

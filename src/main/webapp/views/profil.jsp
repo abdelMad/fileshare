@@ -21,25 +21,6 @@
 
         <div class="space-6"></div>
 
-        <div class="hr hr12 dotted"></div>
-
-        <div class="clearfix">
-            <div class="grid2">
-                <span class="bigger-175 blue">25</span>
-
-                <br/>
-                Followers
-            </div>
-
-            <div class="grid2">
-                <span class="bigger-175 blue">12</span>
-
-                <br/>
-                Following
-            </div>
-        </div>
-
-        <div class="hr hr16 dotted"></div>
     </div>
 
     <div class="col-xs-12 col-sm-9">

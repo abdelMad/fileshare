@@ -78,7 +78,6 @@ public class Util {
             props.put("mail.smtp.host", "smtp.gmail.com");
             props.put("mail.smtp.port", "587");
 
-//            javax.mail.Session session = javax.mail.Session.getInstance(props, null);
             Session session = Session.getInstance(props,
                     new javax.mail.Authenticator() {
                         protected PasswordAuthentication getPasswordAuthentication() {
