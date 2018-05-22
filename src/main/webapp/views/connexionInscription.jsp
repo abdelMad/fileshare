@@ -67,7 +67,8 @@
                         </c:if>
 
                         <c:if test="${check eq false}">
-                        <div id="login-box" class="login-box widget-box no-border visible">
+                            <div id="login-box"
+                                 class="login-box widget-box no-border <c:if test="${param['mdp-oublie'] ne 'true'}">visible</c:if> ">
                             <div class="widget-body">
                                 <div class="widget-main">
                                     <h4 class="header blue lighter bigger">
@@ -127,7 +128,8 @@
                             </div><!-- /.widget-body -->
                         </div><!-- /.login-box -->
 
-                        <div id="forgot-box" class="forgot-box widget-box no-border">
+                            <div id="forgot-box"
+                                 class="forgot-box widget-box no-border <c:if test="${param['mdp-oublie'] eq 'true'}">visible</c:if>">
                             <div class="widget-body">
                                 <div class="widget-main">
                                     <h4 class="header red lighter bigger">
