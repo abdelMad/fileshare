@@ -87,19 +87,35 @@ public class DocumentHandler implements IDocumentHandler {
         try {
             session.beginTransaction();
             Query query;
+            System.out.println(tags);
+            System.out.println(tags);
+
             if (utilisateurCourant != null) {
+                if(tags.length()>0)
+                    tags = "AND fichiers_autorise.tag ='" + tags + "' ";
                 int id_utilisateur = utilisateurCourant.getId();
-                query = session.createSQLQuery("SELECT * from(SELECT * FROM fileshare.document WHERE status =0 OR auteur = :id_utilisateur\n" +
+                System.out.println(id_utilisateur);
+                System.out.println();
+                System.out.println("SELECT * from(SELECT * FROM fileshare.document WHERE status =0 OR auteur ="+id_utilisateur+"\n" +
                         "UNION\n" +
-                        "select document.* from fileshare.document join document_utilisateur on document_utilisateur.document_id=document_utilisateur.document_id where document.status=:status  AND document_utilisateur.utilisateur_id=:id_utilisateur\n" +
+                        "select document.* from fileshare.document join document_utilisateur on document_utilisateur.document_id=document_utilisateur.document_id where document.status="+Document.PARTAGE+"  AND document_utilisateur.utilisateur_id="+id_utilisateur+"\n" +
                         ") fichiers_autorise\n" +
-                        "WHERE fichiers_autorise.intitule LIKE '%" + intitule + "%' AND fichiers_autorise.tag LIKE '%" + tags + "%' " +
+                        "WHERE fichiers_autorise.intitule LIKE '%" + intitule + "%'" +tags +
+                        "order by document_id Desc");
+                query = session.createSQLQuery("SELECT * from(SELECT * FROM document WHERE status =0 OR auteur = :id_utilisateur\n" +
+                        "UNION\n" +
+                        "select document.* from document join document_utilisateur on document_utilisateur.document_id=document_utilisateur.document_id where document.status=:status  AND document_utilisateur.utilisateur_id=:id_utilisateur \n" +
+                        ") fichiers_autorise\n" +
+                        "WHERE fichiers_autorise.intitule LIKE '%" + intitule + "%' " +tags +
                         "order by document_id Desc")
-                        .addEntity("document", Document.class);
+                        .addEntity(Document.class);
                 query.setParameter("id_utilisateur", id_utilisateur);
                 query.setParameter("status", Document.PARTAGE);
             } else {
-                query = session.createQuery(" FROM Document  WHERE status = 0");
+                if(tags.length()>0)
+                    tags = "AND tag ='" + tags + "' ";
+                System.out.println("SELECT * FROM Document  WHERE status = 0 AND intitule LIKE '%" + intitule + "%'" +tags );
+                query = session.createSQLQuery("SELECT * FROM Document  WHERE status = 0 AND intitule LIKE '%" + intitule + "%'" +tags).addEntity("document", Document.class);
             }
             if (debut != -1 && fin != -1) {
                 query.setFirstResult(debut);

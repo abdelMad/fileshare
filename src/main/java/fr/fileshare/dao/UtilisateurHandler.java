@@ -189,6 +189,7 @@ public class UtilisateurHandler implements IUtilisateurHandler {
         Cookie cookie = getUtilisateurCookie(request);
         cookie.setMaxAge(0);
         response.addCookie(cookie);
+        request.getSession().invalidate();
         response.sendRedirect("/");
 
     }

@@ -55,7 +55,10 @@ public class ConnexionInscription extends HttpServlet {
 
         if (("/deconnexion").equals(request.getRequestURI())) {
             UtilisateurHandler utilisateurHandler = new UtilisateurHandler();
-            utilisateurHandler.deconnexion(request, response);
+            if(UtilisateurHandler.isLoggedIn(request))
+                utilisateurHandler.deconnexion(request, response);
+            else
+                response.sendRedirect("/connexion");
         } else {
             if (!UtilisateurHandler.isLoggedIn(request)) {
                 request.setAttribute("title", "Connexion | Inscription | mot de passe oublié");

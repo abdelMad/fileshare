@@ -34,7 +34,7 @@
                                     <c:if test="${not empty doc.auteur.image}">
                                         <c:set var="image" scope="page" value="${doc.auteur.image}"/>
                                     </c:if>
-                                    <a href="/profil<c:if test="${doc.auteur.id ne utilisateur.id}"> /${doc.auteur.id} </c:if>">
+                                    <a href="/profil<c:if test="${doc.auteur.id ne utilisateur.id}">/${doc.auteur.id} </c:if>">
                                         <img alt="image de ${doc.auteur.nom}" src="${image}"/></a>
                                 </div>
 
@@ -71,7 +71,7 @@
                                             <c:if test="${not empty doc.tag}">
                                                 <c:set var="tags" value="${fn:split(doc.tag, ' ')}"/>
                                                 <c:forEach items="${tags}" var="tg">
-                                                    <a href="/?tags=${tg}"><span
+                                                    <a href="/?tags=${fn:replace(tg, '#', '%23')}"><span
                                                             class="label label-sm label-error"><c:out
                                                             value="${tg}"></c:out></span></a>
                                                 </c:forEach>
