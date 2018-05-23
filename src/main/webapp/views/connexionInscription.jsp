@@ -7,33 +7,34 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta charset="utf-8">
     <title>Connexion - File Share</title>
-
+    <link rel='icon' href='/assets/images/favic.jpg'/>
     <meta name="description" content="User login page">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
     <!-- bootstrap & fontawesome -->
-    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/font-awesome/4.2.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/font-awesome/4.2.0/css/font-awesome.min.css">
 
     <!-- text fonts -->
-    <link rel="stylesheet" href="assets/fonts/fonts.googleapis.com.css">
+    <link rel="stylesheet" href="/assets/fonts/fonts.googleapis.com.css">
 
     <!-- ace styles -->
-    <link rel="stylesheet" href="assets/css/ace.min.css">
+    <link rel="stylesheet" href="/assets/css/ace.min.css">
 
     <!--[if lte IE 9]>
-    <link rel="stylesheet" href="assets/css/ace-part2.min.css" />
+    <link rel="stylesheet" href="/assets/css/ace-part2.min.css"/>
     <![endif]-->
 
     <!--[if lte IE 9]>
-    <link rel="stylesheet" href="assets/css/ace-ie.min.css" />
+    <link rel="stylesheet" href="/assets/css/ace-ie.min.css"/>
     <![endif]-->
+    <link rel="stylesheet" href="/assets/css/main.css">
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 
     <!--[if lt IE 9]>
-    <script src="assets/js/html5shiv.min.js"></script>
-    <script src="assets/js/respond.min.js"></script>
+    <script src="/assets/js/html5shiv.min.js"></script>
+    <script src="/assets/js/respond.min.js"></script>
     <![endif]-->
 </head>
 <body class="login-layout light-login">
@@ -66,17 +67,18 @@
                         </c:if>
 
                         <c:if test="${check eq false}">
-                        <div id="login-box" class="login-box widget-box no-border visible">
+                            <div id="login-box"
+                                 class="login-box widget-box no-border <c:if test="${param['mdp-oublie'] ne 'true'}">visible</c:if> ">
                             <div class="widget-body">
                                 <div class="widget-main">
                                     <h4 class="header blue lighter bigger">
                                         <i class="ace-icon fa fa-coffee green"></i>
-                                        Merci d' entrer vos informations
+                                        Merci d'entrer vos informations
                                     </h4>
 
                                     <div class="space-6"></div>
 
-                                    <form action="/connexion" method="post">
+                                    <form action="/connexion" id="login-form" method="post">
                                         <fieldset>
                                             <label class="block clearfix">
 														<span class="block input-icon input-icon-right">
@@ -126,7 +128,8 @@
                             </div><!-- /.widget-body -->
                         </div><!-- /.login-box -->
 
-                        <div id="forgot-box" class="forgot-box widget-box no-border">
+                            <div id="forgot-box"
+                                 class="forgot-box widget-box no-border <c:if test="${param['mdp-oublie'] eq 'true'}">visible</c:if>">
                             <div class="widget-body">
                                 <div class="widget-main">
                                     <h4 class="header red lighter bigger">
@@ -139,7 +142,7 @@
                                         Enter votre email pour recevoir les instructions
                                     </p>
 
-                                    <form action="/recuperation-mot-de-passe" method="post">
+                                    <form action="/recuperation-mot-de-passe" id="forgot-form" method="post">
                                         <fieldset>
                                             <label class="block clearfix">
 														<span class="block input-icon input-icon-right">
@@ -160,7 +163,7 @@
 
                                 <div class="toolbar center">
                                     <a href="#" data-target="#login-box" class="back-to-login-link">
-                                        Back to login
+                                        Retour
                                         <i class="ace-icon fa fa-arrow-right"></i>
                                     </a>
                                 </div>
@@ -176,9 +179,9 @@
                                     </h4>
 
                                     <div class="space-6"></div>
-                                    <p> Merci d'entrer vos informations: </p>
+                                    <p> Merci d'entrer vos informations </p>
 
-                                    <form action="/inscription" method="post">
+                                    <form action="/inscription" id="sign-up-form" method="post">
                                         <fieldset>
                                             <label class="block clearfix">
 														<span class="block input-icon input-icon-right">
@@ -203,7 +206,8 @@
 
                                             <label class="block clearfix">
 														<span class="block input-icon input-icon-right">
-															<input name="mdp" type="password" class="form-control" placeholder="Mot de passe">
+															<input name="mdp_register" id="mdp" type="password"
+                                                                   class="form-control" placeholder="Mot de passe">
 															<i class="ace-icon fa fa-lock"></i>
 														</span>
                                             </label>
@@ -216,10 +220,10 @@
                                             </label>
 
                                             <label class="block">
-                                                <input type="checkbox" class="ace">
+                                                <input type="checkbox" name="conditions" class="ace">
                                                 <span class="lbl">
 															J'accepte
-															<a href="#">User Agreement</a>
+															<a href="/conditions-utilisations">les conditions d'utilisation</a>
 														</span>
                                             </label>
 
@@ -228,7 +232,7 @@
                                             <div class="clearfix">
                                                 <button type="reset" class="width-40 pull-left btn btn-sm">
                                                     <i class="ace-icon fa fa-refresh"></i>
-                                                    <span class="bigger-110">Renitialiser</span>
+                                                    <span class="bigger-110">Rénitialiser</span>
                                                 </button>
                                                 <input value="inscription" name="type" type="hidden">
                                                 <button type="submit" class="width-40 pull-right btn btn-sm btn-success">
@@ -306,17 +310,17 @@
 <!-- basic scripts -->
 
 <!--[if !IE]> -->
-<script src="assets/js/jquery.2.1.1.min.js"></script>
+<script src="/assets/js/jquery.2.1.1.min.js"></script>
 
 <!-- <![endif]-->
 
 <!--[if IE]>
-<script src="assets/js/jquery.1.11.1.min.js"></script>
+<script src="/assets/js/jquery.1.11.1.min.js"></script>
 <![endif]-->
 
 <!--[if !IE]> -->
 <script type="text/javascript">
-    window.jQuery || document.write("<script src='assets/js/jquery.min.js'>"+"<"+"/script>");
+    window.jQuery || document.write("<script src='/assets/js/jquery.min.js'>" + "<" + "/script>");
 </script>
 
 <!-- <![endif]-->
@@ -327,10 +331,13 @@
 </script>
 <![endif]-->
 <script type="text/javascript">
-    if('ontouchstart' in document.documentElement) document.write("<script src='assets/js/jquery.mobile.custom.min.js'>"+"<"+"/script>");
+    if ('ontouchstart' in document.documentElement) document.write("<script src='/assets/js/jquery.mobile.custom.min.js'>" + "<" + "/script>");
 </script>
 
 <!-- inline scripts related to this page -->
+<script src="/assets/js/jquery.validate.min.js"></script>
+<script src="/assets/js/script.js"></script>
+
 <script type="text/javascript">
     jQuery(function($) {
         $(document).on('click', '.toolbar a[data-target]', function(e) {

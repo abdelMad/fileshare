@@ -10,12 +10,17 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Queue;
 
+/**
+ * class qui contien des methodes d'encodage et decodages JSON
+ * pour message,utilisateur et document
+ */
 public class JsonHelper {
 
     public HashMap<String, String> decodeMessage(String textMessage) {
         HashMap<String, String> chatMessage = new HashMap<>();
         JSONObject jsonObject = new JSONObject(textMessage);
         chatMessage.put("message", jsonObject.getString("message").trim().replace("\n", "<br>"));
+        chatMessage.put("type", jsonObject.getString("type"));
         chatMessage.put("sender", jsonObject.getString("sender"));
         chatMessage.put("receiver", jsonObject.getString("receiver"));
         chatMessage.put("sentDate", jsonObject.getString("sentDate"));
@@ -26,6 +31,7 @@ public class JsonHelper {
 
     public String encodeMessage(final HashMap<String, String> chatMessage) {
         JSONObject jsonObject = new JSONObject();
+        jsonObject.put("type", chatMessage.get("type"));
         jsonObject.put("message", chatMessage.get("message"));
         jsonObject.put("sender", chatMessage.get("sender"));
         jsonObject.put("receiver", chatMessage.get("receiver"));

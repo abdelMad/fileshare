@@ -11,13 +11,16 @@
 
     <meta name="description" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-
+    <link rel='icon' href='/assets/images/favic.jpg'/>
     <!-- bootstrap & fontawesome -->
     <link rel="stylesheet" href="/assets/css/bootstrap.min.css" />
     <link rel="stylesheet" href="/assets/font-awesome/4.2.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="/assets/css/jquery.gritter.min.css"/>
 
     <!-- page specific plugin styles -->
-    <%= Util.includeCssOrJs(request,"/mes-documents","/assets/css/ui.jqgrid.min.css")%>
+    <%= Util.includeCssOrJs(request, "/mes-documents|/documents-favoris", "/assets/css/ui.jqgrid.min.css")%>
+    <link rel="stylesheet" href="/assets/css/bootstrap-editable.min.css"/>
+
     <!-- text fonts -->
     <link rel="stylesheet" href="/assets/fonts/fonts.googleapis.com.css" />
 
@@ -49,12 +52,15 @@
     <c:if test="${not empty utilisateur}">
         <%@include file="sidebar.jsp"%>
     </c:if>
+
         <div class="main-content">
         <div class="main-content-inner">
             <div class="page-content">
-
+                <c:if test="${not empty utilisateur}">
+                    <%@include file="chatSideBar.jsp" %>
+                </c:if>
                 <div class="row">
-                    <div class="col-md-<c:if test="${not empty utilisateur}">9</c:if><c:if test="${empty utilisateur}">12</c:if>">
+                    <div class="col-md-12">
                         <div class="global-alert">
                             <%= Util.showGlobalAlerts() %>
                         </div>

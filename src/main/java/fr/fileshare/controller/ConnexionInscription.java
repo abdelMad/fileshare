@@ -14,47 +14,58 @@ import java.util.Map;
 public class ConnexionInscription extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // type = login or register
-        Map<String, String[]> params = request.getParameterMap();
-        if (params.containsKey("type")) {
-            String type = request.getParameter("type");
-            if (type.length() != 0) {
-                IUtilisateurHandler userHandler = new UtilisateurHandler();
-                if (type.equals("connexion")) {
-                    boolean checkLogin = userHandler.authenticate(request);
-                    if (checkLogin) {
-                        if (Util.elementExistInEnum(this.getServletContext().getAttributeNames(), "destinationUrl")) {
-                            String destinationUrl = this.getServletContext().getAttribute("destinationUrl").toString();
-                            this.getServletContext().removeAttribute("destinationUrl");
-                            if (destinationUrl.length() != 0) {
-                                response.sendRedirect(destinationUrl);
-                            } else
+        if (!UtilisateurHandler.isLoggedIn(request)) {
+            request.setAttribute("utilisateur", UtilisateurHandler.getLoggedInUser(request));
+            Map<String, String[]> params = request.getParameterMap();
+            // type = login or register
+            if (params.containsKey("type")) {
+                String type = request.getParameter("type");
+                if (type.length() != 0) {
+                    IUtilisateurHandler userHandler = new UtilisateurHandler();
+                    if (type.equals("connexion")) {
+                        boolean checkLogin = userHandler.authenticate(request, response);
+                        if (checkLogin) {
+                            if (Util.elementExistInEnum(this.getServletContext().getAttributeNames(), "destinationUrl")) {
+                                String destinationUrl = this.getServletContext().getAttribute("destinationUrl").toString();
+                                this.getServletContext().removeAttribute("destinationUrl");
+                                if (destinationUrl.length() != 0) {
+                                    response.sendRedirect(destinationUrl);
+                                } else
+                                    response.sendRedirect("/");
+                            } else {
                                 response.sendRedirect("/");
-                        } else {
+                            }
+                        } else
+                            doGet(request, response);
+                    } else if (type.equals("inscription")) {
+                        if (userHandler.register(request, response))
                             response.sendRedirect("/");
-                        }
-                    } else
-                        doGet(request, response);
-                } else if (type.equals("inscription")) {
-                    if (userHandler.register(request))
-                        response.sendRedirect("/");
-                    else
-                        response.sendRedirect("/connexion");
+                        else
+                            response.sendRedirect("/connexion");
+                    }
                 }
-            }
+            } else
+                response.sendRedirect("/connexion");
         } else
-            response.sendRedirect("/connexion");
+            response.sendRedirect("/");
 
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         if (("/deconnexion").equals(request.getRequestURI())) {
-            request.getSession().removeAttribute("utilisateur");
-            response.sendRedirect("/");
+            UtilisateurHandler utilisateurHandler = new UtilisateurHandler();
+            if(UtilisateurHandler.isLoggedIn(request))
+                utilisateurHandler.deconnexion(request, response);
+            else
+                response.sendRedirect("/connexion");
         } else {
-            request.setAttribute("title","Connexion | Inscription | mot de passe oublié");
-            this.getServletContext().getRequestDispatcher("/views/connexionInscription.jsp").forward(request, response);
+            if (!UtilisateurHandler.isLoggedIn(request)) {
+                request.setAttribute("title", "Connexion | Inscription | mot de passe oublié");
+                this.getServletContext().getRequestDispatcher("/views/connexionInscription.jsp").forward(request, response);
+            } else {
+                response.sendRedirect("/");
+            }
         }
 
     }

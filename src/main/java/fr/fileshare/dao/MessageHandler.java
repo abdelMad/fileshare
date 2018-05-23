@@ -167,5 +167,25 @@ public class MessageHandler implements IMessageHandler {
         return utilisateurs;
     }
 
+    public List<Message> getGroupeMessages(int idG, int start, int end) {
+        Session session = SessionFactoryHelper.getSessionFactory().openSession();
+        List<Message> messages = new ArrayList<>();
+        try {
+            session.beginTransaction();
+            Query query = session.createSQLQuery("SELECT message.* FROM message JOIN document on message.messagesGroupe=document.document_id WHERE document.document_id=:idG ORDER BY date DESC").addEntity("message", Message.class);
+            query.setParameter("idG", idG);
+            query.setFirstResult(start);
+            query.setMaxResults(end);
+            messages = (List<Message>) query.list();
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            session.getTransaction().rollback();
+            e.printStackTrace();
+        } finally {
+            session.close();
+        }
+        Collections.reverse(messages);
+        return messages;
+    }
 
 }

@@ -1,6 +1,7 @@
 package fr.fileshare.controller;
 
 import fr.fileshare.dao.*;
+import fr.fileshare.model.Utilisateur;
 import fr.fileshare.model.VerificationToken;
 import fr.fileshare.utilities.Util;
 
@@ -23,6 +24,8 @@ public class VerificationEmail extends HttpServlet {
         Map<String, String[]> params = request.getParameterMap();
         IVerificationTokenHandler verificationTokenHandler = new VerificationTokenHandler();
         if (UtilisateurHandler.isLoggedIn(request)) {
+            request.setAttribute("utilisateur", UtilisateurHandler.getLoggedInUser(request));
+            Utilisateur utilisateurCourant = UtilisateurHandler.getLoggedInUser(request);
             int validationStatus =  verificationTokenHandler.validateMail(request);
             switch (validationStatus){
                 case -1:
@@ -30,17 +33,19 @@ public class VerificationEmail extends HttpServlet {
                     break;
                 case 0:
                     Util.addGlobalAlert(Util.WARNING,"Votre lien de validation est expiré! Un nouveau lien a été envoyer à votre adresse mail");
-                    verificationTokenHandler.sendVerificationMail(UtilisateurHandler.getLoggedInUser(request), VerificationToken.VALIDATION_MAIL_TOKEN,false);
+                    verificationTokenHandler.sendVerificationMail(utilisateurCourant, VerificationToken.VALIDATION_MAIL_TOKEN, false);
                     break;
                 case 1:
                     Util.addGlobalAlert(Util.SUCCESS,"Votre email a été activer avec succès");
                     break;
             }
+            request.setAttribute("utilisateur", utilisateurCourant);
+
 
             response.sendRedirect("/");
         } else {
             Util.addGlobalAlert(Util.WARNING,"Vous devez vous connecter pour pouvoir continuer");
-            servletContext.setAttribute("destinationUrl", request.getRequestURL().append('?').append(request.getQueryString()));
+            request.getSession().setAttribute("destinationUrl", request.getRequestURL().append('?').append(request.getQueryString()));
             servletContext.getRequestDispatcher("/connexion").forward(request, response);
         }
 

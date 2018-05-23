@@ -1,3 +1,6 @@
+body {
+    text-align: left;
+}
 html{
     overflow-x: hidden !important;
 }
@@ -49,7 +52,8 @@ b{
 
 .people-list ul {
     list-style: none;
-    padding: 20px;
+    min-width: 190px;
+    min-height: 550px;
 }
 
 .people-list ul li {
@@ -243,7 +247,8 @@ b{
 }
 
 .people-list .contact-row{
-    padding: 10px;
+    padding: 15px;
+    min-width: 190px;
 }
 .people-list .contact-row:hover{
     cursor: pointer;
@@ -254,6 +259,14 @@ b{
 }
 .people-list .search{
     border-bottom: 1px solid#e2e5e8;
+}
+.search-form-home{
+    margin-bottom: 30px;
+}
+
+.search-form-home button{
+    position: relative;
+    bottom: 2px;
 }
 
 h2 .favoris {
@@ -418,4 +431,41 @@ img.chat-img {
 
 h3.panel-title span {
     margin-right: 15px;
+}
+
+.chat-sidebar {
+    z-index: 9999;
+    width: 100%;
+}
+
+.chat-sidebar ul.list {
+    max-height: 500px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    margin-left: 0;
+}
+
+.chat-sidebar-container, .chat-sidebar-container .ace-settings-box {
+    padding-left: 0;
+    padding-right: 0;
+}
+.list-users a {
+    margin-right: 10px;
+}
+
+.timeline-item.well {
+    padding-left: 0;
+    padding-top: 10px;
+}
+
+.supprimer-doc, .supprimer-favoris, .telecharger {
+    cursor: pointer;
+}
+
+.mb-20 {
+    margin-bottom: 20px !important;
+}
+
+em.error.help-block {
+    color: #dd5a43;
 }

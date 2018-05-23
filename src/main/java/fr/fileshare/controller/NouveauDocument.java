@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 public class NouveauDocument extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if (UtilisateurHandler.isLoggedIn(request)) {
+            request.setAttribute("utilisateur", UtilisateurHandler.getLoggedInUser(request));
             Map<String, String[]> params = request.getParameterMap();
             if (params.containsKey("intitule") && params.containsKey("status")) {
                 String intitule = request.getParameter("intitule");
@@ -34,7 +35,7 @@ public class NouveauDocument extends HttpServlet {
                     }
                     Pattern pattern = Pattern.compile("^#[\\w\\d]+$|^#[\\w\\d]+( #[\\w\\d]+)*$", Pattern.CASE_INSENSITIVE);
 
-                    if (tags.length() != 0 && pattern.matcher(tags).matches()) {
+                    if (tags.length() == 0 || pattern.matcher(tags).matches()) {
                         doc.setTag(tags);
 
                         try {
@@ -68,6 +69,11 @@ public class NouveauDocument extends HttpServlet {
                                 doc.setUtilisateursAvecDroit(utilisateurs_autorises);
                             }
                         }
+                        String lectureS = "off";
+                        if (params.containsKey("lectureS")) {
+                            lectureS = request.getParameter("lectureS");
+                        }
+                        doc.setReadOnly(lectureS.equals("on"));
                         doc.setDatePublixation(new Date());
                         doc.setDateDerniereModif(new Date());
                         Utilisateur utilisateurCourant = UtilisateurHandler.getLoggedInUser(request);
@@ -75,9 +81,10 @@ public class NouveauDocument extends HttpServlet {
                         doc.setDernierEditeur(utilisateurCourant);
                         if (documentHandler.add(doc)) {
                             UtilisateurHandler.refresh(request);
-                            Util.addGlobalAlert(Util.SUCCESS, "Document crée avec succès!");
+                            Util.addGlobalAlert(Util.SUCCESS, "Document créé avec succès !");
                             response.sendRedirect("/modifier-document?id=" + doc.getId());
                         }
+
 
                     } else {
                         Util.addGlobalAlert(Util.WARNING, "Veuillez entrer un tag valide (#example1 #exampl2 ...)");
@@ -89,7 +96,7 @@ public class NouveauDocument extends HttpServlet {
                 this.getServletContext().getRequestDispatcher("/views/nouveauDocument.jsp").forward(request, response);
             }
         } else {
-            this.getServletContext().setAttribute("destinationUrl", request.getRequestURI());
+            request.getSession().setAttribute("destinationUrl", request.getRequestURI());
             response.sendRedirect("/connexion");
         }
     }
@@ -97,9 +104,10 @@ public class NouveauDocument extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if (UtilisateurHandler.isLoggedIn(request)) {
             request.setAttribute("title", "Nouveau Document");
+            request.setAttribute("utilisateur", UtilisateurHandler.getLoggedInUser(request));
             this.getServletContext().getRequestDispatcher("/views/nouveauDocument.jsp").forward(request, response);
         } else {
-            this.getServletContext().setAttribute("destinationUrl", request.getRequestURI());
+            request.getSession().setAttribute("destinationUrl", request.getRequestURI());
             response.sendRedirect("/connexion");
         }
     }

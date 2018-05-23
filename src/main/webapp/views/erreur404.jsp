@@ -8,11 +8,11 @@
 												<i class="ace-icon fa fa-sitemap"></i>
 												404
 											</span>
-            Page Notn trouvée
+            Page Non trouvée
         </h2>
 
         <hr>
-        <h3 class="lighter smaller">Nous avons regardé partout mais nous n'avons pas pu le trouver!</h3>
+        <h3 class="lighter smaller">Nous avons regardé partout mais nous n'avons pas pu la trouver !</h3>
 
         <div>
 
@@ -27,7 +27,7 @@
                 </li>
                 <li>
                     <i class="ace-icon fa fa-hand-o-right blue"></i>
-                    Dis nous à propos de cela
+                    Dites-nous à propos de cela
                 </li>
             </ul>
         </div>

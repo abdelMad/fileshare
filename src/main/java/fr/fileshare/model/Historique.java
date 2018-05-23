@@ -3,6 +3,9 @@ package fr.fileshare.model;
 import javax.persistence.*;
 import java.util.Date;
 
+/**
+ * Table historique
+ */
 @Entity
 @Table(name = "historique")
 public class Historique {
@@ -18,6 +21,8 @@ public class Historique {
     @ManyToOne
     @JoinColumn(name = "editeur")
     private Utilisateur editeur;
+    @Column(unique = true)
+    private String version;
 
     public Historique() {
     }
@@ -60,5 +65,13 @@ public class Historique {
 
     public void setEditeur(Utilisateur editeur) {
         this.editeur = editeur;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 }
